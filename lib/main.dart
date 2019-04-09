@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:sleekstats_flutter_statkeeper/statkeeper.dart';
+import 'package:sleekstats_flutter_statkeeper/model/statkeeper.dart';
+import 'package:sleekstats_flutter_statkeeper/statkeeper_label.dart';
 
 void main() => runApp(MyApp());
 
@@ -26,15 +27,18 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  List<StatKeeper> myList = new List<StatKeeper>();
+  List<StatKeeperLabel> myList = new List<StatKeeperLabel>();
 
   void addList() {
-    List<String> list = new List<String>();
-    list.add("Player 1");
-    list.add("Team 2");
-    list.add("League 3");
-    for (int i = 0; i < list.length; i++) {
-      myList.add(StatKeeper(name: list[i]));
+    var playerSK = new StatKeeper(id: "11", name: "Eddie F", type: SKType.PLAYER, level: 1);
+    var teamSK = new StatKeeper(id: "11", name: "Bears", type: SKType.TEAM, level: 1);
+    var leagueSK = new StatKeeper(id: "11", name: "Pacific League", type: SKType.LEAGUE, level: 2);
+    List<StatKeeper> skList = new List<StatKeeper>();
+    skList.add(playerSK);
+    skList.add(teamSK);
+    skList.add(leagueSK);
+    for (int i = 0; i < skList.length; i++) {
+      myList.add(StatKeeperLabel(statKeeper: skList[i],));
     }
   }
 
@@ -57,11 +61,9 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         title: Text(widget.title),
       ),
-      body: Center(
-        child: Container(
+      body: Container(
           child: _buildStatKeeperWidgets(),
         ),
-      ),
       floatingActionButton: FloatingActionButton(
 //        onPressed: ,
         child: Icon(Icons.add),

@@ -1,7 +1,7 @@
 import 'package:meta/meta.dart';
 
 class PlayerStats {
-  BigInt id;
+  double id;
   String firestoreID;
   String teamFirestoreID;
   String name;

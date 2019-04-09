@@ -3,8 +3,10 @@ import 'package:meta/meta.dart';
 class StatKeeper {
   final String id;
   final String name;
-  final int type;
+  final SKType type;
   final int level;
+
+
 
   const StatKeeper({
     @required this.id,
@@ -15,4 +17,12 @@ class StatKeeper {
         assert(name != null),
         assert(type != null),
         assert(level != null);
+
+}
+
+
+enum SKType {
+  PLAYER,
+  TEAM,
+  LEAGUE,
 }
