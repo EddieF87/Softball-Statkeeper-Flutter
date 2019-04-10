@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:sleekstats_flutter_statkeeper/model/statkeeper.dart';
+import 'package:sleekstats_flutter_statkeeper/route/league_route.dart';
+import 'package:sleekstats_flutter_statkeeper/route/player_route.dart';
+import 'package:sleekstats_flutter_statkeeper/route/statkeeper_route.dart';
+import 'package:sleekstats_flutter_statkeeper/route/team_route.dart';
 
 class StatKeeperLabel extends StatelessWidget {
   final StatKeeper statKeeper;
@@ -26,11 +30,11 @@ class StatKeeperLabel extends StatelessWidget {
     return Material(
       color: Colors.green,
       child: InkWell(
-        onTap: () => print("name = ${statKeeper.name}"),
+        onTap: () => _navigateToRoute(context, statKeeper),
         child: Padding(
           padding: EdgeInsets.all(32.0),
           child: Row(
-            crossAxisAlignment: CrossAxisAlignment.end,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
               Padding(
                 child: Icon(
@@ -49,5 +53,47 @@ class StatKeeperLabel extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  /// Gets StatKeeperRoute based on chosen statKeeper type
+  StatKeeperRoute _getStatKeeperRouter(StatKeeper sK) {
+
+    switch(sK.type) {
+      case SKType.PLAYER:
+        return PlayerRoute(title: sK.name,);
+        break;
+      case SKType.TEAM:
+        return TeamRoute(title: sK.name,);
+        break;
+      case SKType.LEAGUE:
+        return LeagueRoute(title: sK.name,);
+        break;
+      default:
+        return null;
+    }
+  }
+
+  /// Navigates to the [PlayerRoute].
+  void _navigateToRoute(BuildContext context, StatKeeper sK) {
+
+    StatKeeperRoute statKeeperRoute = _getStatKeeperRouter(sK);
+    if(statKeeperRoute == null) {return;}
+
+    Navigator.of(context).push(MaterialPageRoute<Null>(
+      builder: (BuildContext context) {
+        return Scaffold(
+          appBar: AppBar(
+            elevation: 1.0,
+            title: Text(
+              "statKeeperRoute",
+              style: Theme.of(context).textTheme.display1,
+            ),
+            centerTitle: true,
+            backgroundColor: Colors.yellow,
+          ),
+          body: statKeeperRoute
+        );
+      },
+    ));
   }
 }
