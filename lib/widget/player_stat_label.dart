@@ -1,30 +1,35 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class PlayerStatLabel extends StatelessWidget {
-  num amount;
-  String stat;
+  final num amount;
+  final String stat;
+  final VoidCallback onTap;
+  final formatter = NumberFormat("#.000");
 
-  PlayerStatLabel({
-    @required this.stat,
-    this.amount,
-  })  : assert(stat != null);
+  PlayerStatLabel({@required this.stat, this.amount, this.onTap})
+      : assert(stat != null);
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: <Widget>[
-        Text(_displayAmount()),
-        Text(stat)
-      ],
+    debugPrint("BUILD PlayerStatLabel  stat");
+    return InkWell(
+      borderRadius: BorderRadius.circular(4.0),
+      onTap: onTap,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[Text(_displayAmount()), Text(stat)],
+      ),
     );
   }
 
   _displayAmount() {
-    if(amount == null) {
+    if (amount == null) {
       return "---";
+    } else if (amount is double){
+      return formatter.format(amount);
     } else {
       return amount.toString();
     }
   }
-
 }
