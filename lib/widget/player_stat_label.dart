@@ -1,23 +1,30 @@
 import 'package:flutter/material.dart';
 
 class PlayerStatLabel extends StatelessWidget {
-  int amount;
+  num amount;
   String stat;
 
   PlayerStatLabel({
     @required this.stat,
-    @required this.amount
-  })  : assert(stat != null),
-        assert(amount != null);
+    this.amount,
+  })  : assert(stat != null);
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: <Widget>[
-        Text(amount.toString()),
+        Text(_displayAmount()),
         Text(stat)
       ],
     );
+  }
+
+  _displayAmount() {
+    if(amount == null) {
+      return "---";
+    } else {
+      return amount.toString();
+    }
   }
 
 }

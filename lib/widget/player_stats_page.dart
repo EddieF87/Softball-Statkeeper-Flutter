@@ -8,9 +8,8 @@ class PlayerStatsPage extends StatefulWidget {
 }
 
 class _PlayerStatsPageState extends State<PlayerStatsPage> {
-  PlayerStats _playerStats
-//  ;
-  = PlayerStats(
+
+  PlayerStats _playerStats = PlayerStats(
       id: 889333315,
       firestoreID: "firestoreID",
       name: "MAGIC JOGBSON",
@@ -34,18 +33,10 @@ class _PlayerStatsPageState extends State<PlayerStatsPage> {
   }
 
   List<PlayerStatLabel> _buildGrid() {
-    Map<String, int> statsMap = _playerStats.toStatsMap();
+    Map<String, num> statsMap = _playerStats.toStatsMap();
     statsMap.forEach((k, v) => debugPrint("mapping $k , $v"));
     List<PlayerStatLabel> list = [];
     statsMap.forEach((k, v) => list.add(PlayerStatLabel(stat: k, amount: v,)));
     return list;
-  }
-
-  String _getDisplayString(int stat) {
-    if (stat == null) {
-      return "0";
-    } else {
-      return stat.toString();
-    }
   }
 }

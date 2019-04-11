@@ -69,7 +69,7 @@ class PlayerStats {
     "rOE" : this.rOE,
   };
 
-  Map<String, int> toStatsMap() => {
+  Map<String, num> toStatsMap() => {
     "G" : this.games,
     "RBI" : this.rbi,
     "Runs" : this.runs,
@@ -84,5 +84,56 @@ class PlayerStats {
     "K" : this.strikeOuts,
     "HBP" : this.hbp,
     "ROE" : this.rOE,
+    "H" : getHits(),
+    "AB" : getAB(),
+    "PA" : getPA(),
+    "AVG" : getAVG(),
+    "OBP" : getOBP(),
+    "SLG" : getSLG(),
+    "OPS" : getOPS(),
+    "OBP+ROE" : getOBPwithROE(),
   };
+
+  int getHits() => singles + doubles + triples + hrs;
+  int getTotalBases() => singles + doubles*2 + triples*3 + hrs*4;
+  int getOnBase() => getHits() + walks;
+  int getOnBasePlusROE() => getOnBase() + rOE;
+  int getAB() => getHits() + outs;
+  int getPA() => getAB() + walks + sacFlies;
+
+  double getAVG() {
+    if(getAB() == 0) {
+      return null;
+    } else {
+      return getHits() / getAB();
+    }
+  }
+  double getOBP() {
+    if(getPA() == 0) {
+      return null;
+    } else {
+      return getOnBase() / getPA();
+    }
+  }
+  double getSLG() {
+    if(getAB() == 0) {
+      return null;
+    } else {
+      return getTotalBases() / getAB();
+    }
+  }
+  double getOPS() {
+    if(getSLG() == null) {
+      return getOBP();
+    } else {
+      return getSLG() + getOBP();
+    }
+  }
+  double getOBPwithROE() {
+    if(getPA() == 0) {
+      return null;
+    } else {
+      return getOnBasePlusROE() / getPA();
+    }
+  }
 }
