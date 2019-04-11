@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sleekstats_flutter_statkeeper/model/statkeeper.dart';
-import 'package:sleekstats_flutter_statkeeper/statkeeper_label.dart';
+import 'package:sleekstats_flutter_statkeeper/widget/statkeeper_label.dart';
 
 class HomeRoute extends StatefulWidget {
   HomeRoute({Key key, this.title}) : super(key: key);
