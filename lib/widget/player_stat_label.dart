@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:sleekstats_flutter_statkeeper/model/player_stats.dart';
+import 'package:sleekstats_flutter_statkeeper/model/player.dart';
 
 class PlayerStatLabel extends StatelessWidget {
   final num amount;
@@ -8,8 +8,7 @@ class PlayerStatLabel extends StatelessWidget {
   final VoidCallback onTap;
   final formatter = NumberFormat("#.000");
 
-  PlayerStatLabel({@required this.stat, this.amount, this.onTap})
-      : assert(stat != null);
+  PlayerStatLabel({this.stat, this.amount, this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -21,14 +20,17 @@ class PlayerStatLabel extends StatelessWidget {
         onTap: setOnTap(),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[Text(_displayAmount()), Text(stat)],
+          children: <Widget>[
+            Text(_displayAmount()),
+            Text(stat ?? "---"),
+          ],
         ),
       ),
     );
   }
 
   BoxDecoration _decorateBox() {
-    if (PlayerStats.CHANGEABLE_LABELS.contains(stat)) {
+    if (Player.CHANGEABLE_LABELS.contains(stat)) {
       return BoxDecoration(
         border: Border.all(
           color: Colors.green,
@@ -40,17 +42,15 @@ class PlayerStatLabel extends StatelessWidget {
   }
 
   _displayAmount() {
-    if (amount == null) {
-      return "---";
-    } else if (amount is double) {
+    if (amount is double) {
       return formatter.format(amount);
-    } else {
-      return amount.toString();
     }
+    return amount.toString() ?? "---";
+
   }
 
   VoidCallback setOnTap() {
-    if (PlayerStats.CHANGEABLE_LABELS.contains(stat)) {
+    if (Player.CHANGEABLE_LABELS.contains(stat)) {
       return onTap;
     }
     return null;

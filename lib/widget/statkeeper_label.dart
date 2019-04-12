@@ -60,7 +60,7 @@ class StatKeeperLabel extends StatelessWidget {
 
     switch(sK.type) {
       case SKType.PLAYER:
-        return PlayerRoute(title: sK.name,);
+        return PlayerRoute(title: sK.name, firestoreID: sK.id,);
         break;
       case SKType.TEAM:
         return TeamRoute(title: sK.name,);
@@ -85,7 +85,7 @@ class StatKeeperLabel extends StatelessWidget {
           appBar: AppBar(
             elevation: 1.0,
             title: Text(
-              "statKeeperRoute",
+              sK.name,
               style: Theme.of(context).textTheme.display1,
             ),
             centerTitle: true,

@@ -6,7 +6,7 @@ class PlayerStatControls extends StatefulWidget {
   final ValueSetter onSubmit;
 
   PlayerStatControls({
-    this.stat = "---",
+    this.stat,
     this.onSubmit,
   });
 

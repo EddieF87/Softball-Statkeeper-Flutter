@@ -1,6 +1,9 @@
 import 'package:meta/meta.dart';
+import 'package:sleekstats_flutter_statkeeper/database/db_contract.dart';
 
-class PlayerStats {
+class Player {
+
+  //Display labels for stats that are changeable.
   static const String LABEL_G = "G";
   static const String LABEL_1B = "1B";
   static const String LABEL_2B = "2B";
@@ -15,12 +18,23 @@ class PlayerStats {
   static const String LABEL_SB = "SB";
   static const String LABEL_R = "R";
   static const String LABEL_RBI = "RBI";
+
   static const Set<String> CHANGEABLE_LABELS = {
     LABEL_G, LABEL_1B, LABEL_2B, LABEL_3B, LABEL_HR, LABEL_BB, LABEL_HBP,
   LABEL_ROE, LABEL_OUT, LABEL_K, LABEL_SF, LABEL_SB, LABEL_R, LABEL_RBI,
   };
 
-  double id;
+  //Display labels for stats that are calculated from others.
+  static const String LABEL_H = "H";
+  static const String LABEL_AB = "AB";
+  static const String LABEL_PA = "PA";
+  static const String LABEL_AVG = "AVG";
+  static const String LABEL_OBP = "OBP";
+  static const String LABEL_SLG = "SLG";
+  static const String LABEL_OPS = "OPS";
+  static const String LABEL_OBPROE = "OBP+ROE";
+
+  int id;
   String firestoreID;
   String teamFirestoreID;
   String name;
@@ -39,10 +53,11 @@ class PlayerStats {
   int strikeOuts;
   int hbp;
   int gender;
-  int rOE;
+  int reachedOnErrors;
 
-  PlayerStats({
-    @required this.id,
+  Player({
+//    @required
+    this.id,
     @required this.firestoreID,
     @required this.name,
     this.team = "Free Agent",
@@ -60,9 +75,8 @@ class PlayerStats {
     this.strikeOuts = 0,
     this.hbp = 0,
     this.gender = 0,
-    this.rOE = 0,
-  })  : assert(id != null),
-        assert(firestoreID != null),
+    this.reachedOnErrors = 0,
+  })  : assert(firestoreID != null),
         assert(name != null);
 
   Map<String, dynamic> toJson() => {
@@ -85,7 +99,7 @@ class PlayerStats {
         "strikeOuts": this.strikeOuts,
         "hbp": this.hbp,
         "gender": this.gender,
-        "rOE": this.rOE,
+        "rOE": this.reachedOnErrors,
       };
 
   Map<String, num> toStatsMap() => {
@@ -102,16 +116,39 @@ class PlayerStats {
         LABEL_SB: this.stolenBases,
         LABEL_K: this.strikeOuts,
         LABEL_HBP: this.hbp,
-        LABEL_ROE: this.rOE,
-        "H": getHits(),
-        "AB": getAB(),
-        "PA": getPA(),
-        "AVG": getAVG(),
-        "OBP": getOBP(),
-        "SLG": getSLG(),
-        "OPS": getOPS(),
-        "OBP+ROE": getOBPwithROE(),
+        LABEL_ROE: this.reachedOnErrors,
+        LABEL_H: getHits(),
+        LABEL_AB: getAB(),
+        LABEL_PA: getPA(),
+        LABEL_AVG: getAVG(),
+        LABEL_OBP: getOBP(),
+        LABEL_SLG: getSLG(),
+        LABEL_OPS: getOPS(),
+        LABEL_OBPROE: getOBPwithROE(),
       };
+
+  Player.fromJson(Map<String, dynamic> json) {
+    this.id = json[DBContract.id];
+    this.firestoreID = json[DBContract.firestoreID];
+    this.teamFirestoreID = json[DBContract.teamFirestoreID];
+    this.name = json[DBContract.name];
+    this.team = json[DBContract.team];
+    this.gender = json[DBContract.gender];
+    this.games = json[DBContract.games];
+    this.singles = json[DBContract.singles];
+    this.doubles = json[DBContract.doubles];
+    this.triples = json[DBContract.triples];
+    this.hrs = json[DBContract.hrs];
+    this.walks = json[DBContract.walks];
+    this.outs = json[DBContract.outs];
+    this.sacFlies = json[DBContract.sacFlies];
+    this.reachedOnErrors = json[DBContract.reachedOnErrors];
+    this.strikeOuts = json[DBContract.strikeOuts];
+    this.stolenBases = json[DBContract.stolenBases];
+    this.runs = json[DBContract.runs];
+    this.rbi = json[DBContract.rbi];
+    this.hbp = json[DBContract.hbp];
+  }
 
   int getHits() => singles + doubles + triples + hrs;
 
@@ -119,9 +156,9 @@ class PlayerStats {
 
   int getOnBase() => getHits() + walks;
 
-  int getOnBasePlusROE() => getOnBase() + rOE;
+  int getOnBasePlusROE() => getOnBase() + reachedOnErrors;
 
-  int getAB() => getHits() + outs;
+  int getAB() => getHits() + outs + reachedOnErrors;
 
   int getPA() => getAB() + walks + sacFlies;
 
@@ -145,6 +182,7 @@ class PlayerStats {
     if (getAB() == 0) {
       return null;
     } else {
+
       return getTotalBases() / getAB();
     }
   }

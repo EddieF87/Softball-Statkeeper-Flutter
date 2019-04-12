@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:sleekstats_flutter_statkeeper/database/db_creator.dart';
 import 'package:sleekstats_flutter_statkeeper/route/home_route.dart';
 
-void main() => runApp(MyApp());
+void main() async {
+  await DBCreator().initDatabase();
+  runApp(MyApp());
+}
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
