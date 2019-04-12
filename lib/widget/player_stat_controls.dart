@@ -3,9 +3,11 @@ import 'package:sleekstats_flutter_statkeeper/widget/player_stat_label.dart';
 
 class PlayerStatControls extends StatefulWidget {
   final String stat;
+  final ValueSetter onSubmit;
 
   PlayerStatControls({
     this.stat = "---",
+    this.onSubmit,
   });
 
   @override
@@ -49,7 +51,7 @@ class _PlayerStatControlsState extends State<PlayerStatControls> {
           ),
           Expanded(
             child: RaisedButton(
-              onPressed: resetAmount,
+              onPressed: () => widget.onSubmit(StatToUpdate(name: widget.stat, amount: amount)),
               child: Text("Update"),
             ),
           ),
@@ -59,6 +61,7 @@ class _PlayerStatControlsState extends State<PlayerStatControls> {
   }
 
   IconButton createIconButton(IconData iconData, onPress) {
+    debugPrint("createIconButton");
     return IconButton(
 //      padding: EdgeInsets.all(16.0),
       icon: Icon(iconData),
@@ -69,4 +72,11 @@ class _PlayerStatControlsState extends State<PlayerStatControls> {
       splashColor: Colors.yellow,
     );
   }
+}
+
+class StatToUpdate {
+  final String name;
+  final int amount;
+
+  StatToUpdate({this.name, this.amount}) : assert(name != null, amount != null);
 }
