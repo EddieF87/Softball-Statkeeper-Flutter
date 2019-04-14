@@ -16,9 +16,11 @@ class RepositoryServicePlayers {
   }
 
   static Future<Player> getPlayer(String firestoreID) async {
-    final sql = '''SELECT * FROM ${DBContract.playersTable} 
-    WHERE ${DBContract.firestoreID} == $firestoreID''';
-    final data = await db.rawQuery(sql);
+    final sql = '''
+    SELECT * FROM ${DBContract.playersTable} WHERE ${DBContract.firestoreID}=?
+    ''';
+    List<String> params = [firestoreID];
+    final data = await db.rawQuery(sql, params);
     final playerStats = Player.fromJson(data[0]);
     return playerStats;
   }
@@ -50,11 +52,27 @@ class RepositoryServicePlayers {
     VALUES
     (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     ''';
-    List<dynamic> params = [player.id, player.firestoreID, player.teamFirestoreID,
-    player.name, player.team, player.gender, player.games, player.runs, player.rbi,
-    player.singles, player.doubles, player.triples, player.hrs, player.walks,
-    player.outs, player.sacFlies, player.reachedOnErrors, player.strikeOuts,
-    player.stolenBases, player.hbp
+    List<dynamic> params = [
+      player.id,
+      player.firestoreID,
+      player.teamFirestoreID,
+      player.name,
+      player.team,
+      player.gender,
+      player.games,
+      player.runs,
+      player.rbi,
+      player.singles,
+      player.doubles,
+      player.triples,
+      player.hrs,
+      player.walks,
+      player.outs,
+      player.sacFlies,
+      player.reachedOnErrors,
+      player.strikeOuts,
+      player.stolenBases,
+      player.hbp
     ];
 
     final result = await db.rawInsert(sql, params);
@@ -62,9 +80,10 @@ class RepositoryServicePlayers {
   }
 
   static Future<void> deletePlayer(Player player) async {
-    final sql = '''DELETE ${DBContract.playersTable} 
-    WHERE ${DBContract.id} == ${player.id}''';
-    final result = await db.rawDelete(sql);
+    final sql =
+        '''DELETE ${DBContract.playersTable} WHERE ${DBContract.id}=?''';
+    List<String> params = [player.id.toString()];
+    final result = await db.rawDelete(sql, params);
     DBCreator.databaseLog("Delete Player", sql, null, result);
   }
 
@@ -84,9 +103,11 @@ class RepositoryServicePlayers {
     ${DBContract.strikeOuts} = ${player.strikeOuts},
     ${DBContract.stolenBases} = ${player.stolenBases},
     ${DBContract.hbp} = ${player.hbp}
-    WHERE ${DBContract.id} == ${player.id}''';
+    WHERE ${DBContract.id} =?
+    ''';
 
-    final result = await db.rawUpdate(sql);
+    List<String> params = [player.id.toString()];
+    final result = await db.rawUpdate(sql, params);
     DBCreator.databaseLog("Update Player", sql, null, result);
   }
 

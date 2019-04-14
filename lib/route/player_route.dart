@@ -9,6 +9,7 @@ class PlayerRoute extends StatKeeperRoute {
   PlayerRoute({Key key, this.title, this.firestoreID}) : super(key: key);
   final String title;
   final String firestoreID;
+
   @override
   _PlayerRouteState createState() => _PlayerRouteState();
 }
@@ -24,7 +25,8 @@ class _PlayerRouteState extends State<PlayerRoute> {
   }
 
   void setPlayer() async {
-    Player playerFromFuture = await RepositoryServicePlayers.getPlayer(widget.firestoreID);
+    Player playerFromFuture =
+        await RepositoryServicePlayers.getPlayer(widget.firestoreID);
     setState(() {
       _player = playerFromFuture;
     });
@@ -90,18 +92,19 @@ class _PlayerRouteState extends State<PlayerRoute> {
 
   @override
   Widget build(BuildContext context) {
-    debugPrint("BUILD PlayerRoute");
-    return Column(children: <Widget>[
-      _buildPlayerStatsPage(_player),
-      PlayerStatControls(
-        stat: nameOfStatToUpdate,
-        onSubmit: (statToUpdate) => _updateStat(statToUpdate),
-      ),
-    ]);
+    return Column(
+      children: <Widget>[
+        _buildPlayerStatsPage(_player),
+        PlayerStatControls(
+          stat: nameOfStatToUpdate,
+          onSubmit: (statToUpdate) => _updateStat(statToUpdate),
+        ),
+      ],
+    );
   }
 
   Widget _buildPlayerStatsPage(Player player) {
-    if(player == null) {
+    if (player == null) {
       return Text("WAITING");
     } else {
       return PlayerStatsPage(

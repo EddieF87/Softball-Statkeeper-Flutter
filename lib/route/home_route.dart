@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:sleekstats_flutter_statkeeper/database/repository_service_players.dart';
 import 'package:sleekstats_flutter_statkeeper/model/player.dart';
 import 'package:sleekstats_flutter_statkeeper/model/statkeeper.dart';
+import 'package:sleekstats_flutter_statkeeper/widget/statkeeper_creator_dialog.dart';
 import 'package:sleekstats_flutter_statkeeper/widget/statkeeper_label.dart';
 
 class HomeRoute extends StatefulWidget {
@@ -13,34 +14,12 @@ class HomeRoute extends StatefulWidget {
 }
 
 class _HomeRouteState extends State<HomeRoute> {
-  List<StatKeeperLabel> myList = new List<StatKeeperLabel>();
-
-  void addList() {
-    var player1SK = new StatKeeper(id: "1234", name: "Steve", type: SKType.PLAYER, level: 1);
-    var player2SK = new StatKeeper(id: "888", name: "Eddie F", type: SKType.PLAYER, level: 1);
-    var teamSK = new StatKeeper(id: "11", name: "Bears", type: SKType.TEAM, level: 1);
-    var leagueSK = new StatKeeper(id: "11", name: "Pacific League", type: SKType.LEAGUE, level: 2);
-    List<StatKeeper> skList = new List<StatKeeper>();
-    skList.add(player1SK);
-    skList.add(player2SK);
-    skList.add(teamSK);
-    skList.add(leagueSK);
-    for (int i = 0; i < skList.length; i++) {
-      myList.add(StatKeeperLabel(statKeeper: skList[i],));
-    }
-  }
-
-  Widget _buildStatKeeperWidgets() {
-    return ListView.builder(
-      itemBuilder: (BuildContext context, int index) => myList[index],
-      itemCount: myList.length,
-    );
-  }
+  List<StatKeeper> sKList = [];
 
   @override
   void initState() {
     super.initState();
-    addList();
+    _getAllPlayers();
   }
 
   @override
@@ -53,14 +32,64 @@ class _HomeRouteState extends State<HomeRoute> {
         child: _buildStatKeeperWidgets(),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: _addDummyPlayers,
+        onPressed: _showCreateSKDialog,
         child: Icon(Icons.add),
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 
-  _addDummyPlayers() {
-    RepositoryServicePlayers.insertPlayer(Player(name: "Steve", firestoreID: "1234"));
-    RepositoryServicePlayers.insertPlayer(Player(name: "Eddie F", firestoreID: "888", runs: 33, singles: 8, outs: 2, walks: 1));
+  Widget _buildStatKeeperWidgets() {
+    return ListView.builder(
+      itemBuilder: (BuildContext context, int index) => StatKeeperLabel(
+            statKeeper: sKList[index],
+          ),
+      itemCount: sKList.length,
+    );
+  }
+
+  ///Query players from repository and change into SK's to add to SK list
+  ///(in future will query all SK's directly)
+  _getAllPlayers() async {
+    List<Player> players = await RepositoryServicePlayers.getAllPlayers();
+    for (Player player in players) {
+      sKList.add(StatKeeper(
+          id: player.firestoreID, name: player.name, type: SKType.PLAYER));
+    }
+    setState(() {
+      sKList = sKList;
+    });
+  }
+
+  ///Insert newly created player into repository based off newly created SK
+  ///(in future will insert all SK's into db as well)
+  _insertNewPlayer(StatKeeper sK) async {
+    await RepositoryServicePlayers.insertPlayer(
+      Player(
+        name: sK.name,
+        firestoreID: sK.id,
+      ),
+    );
+    setState(() {
+      sKList.add(sK);
+    });
+  }
+
+  ///Callback received from CreateStatKeeperDialog with info of new StatKeeper
+  ///(in future will insert all SK's into db as well)
+  _onNewSKCreated(StatKeeper sK) {
+    if (sK.type == SKType.PLAYER) {
+      _insertNewPlayer(sK);
+    }
+  }
+
+  Future<void> _showCreateSKDialog() async {
+    return showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return StatKeeperCreatorDialog(
+          onSKCreated: (StatKeeper sK) => _onNewSKCreated(sK),
+        );
+      },
+    );
   }
 }

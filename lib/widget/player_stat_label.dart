@@ -12,7 +12,6 @@ class PlayerStatLabel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    debugPrint("BUILD PlayerStatLabel  stat");
     return Container(
       decoration: _decorateBox(),
       child: InkWell(
@@ -22,7 +21,7 @@ class PlayerStatLabel extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Text(_displayAmount()),
-            Text(stat ?? "---"),
+            Text(stat ?? "- - -"),
           ],
         ),
       ),
@@ -41,14 +40,15 @@ class PlayerStatLabel extends StatelessWidget {
     }
   }
 
+  ///If stat amount is a double, format as #.000, if null, format as "---"
   _displayAmount() {
     if (amount is double) {
-      return formatter.format(amount);
+      return formatter.format(amount) ?? "- - -";
     }
-    return amount.toString() ?? "---";
-
+    return amount != null ? amount.toString() : "- - -";
   }
 
+  ///Change stat to edit based on what user taps
   VoidCallback setOnTap() {
     if (Player.CHANGEABLE_LABELS.contains(stat)) {
       return onTap;

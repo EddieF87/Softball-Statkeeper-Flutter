@@ -57,16 +57,22 @@ class StatKeeperLabel extends StatelessWidget {
 
   /// Gets StatKeeperRoute based on chosen statKeeper type
   StatKeeperRoute _getStatKeeperRouter(StatKeeper sK) {
-
-    switch(sK.type) {
+    switch (sK.type) {
       case SKType.PLAYER:
-        return PlayerRoute(title: sK.name, firestoreID: sK.id,);
+        return PlayerRoute(
+          title: sK.name,
+          firestoreID: sK.id,
+        );
         break;
       case SKType.TEAM:
-        return TeamRoute(title: sK.name,);
+        return TeamRoute(
+          title: sK.name,
+        );
         break;
       case SKType.LEAGUE:
-        return LeagueRoute(title: sK.name,);
+        return LeagueRoute(
+          title: sK.name,
+        );
         break;
       default:
         return null;
@@ -75,24 +81,24 @@ class StatKeeperLabel extends StatelessWidget {
 
   /// Navigates to the [PlayerRoute].
   void _navigateToRoute(BuildContext context, StatKeeper sK) {
-
     StatKeeperRoute statKeeperRoute = _getStatKeeperRouter(sK);
-    if(statKeeperRoute == null) {return;}
+    if (statKeeperRoute == null) {
+      return;
+    }
 
     Navigator.of(context).push(MaterialPageRoute<Null>(
       builder: (BuildContext context) {
         return Scaffold(
-          appBar: AppBar(
-            elevation: 1.0,
-            title: Text(
-              sK.name,
-              style: Theme.of(context).textTheme.display1,
+            appBar: AppBar(
+              elevation: 1.0,
+              title: Text(
+                sK.name,
+                style: Theme.of(context).textTheme.display1,
+              ),
+              centerTitle: true,
+              backgroundColor: Colors.yellow,
             ),
-            centerTitle: true,
-            backgroundColor: Colors.yellow,
-          ),
-          body: statKeeperRoute
-        );
+            body: statKeeperRoute);
       },
     ));
   }
