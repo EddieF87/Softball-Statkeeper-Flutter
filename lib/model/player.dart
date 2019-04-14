@@ -128,26 +128,25 @@ class Player {
       };
 
   Player.fromJson(Map<String, dynamic> json) {
-    this.id = json[DBContract.id];
-    this.firestoreID = json[DBContract.firestoreID];
-    this.teamFirestoreID = json[DBContract.teamFirestoreID];
-    this.name = json[DBContract.name];
-    this.team = json[DBContract.team];
-    this.gender = json[DBContract.gender];
-    this.games = json[DBContract.games];
-    this.singles = json[DBContract.singles];
-    this.doubles = json[DBContract.doubles];
-    this.triples = json[DBContract.triples];
-    this.hrs = json[DBContract.hrs];
-    this.walks = json[DBContract.walks];
-    this.outs = json[DBContract.outs];
-    this.sacFlies = json[DBContract.sacFlies];
-    this.reachedOnErrors = json[DBContract.reachedOnErrors];
-    this.strikeOuts = json[DBContract.strikeOuts];
-    this.stolenBases = json[DBContract.stolenBases];
-    this.runs = json[DBContract.runs];
-    this.rbi = json[DBContract.rbi];
-    this.hbp = json[DBContract.hbp];
+    this.firestoreID = json[DBContract.FIRESTORE_ID];
+    this.teamFirestoreID = json[DBContract.TEAM_FIRESTORE_ID];
+    this.name = json[DBContract.NAME];
+    this.team = json[DBContract.TEAM];
+    this.gender = json[DBContract.GENDER];
+    this.games = json[DBContract.GAMES];
+    this.singles = json[DBContract.SINGLES];
+    this.doubles = json[DBContract.DOUBLES];
+    this.triples = json[DBContract.TRIPLES];
+    this.hrs = json[DBContract.HRS];
+    this.walks = json[DBContract.WALKS];
+    this.outs = json[DBContract.OUTS];
+    this.sacFlies = json[DBContract.SAC_FLIES];
+    this.reachedOnErrors = json[DBContract.REACHED_ON_ERRORS];
+    this.strikeOuts = json[DBContract.STRIKEOUTS];
+    this.stolenBases = json[DBContract.STOLEN_BASES];
+    this.runs = json[DBContract.RUNS];
+    this.rbi = json[DBContract.RBI];
+    this.hbp = json[DBContract.HBP];
   }
 
   int getHits() => singles + doubles + triples + hrs;

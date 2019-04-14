@@ -4,7 +4,7 @@ import 'package:sleekstats_flutter_statkeeper/model/player.dart';
 
 class RepositoryServicePlayers {
   static Future<List<Player>> getAllPlayers() async {
-    final sql = '''SELECT * FROM ${DBContract.playersTable}''';
+    final sql = '''SELECT * FROM ${DBContract.TABLE_PLAYERS}''';
     final data = await db.rawQuery(sql);
 
     List<Player> playerStatsList = [];
@@ -17,7 +17,7 @@ class RepositoryServicePlayers {
 
   static Future<Player> getPlayer(String firestoreID) async {
     final sql = '''
-    SELECT * FROM ${DBContract.playersTable} WHERE ${DBContract.firestoreID}=?
+    SELECT * FROM ${DBContract.TABLE_PLAYERS} WHERE ${DBContract.FIRESTORE_ID}=?
     ''';
     List<String> params = [firestoreID];
     final data = await db.rawQuery(sql, params);
@@ -26,28 +26,28 @@ class RepositoryServicePlayers {
   }
 
   static Future<void> insertPlayer(Player player) async {
-    final sql = '''INSERT INTO ${DBContract.playersTable}
+    final sql = '''INSERT INTO ${DBContract.TABLE_PLAYERS}
     ( 
-    ${DBContract.id},
-    ${DBContract.firestoreID},
-    ${DBContract.teamFirestoreID},
-    ${DBContract.name},
-    ${DBContract.team},
-    ${DBContract.gender},
-    ${DBContract.games},
-    ${DBContract.runs},
-    ${DBContract.rbi},
-    ${DBContract.singles},
-    ${DBContract.doubles},
-    ${DBContract.triples},
-    ${DBContract.hrs},
-    ${DBContract.walks},
-    ${DBContract.outs},
-    ${DBContract.sacFlies},
-    ${DBContract.reachedOnErrors},
-    ${DBContract.strikeOuts},
-    ${DBContract.stolenBases},
-    ${DBContract.hbp}
+    ${DBContract.ID},
+    ${DBContract.FIRESTORE_ID},
+    ${DBContract.TEAM_FIRESTORE_ID},
+    ${DBContract.NAME},
+    ${DBContract.TEAM},
+    ${DBContract.GENDER},
+    ${DBContract.GAMES},
+    ${DBContract.RUNS},
+    ${DBContract.RBI},
+    ${DBContract.SINGLES},
+    ${DBContract.DOUBLES},
+    ${DBContract.TRIPLES},
+    ${DBContract.HRS},
+    ${DBContract.WALKS},
+    ${DBContract.OUTS},
+    ${DBContract.SAC_FLIES},
+    ${DBContract.REACHED_ON_ERRORS},
+    ${DBContract.STRIKEOUTS},
+    ${DBContract.STOLEN_BASES},
+    ${DBContract.HBP}
     )
     VALUES
     (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
@@ -81,29 +81,29 @@ class RepositoryServicePlayers {
 
   static Future<void> deletePlayer(Player player) async {
     final sql =
-        '''DELETE ${DBContract.playersTable} WHERE ${DBContract.id}=?''';
+        '''DELETE ${DBContract.TABLE_PLAYERS} WHERE ${DBContract.ID}=?''';
     List<String> params = [player.id.toString()];
     final result = await db.rawDelete(sql, params);
     DBCreator.databaseLog("Delete Player", sql, null, result);
   }
 
   static Future<void> updatePlayer(Player player) async {
-    final sql = '''UPDATE ${DBContract.playersTable} 
-    SET ${DBContract.games} = ${player.games},
-    ${DBContract.runs} = ${player.runs},
-    ${DBContract.rbi} = ${player.rbi},
-    ${DBContract.singles} = ${player.singles},
-    ${DBContract.doubles} = ${player.doubles},
-    ${DBContract.triples} = ${player.triples},
-    ${DBContract.hrs} = ${player.hrs},
-    ${DBContract.walks} = ${player.walks},
-    ${DBContract.outs} = ${player.outs},
-    ${DBContract.sacFlies} = ${player.sacFlies},
-    ${DBContract.reachedOnErrors} = ${player.reachedOnErrors},
-    ${DBContract.strikeOuts} = ${player.strikeOuts},
-    ${DBContract.stolenBases} = ${player.stolenBases},
-    ${DBContract.hbp} = ${player.hbp}
-    WHERE ${DBContract.id} =?
+    final sql = '''UPDATE ${DBContract.TABLE_PLAYERS} 
+    SET ${DBContract.GAMES} = ${player.games},
+    ${DBContract.RUNS} = ${player.runs},
+    ${DBContract.RBI} = ${player.rbi},
+    ${DBContract.SINGLES} = ${player.singles},
+    ${DBContract.DOUBLES} = ${player.doubles},
+    ${DBContract.TRIPLES} = ${player.triples},
+    ${DBContract.HRS} = ${player.hrs},
+    ${DBContract.WALKS} = ${player.walks},
+    ${DBContract.OUTS} = ${player.outs},
+    ${DBContract.SAC_FLIES} = ${player.sacFlies},
+    ${DBContract.REACHED_ON_ERRORS} = ${player.reachedOnErrors},
+    ${DBContract.STRIKEOUTS} = ${player.strikeOuts},
+    ${DBContract.STOLEN_BASES} = ${player.stolenBases},
+    ${DBContract.HBP} = ${player.hbp}
+    WHERE ${DBContract.ID} =?
     ''';
 
     List<String> params = [player.id.toString()];
@@ -112,7 +112,7 @@ class RepositoryServicePlayers {
   }
 
   static Future<int> playerCount() async {
-    final sql = '''SELECT COUNT(*) FROM ${DBContract.playersTable}''';
+    final sql = '''SELECT COUNT(*) FROM ${DBContract.TABLE_PLAYERS}''';
     final data = await db.rawQuery(sql);
 
     int count = data[0].values.elementAt(0);

@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:sleekstats_flutter_statkeeper/database/repository_service_players.dart';
+import 'package:sleekstats_flutter_statkeeper/database/repository_service_statkeepers.dart';
+import 'package:sleekstats_flutter_statkeeper/database/repository_service_teams.dart';
 import 'package:sleekstats_flutter_statkeeper/model/player.dart';
 import 'package:sleekstats_flutter_statkeeper/model/statkeeper.dart';
+import 'package:sleekstats_flutter_statkeeper/model/team.dart';
 import 'package:sleekstats_flutter_statkeeper/widget/statkeeper_creator_dialog.dart';
 import 'package:sleekstats_flutter_statkeeper/widget/statkeeper_label.dart';
 
@@ -19,7 +22,7 @@ class _HomeRouteState extends State<HomeRoute> {
   @override
   void initState() {
     super.initState();
-    _getAllPlayers();
+    _getAllStatKeepers();
   }
 
   @override
@@ -47,39 +50,58 @@ class _HomeRouteState extends State<HomeRoute> {
     );
   }
 
-  ///Query players from repository and change into SK's to add to SK list
-  ///(in future will query all SK's directly)
-  _getAllPlayers() async {
-    List<Player> players = await RepositoryServicePlayers.getAllPlayers();
-    for (Player player in players) {
-      sKList.add(StatKeeper(
-          id: player.firestoreID, name: player.name, type: SKType.PLAYER));
-    }
+  ///Query statkeepers from repository
+  _getAllStatKeepers() async {
+    sKList = await RepositoryServiceStatKeepers.getAllStatKeepers();
     setState(() {
       sKList = sKList;
     });
   }
 
-  ///Insert newly created player into repository based off newly created SK
-  ///(in future will insert all SK's into db as well)
-  _insertNewPlayer(StatKeeper sK) async {
-    await RepositoryServicePlayers.insertPlayer(
-      Player(
-        name: sK.name,
-        firestoreID: sK.id,
-      ),
-    );
+  ///Insert newly created statkeeper into repository
+  _insertNewStatKeeper(StatKeeper sK) async {
+    await RepositoryServiceStatKeepers.insertStatKeeper(sK);
+    switch (sK.type) {
+      case SKType.PLAYER:
+        await _insertNewPlayer(sK);
+        break;
+      case SKType.TEAM:
+        await _insertNewTeam(sK);
+        break;
+      case SKType.LEAGUE:
+        break;
+      default:
+        return;
+    }
     setState(() {
       sKList.add(sK);
     });
   }
 
+  ///Insert newly created player into repository based off newly created SK
+  _insertNewPlayer(StatKeeper sK) async {
+    await RepositoryServicePlayers.insertPlayer(
+      Player(
+        name: sK.name,
+        firestoreID: sK.firestoreID,
+      ),
+    );
+  }
+
+  ///Insert newly created team into repository based off newly created SK
+  _insertNewTeam(StatKeeper sK) async {
+    await RepositoryServiceTeams.insertTeam(
+      Team(
+        name: sK.name,
+        firestoreID: sK.firestoreID,
+      ),
+    );
+  }
+
   ///Callback received from CreateStatKeeperDialog with info of new StatKeeper
   ///(in future will insert all SK's into db as well)
   _onNewSKCreated(StatKeeper sK) {
-    if (sK.type == SKType.PLAYER) {
-      _insertNewPlayer(sK);
-    }
+    _insertNewStatKeeper(sK);
   }
 
   Future<void> _showCreateSKDialog() async {

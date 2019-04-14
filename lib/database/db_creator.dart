@@ -21,29 +21,58 @@ class DBCreator {
     }
   }
 
-  Future<void> createPlayerStatsTable(Database db) async {
-    final playerSql = '''CREATE TABLE ${DBContract.playersTable}
+
+  Future<void> createStatKeepersTable(Database db) async {
+    final statkeeperSql = '''CREATE TABLE ${DBContract.TABLE_STATKEEPERS}
     (
-   ${DBContract.id} INTEGER PRIMARY KEY,
-   ${DBContract.firestoreID} TEXT,
-   ${DBContract.teamFirestoreID} TEXT,
-   ${DBContract.name} TEXT,
-   ${DBContract.team} TEXT,
-   ${DBContract.gender} BIT DEFAULT 0,
-   ${DBContract.games} INTEGER DEFAULT 0,
-   ${DBContract.runs} INTEGER DEFAULT 0,
-   ${DBContract.rbi} INTEGER DEFAULT 0,
-   ${DBContract.singles} INTEGER DEFAULT 0,
-   ${DBContract.doubles} INTEGER DEFAULT 0,
-   ${DBContract.triples} INTEGER DEFAULT 0,
-   ${DBContract.hrs} INTEGER DEFAULT 0,
-   ${DBContract.walks} INTEGER DEFAULT 0,
-   ${DBContract.outs} INTEGER DEFAULT 0,
-   ${DBContract.sacFlies} INTEGER DEFAULT 0,
-   ${DBContract.reachedOnErrors} INTEGER DEFAULT 0,
-   ${DBContract.strikeOuts} INTEGER DEFAULT 0,
-   ${DBContract.stolenBases} INTEGER DEFAULT 0,
-   ${DBContract.hbp} INTEGER DEFAULT 0
+   ${DBContract.ID} INTEGER PRIMARY KEY,
+   ${DBContract.FIRESTORE_ID} TEXT NOT NULL,
+   ${DBContract.NAME} TEXT NOT NULL,
+   ${DBContract.TYPE} INTEGER NOT NULL,
+   ${DBContract.LEVEL} INTEGER NOT NULL DEFAULT 1
+    )''';
+    await db.execute(statkeeperSql);
+  }
+
+  Future<void> createTeamsTable(Database db) async {
+    final statkeeperSql = '''CREATE TABLE ${DBContract.TABLE_TEAMS}
+    (
+   ${DBContract.ID} INTEGER PRIMARY KEY,
+   ${DBContract.FIRESTORE_ID} TEXT NOT NULL,
+   ${DBContract.LEAGUE_FIRESTORE_ID} TEXT,
+   ${DBContract.NAME} TEXT NOT NULL,
+   ${DBContract.WINS} INTEGER DEFAULT 0,
+   ${DBContract.LOSSES} INTEGER DEFAULT 0,
+   ${DBContract.TIES} INTEGER DEFAULT 0,
+   ${DBContract.RUNS_SCORED} INTEGER DEFAULT 0,
+   ${DBContract.RUNS_ALLOWED} INTEGER DEFAULT 0
+    )''';
+    await db.execute(statkeeperSql);
+  }
+
+  Future<void> createPlayerStatsTable(Database db) async {
+    final playerSql = '''CREATE TABLE ${DBContract.TABLE_PLAYERS}
+    (
+   ${DBContract.ID} INTEGER PRIMARY KEY,
+   ${DBContract.FIRESTORE_ID} TEXT NOT NULL,
+   ${DBContract.TEAM_FIRESTORE_ID} TEXT,
+   ${DBContract.NAME} TEXT NOT NULL,
+   ${DBContract.TEAM} TEXT DEFAULT 'FREE AGENT',
+   ${DBContract.GENDER} BIT DEFAULT 0,
+   ${DBContract.GAMES} INTEGER DEFAULT 0,
+   ${DBContract.RUNS} INTEGER DEFAULT 0,
+   ${DBContract.RBI} INTEGER DEFAULT 0,
+   ${DBContract.SINGLES} INTEGER DEFAULT 0,
+   ${DBContract.DOUBLES} INTEGER DEFAULT 0,
+   ${DBContract.TRIPLES} INTEGER DEFAULT 0,
+   ${DBContract.HRS} INTEGER DEFAULT 0,
+   ${DBContract.WALKS} INTEGER DEFAULT 0,
+   ${DBContract.OUTS} INTEGER DEFAULT 0,
+   ${DBContract.SAC_FLIES} INTEGER DEFAULT 0,
+   ${DBContract.REACHED_ON_ERRORS} INTEGER DEFAULT 0,
+   ${DBContract.STRIKEOUTS} INTEGER DEFAULT 0,
+   ${DBContract.STOLEN_BASES} INTEGER DEFAULT 0,
+   ${DBContract.HBP} INTEGER DEFAULT 0
     )''';
     await db.execute(playerSql);
   }
@@ -61,12 +90,14 @@ class DBCreator {
   }
 
   Future<void> initDatabase() async {
-    final path = await getDatabasePath("playerstats_db");
+    final path = await getDatabasePath("sleekstats_db");
     db = await openDatabase(path, version: 1, onCreate: onCreate);
     print(db);
   }
 
   Future<void> onCreate(Database db, int version) async {
+    await createStatKeepersTable(db);
+    await createTeamsTable(db);
     await createPlayerStatsTable(db);
   }
 }
