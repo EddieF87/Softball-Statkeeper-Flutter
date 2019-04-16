@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:sleekstats_flutter_statkeeper/model/player.dart';
+import 'package:sleekstats_flutter_statkeeper/utils/stat_formatter.dart';
 
 class PlayerStatLabel extends StatelessWidget {
   final num amount;
   final String stat;
   final VoidCallback onTap;
-  final formatter = NumberFormat("#.000");
 
   PlayerStatLabel({this.stat, this.amount, this.onTap});
 
@@ -20,7 +19,7 @@ class PlayerStatLabel extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Text(_displayAmount()),
+            Text(StatFormatter.displayAmount(amount)),
             Text(stat ?? "- - -"),
           ],
         ),
@@ -40,13 +39,7 @@ class PlayerStatLabel extends StatelessWidget {
     }
   }
 
-  ///If stat amount is a double, format as #.000, if null, format as "---"
-  _displayAmount() {
-    if (amount is double) {
-      return formatter.format(amount) ?? "- - -";
-    }
-    return amount != null ? amount.toString() : "- - -";
-  }
+
 
   ///Change stat to edit based on what user taps
   VoidCallback setOnTap() {
