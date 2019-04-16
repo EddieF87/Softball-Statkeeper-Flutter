@@ -5,7 +5,7 @@ class StatKeeper {
   int id;
   String firestoreID;
   String name;
-  SKType type;
+  int type;
   int level;
 
   ///Levels of user access/authority w/r to StatKeepers
@@ -14,6 +14,10 @@ class StatKeeper {
   static const LEVEL_VIEW_WRITE = 2;
   static const LEVEL_ADMIN = 3;
   static const LEVEL_CREATOR = 4;
+
+  static const TYPE_PLAYER = 0;
+  static const TYPE_TEAM = 1;
+  static const TYPE_LEAGUE = 2;
 
   StatKeeper({
     @required this.firestoreID,
@@ -29,14 +33,7 @@ class StatKeeper {
     this.firestoreID = json[DBContract.FIRESTORE_ID];
     this.name = json[DBContract.NAME];
     this.type = json[DBContract.TYPE];
-    this.name = json[DBContract.LEVEL];
+    this.level = json[DBContract.LEVEL];
 
   }
-}
-
-///Types of StatKeepers
-enum SKType {
-  PLAYER,
-  TEAM,
-  LEAGUE,
 }

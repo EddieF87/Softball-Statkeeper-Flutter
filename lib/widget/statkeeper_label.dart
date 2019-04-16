@@ -14,11 +14,11 @@ class StatKeeperLabel extends StatelessWidget {
 
   IconData _chooseIcon() {
     switch (statKeeper.type) {
-      case SKType.PLAYER:
+      case StatKeeper.TYPE_PLAYER:
         return Icons.person;
-      case SKType.TEAM:
+      case StatKeeper.TYPE_TEAM:
         return Icons.people;
-      case SKType.LEAGUE:
+      case StatKeeper.TYPE_LEAGUE:
         return Icons.cake;
       default:
         return Icons.error;
@@ -58,18 +58,18 @@ class StatKeeperLabel extends StatelessWidget {
   /// Gets StatKeeperRoute based on chosen statKeeper type
   StatKeeperRoute _getStatKeeperRouter(StatKeeper sK) {
     switch (sK.type) {
-      case SKType.PLAYER:
+      case StatKeeper.TYPE_PLAYER:
         return PlayerRoute(
           title: sK.name,
           firestoreID: sK.firestoreID,
         );
         break;
-      case SKType.TEAM:
+      case StatKeeper.TYPE_TEAM:
         return TeamRoute(
           title: sK.name,
         );
         break;
-      case SKType.LEAGUE:
+      case StatKeeper.TYPE_LEAGUE:
         return LeagueRoute(
           title: sK.name,
         );

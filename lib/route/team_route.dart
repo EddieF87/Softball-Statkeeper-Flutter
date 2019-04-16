@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sleekstats_flutter_statkeeper/route/statkeeper_route.dart';
+import 'package:sleekstats_flutter_statkeeper/widget/group_players_stats_page.dart';
 
 class TeamRoute extends StatKeeperRoute {
   TeamRoute({Key key, this.title}) : super(key: key);
@@ -10,9 +11,15 @@ class TeamRoute extends StatKeeperRoute {
 }
 
 class _TeamRouteState extends State<TeamRoute> {
-
   @override
   Widget build(BuildContext context) {
-    return Text("Team ${widget.title}");
+    return Column(
+      children: <Widget>[
+        Text("Team ${widget.title}"),
+        Expanded(child:
+        GroupPlayersStatsPage(),
+        )
+      ],
+    );
   }
 }

@@ -3,7 +3,7 @@ import 'package:sleekstats_flutter_statkeeper/database/repository_service_player
 import 'package:sleekstats_flutter_statkeeper/model/player.dart';
 import 'package:sleekstats_flutter_statkeeper/route/statkeeper_route.dart';
 import 'package:sleekstats_flutter_statkeeper/widget/player_stat_controls.dart';
-import 'package:sleekstats_flutter_statkeeper/widget/player_stats_page.dart';
+import 'package:sleekstats_flutter_statkeeper/widget/single_player_stats_page.dart';
 
 class PlayerRoute extends StatKeeperRoute {
   PlayerRoute({Key key, this.title, this.firestoreID}) : super(key: key);
@@ -107,7 +107,7 @@ class _PlayerRouteState extends State<PlayerRoute> {
     if (player == null) {
       return Text("WAITING");
     } else {
-      return PlayerStatsPage(
+      return SinglePlayerStatsPage(
         player: player,
         onTap: (newStatToUpdate) => _chooseStatToUpdate(newStatToUpdate),
       );

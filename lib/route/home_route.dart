@@ -62,13 +62,13 @@ class _HomeRouteState extends State<HomeRoute> {
   _insertNewStatKeeper(StatKeeper sK) async {
     await RepositoryServiceStatKeepers.insertStatKeeper(sK);
     switch (sK.type) {
-      case SKType.PLAYER:
+      case StatKeeper.TYPE_PLAYER:
         await _insertNewPlayer(sK);
         break;
-      case SKType.TEAM:
+      case StatKeeper.TYPE_TEAM:
         await _insertNewTeam(sK);
         break;
-      case SKType.LEAGUE:
+      case StatKeeper.TYPE_LEAGUE:
         break;
       default:
         return;

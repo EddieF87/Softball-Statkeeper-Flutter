@@ -2,17 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:sleekstats_flutter_statkeeper/model/player.dart';
 import 'package:sleekstats_flutter_statkeeper/widget/player_stat_label.dart';
 
-class PlayerStatsPage extends StatefulWidget {
+class SinglePlayerStatsPage extends StatefulWidget {
   final ValueChanged onTap;
   final Player player;
 
-  const PlayerStatsPage({Key key, this.onTap, this.player}) : super(key: key);
+  const SinglePlayerStatsPage({Key key, this.onTap, this.player}) : super(key: key);
 
   @override
-  _PlayerStatsPageState createState() => _PlayerStatsPageState();
+  _SinglePlayerStatsPageState createState() => _SinglePlayerStatsPageState();
 }
 
-class _PlayerStatsPageState extends State<PlayerStatsPage> {
+class _SinglePlayerStatsPageState extends State<SinglePlayerStatsPage> {
   @override
   Widget build(BuildContext context) {
     debugPrint("BUILD PlayerStatsPage");

@@ -14,9 +14,9 @@ class StatKeeperCreatorDialog extends StatefulWidget {
 
 class _StatKeeperCreatorDialogState extends State<StatKeeperCreatorDialog> {
   List<RadioModel> statKeeperChoices = [
-    RadioModel(true, "Player", SKType.PLAYER, Icons.person),
-    RadioModel(false, "Team", SKType.TEAM, Icons.people),
-    RadioModel(false, "League", SKType.LEAGUE, Icons.cake),
+    RadioModel(true, "Player", StatKeeper.TYPE_PLAYER, Icons.person),
+    RadioModel(false, "Team", StatKeeper.TYPE_TEAM, Icons.people),
+    RadioModel(false, "League", StatKeeper.TYPE_LEAGUE, Icons.cake),
   ];
 
   final myController = TextEditingController();
@@ -131,9 +131,9 @@ class _StatKeeperCreatorDialogState extends State<StatKeeperCreatorDialog> {
     return true;
   }
 
-  _createNewStatKeeper(String name, int index) {
+  _createNewStatKeeper(String name, int type) {
     var uuid = new Uuid();
-    widget.onSKCreated(new StatKeeper(firestoreID: uuid.v1(), name: name, type: SKType.values[index], level: StatKeeper.LEVEL_CREATOR));
+    widget.onSKCreated(new StatKeeper(firestoreID: uuid.v1(), name: name, type: type, level: StatKeeper.LEVEL_CREATOR));
   }
 }
 
@@ -171,7 +171,7 @@ class RadioItem extends StatelessWidget {
 class RadioModel {
   bool isSelected;
   final String buttonText;
-  final SKType type;
+  final int type;
   final IconData iconData;
 
   RadioModel(this.isSelected, this.buttonText, this.type, this.iconData);

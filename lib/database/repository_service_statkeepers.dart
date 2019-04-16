@@ -38,7 +38,7 @@ class RepositoryServiceStatKeepers {
     ''';
     List<dynamic> params = [
       statKeeper.firestoreID,
-      statKeeper.type.index,
+      statKeeper.type,
       statKeeper.name,
       statKeeper.level
     ];
