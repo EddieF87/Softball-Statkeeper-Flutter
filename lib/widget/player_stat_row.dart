@@ -17,7 +17,7 @@ class PlayerStatRow extends StatelessWidget {
       color: isColor ? Colors.lightBlueAccent : null,
       child: Row(
         children: <Widget>[
-          StatCell(data: player.name, width: 100.0),
+          StatCell(data: player.name, width: 100.0, fontWeight: FontWeight.bold,),
           StatCell(data: player.team, width: 70.0),
           StatCell(data: player.games),
           StatCell(data: player.getPA()),
@@ -34,7 +34,12 @@ class PlayerStatRow extends StatelessWidget {
           StatCell(data: player.getSLG(), width: 70.0),
           StatCell(data: player.getOPS(), width: 70.0),
           StatCell(data: player.getOBPwithROE(), width: 70.0),
+          StatCell(data: player.walks),
           StatCell(data: player.stolenBases),
+          StatCell(data: player.outs),
+          StatCell(data: player.sacFlies),
+          StatCell(data: player.reachedOnErrors),
+          StatCell(data: player.strikeOuts),
         ],
       ),
     );

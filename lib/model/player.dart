@@ -3,6 +3,10 @@ import 'package:sleekstats_flutter_statkeeper/database/db_contract.dart';
 
 class Player {
 
+  //Display labels for name/team/etc.
+  static const String LABEL_NAME = "Name";
+  static const String LABEL_TEAM = "Team";
+
   //Display labels for stats that are changeable.
   static const String LABEL_G = "G";
   static const String LABEL_1B = "1B";
@@ -20,8 +24,20 @@ class Player {
   static const String LABEL_RBI = "RBI";
 
   static const Set<String> CHANGEABLE_LABELS = {
-    LABEL_G, LABEL_1B, LABEL_2B, LABEL_3B, LABEL_HR, LABEL_BB, LABEL_HBP,
-  LABEL_ROE, LABEL_OUT, LABEL_K, LABEL_SF, LABEL_SB, LABEL_R, LABEL_RBI,
+    LABEL_G,
+    LABEL_1B,
+    LABEL_2B,
+    LABEL_3B,
+    LABEL_HR,
+    LABEL_BB,
+    LABEL_HBP,
+    LABEL_ROE,
+    LABEL_OUT,
+    LABEL_K,
+    LABEL_SF,
+    LABEL_SB,
+    LABEL_R,
+    LABEL_RBI,
   };
 
   //Display labels for stats that are calculated from others.
@@ -32,7 +48,7 @@ class Player {
   static const String LABEL_OBP = "OBP";
   static const String LABEL_SLG = "SLG";
   static const String LABEL_OPS = "OPS";
-  static const String LABEL_OBPROE = "OBP+ROE";
+  static const String LABEL_OBPROE = "OBP+E";
 
   int id;
   String firestoreID;
@@ -80,52 +96,52 @@ class Player {
         assert(name != null);
 
   Map<String, dynamic> toJson() => {
-        "id": this.id,
-        "firestoreID": this.firestoreID,
-        "teamFirestoreID": this.teamFirestoreID,
-        "name": this.name,
-        "team": this.team,
-        "games": this.games,
-        "rbi": this.rbi,
-        "runs": this.runs,
-        "singles": this.singles,
-        "doubles": this.doubles,
-        "triples": this.triples,
-        "hrs": this.hrs,
-        "outs": this.outs,
-        "walks": this.walks,
-        "sacFlies": this.sacFlies,
-        "stolenBases": this.stolenBases,
-        "strikeOuts": this.strikeOuts,
-        "hbp": this.hbp,
-        "gender": this.gender,
-        "rOE": this.reachedOnErrors,
+        DBContract.ID: this.id,
+        DBContract.FIRESTORE_ID: this.firestoreID,
+        DBContract.TEAM_FIRESTORE_ID: this.teamFirestoreID,
+        DBContract.NAME: this.name,
+        DBContract.TEAM: this.team,
+        DBContract.GAMES: this.games,
+        DBContract.RBI: this.rbi,
+        DBContract.RUNS: this.runs,
+        DBContract.SINGLES: this.singles,
+        DBContract.DOUBLES: this.doubles,
+        DBContract.TRIPLES: this.triples,
+        DBContract.HRS: this.hrs,
+        DBContract.OUTS: this.outs,
+        DBContract.WALKS: this.walks,
+        DBContract.SAC_FLIES: this.sacFlies,
+        DBContract.STOLEN_BASES: this.stolenBases,
+        DBContract.STRIKEOUTS: this.strikeOuts,
+        DBContract.HBP: this.hbp,
+        DBContract.GENDER: this.gender,
+        DBContract.REACHED_ON_ERRORS: this.reachedOnErrors,
       };
 
   Map<String, num> toStatsMap() => {
-        LABEL_G: this.games,
-        LABEL_RBI: this.rbi,
-        LABEL_R: this.runs,
-        LABEL_1B: this.singles,
-        LABEL_2B: this.doubles,
-        LABEL_3B: this.triples,
-        LABEL_HR: this.hrs,
-        LABEL_OUT: this.outs,
-        LABEL_BB: this.walks,
-        LABEL_SF: this.sacFlies,
-        LABEL_SB: this.stolenBases,
-        LABEL_K: this.strikeOuts,
-        LABEL_HBP: this.hbp,
-        LABEL_ROE: this.reachedOnErrors,
-        LABEL_H: getHits(),
-        LABEL_AB: getAB(),
-        LABEL_PA: getPA(),
-        LABEL_AVG: getAVG(),
-        LABEL_OBP: getOBP(),
-        LABEL_SLG: getSLG(),
-        LABEL_OPS: getOPS(),
-        LABEL_OBPROE: getOBPwithROE(),
-      };
+    LABEL_G: this.games,
+    LABEL_RBI: this.rbi,
+    LABEL_R: this.runs,
+    LABEL_1B: this.singles,
+    LABEL_2B: this.doubles,
+    LABEL_3B: this.triples,
+    LABEL_HR: this.hrs,
+    LABEL_OUT: this.outs,
+    LABEL_BB: this.walks,
+    LABEL_SF: this.sacFlies,
+    LABEL_SB: this.stolenBases,
+    LABEL_K: this.strikeOuts,
+    LABEL_HBP: this.hbp,
+    LABEL_ROE: this.reachedOnErrors,
+    LABEL_H: getHits(),
+    LABEL_AB: getAB(),
+    LABEL_PA: getPA(),
+    LABEL_AVG: getAVG(),
+    LABEL_OBP: getOBP(),
+    LABEL_SLG: getSLG(),
+    LABEL_OPS: getOPS(),
+    LABEL_OBPROE: getOBPwithROE(),
+  };
 
   Player.fromJson(Map<String, dynamic> json) {
     this.firestoreID = json[DBContract.FIRESTORE_ID];
@@ -181,7 +197,6 @@ class Player {
     if (getAB() == 0) {
       return null;
     } else {
-
       return getTotalBases() / getAB();
     }
   }
@@ -201,4 +216,58 @@ class Player {
       return getOnBasePlusROE() / getPA();
     }
   }
+
+  static Comparator<Player> nameComparator() => (a, b) => b.name.toLowerCase().compareTo(a.name.toLowerCase());
+  static Comparator<Player> teamComparator() => (a, b) => b.team.toLowerCase().compareTo(a.team.toLowerCase());
+  static Comparator<Player> gameComparator() => (a, b) => b.games.compareTo(a.games);
+  static Comparator<Player> singleComparator() => (a, b) => b.singles.compareTo(a.singles);
+  static Comparator<Player> doubleComparator() => (a, b) => b.doubles.compareTo(a.doubles);
+  static Comparator<Player> tripleComparator() => (a, b) => b.triples.compareTo(a.triples);
+  static Comparator<Player> hrComparator() => (a, b) => b.hrs.compareTo(a.hrs);
+  static Comparator<Player> runComparator() => (a, b) => b.runs.compareTo(a.runs);
+  static Comparator<Player> rbiComparator() => (a, b) => b.rbi.compareTo(a.rbi);
+  static Comparator<Player> walkComparator() => (a, b) => b.walks.compareTo(a.walks);
+  static Comparator<Player> outBaseComparator() => (a, b) => b.outs.compareTo(a.outs);
+  static Comparator<Player> sfComparator() => (a, b) => b.sacFlies.compareTo(a.sacFlies);
+  static Comparator<Player> stolenBaseComparator() => (a, b) => b.stolenBases.compareTo(a.stolenBases);
+  static Comparator<Player> roeComparator() => (a, b) => b.reachedOnErrors.compareTo(a.reachedOnErrors);
+  static Comparator<Player> kComparator() => (a, b) => b.strikeOuts.compareTo(a.strikeOuts);
+  static Comparator<Player> hbpComparator() => (a, b) => b.hbp.compareTo(a.hbp);
+  static Comparator<Player> abComparator() => (a, b) => b.getAB().compareTo(a.getAB());
+  static Comparator<Player> paComparator() => (a, b) => b.getPA().compareTo(a.getPA());
+  static Comparator<Player> hitComparator() => (a, b) => b.getHits().compareTo(a.getHits());
+  static Comparator<Player> avgComparator() => (a, b) => b.getAVG().compareTo(a.getAVG());
+  static Comparator<Player> obpComparator() => (a, b) => b.getOBP().compareTo(a.getOBP());
+  static Comparator<Player> slgComparator() => (a, b) => b.getSLG().compareTo(a.getSLG());
+  static Comparator<Player> opsComparator() => (a, b) => b.getOPS().compareTo(a.getOPS());
+  static Comparator<Player> obproeComparator() => (a, b) => b.getOnBasePlusROE().compareTo(a.getOnBasePlusROE());
+
+
+  static Map<String, Comparator<Player>> toComparatorMap() => {
+    LABEL_NAME: nameComparator(),
+    LABEL_TEAM: teamComparator(),
+    LABEL_G: gameComparator(),
+    LABEL_RBI: rbiComparator(),
+    LABEL_R: runComparator(),
+    LABEL_1B: singleComparator(),
+    LABEL_2B: doubleComparator(),
+    LABEL_3B: tripleComparator(),
+    LABEL_HR: hrComparator(),
+    LABEL_OUT: outBaseComparator(),
+    LABEL_BB: walkComparator(),
+    LABEL_SF: sfComparator(),
+    LABEL_SB: stolenBaseComparator(),
+    LABEL_K: kComparator(),
+    LABEL_HBP: hbpComparator(),
+    LABEL_ROE: roeComparator(),
+    LABEL_H: hitComparator(),
+    LABEL_AB: abComparator(),
+    LABEL_PA: paComparator(),
+    LABEL_AVG: avgComparator(),
+    LABEL_OBP: obpComparator(),
+    LABEL_SLG: slgComparator(),
+    LABEL_OPS: opsComparator(),
+    LABEL_OBPROE: obproeComparator(),
+  };
+
 }

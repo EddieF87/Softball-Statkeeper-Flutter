@@ -28,6 +28,7 @@ class StatCell extends StatelessWidget {
         StatFormatter.displayAmount(data),
         style: TextStyle(fontSize: textSize, fontWeight: fontWeight),
         maxLines: maxLines,
+
       ),
     );
   }
