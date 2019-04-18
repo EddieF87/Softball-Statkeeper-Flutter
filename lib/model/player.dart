@@ -144,6 +144,7 @@ class Player {
   };
 
   Player.fromJson(Map<String, dynamic> json) {
+    this.id = json[DBContract.ID];
     this.firestoreID = json[DBContract.FIRESTORE_ID];
     this.teamFirestoreID = json[DBContract.TEAM_FIRESTORE_ID];
     this.name = json[DBContract.NAME];

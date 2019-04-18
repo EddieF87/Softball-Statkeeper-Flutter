@@ -31,7 +31,6 @@ class _PlayerStatControlsState extends State<PlayerStatControls> {
 
   @override
   Widget build(BuildContext context) {
-    debugPrint("BUILD CONTROLS");
     return Padding(
       padding: EdgeInsets.only(bottom: 16.0, top: 16.0, right: 16.0),
       child: Row(
@@ -61,7 +60,6 @@ class _PlayerStatControlsState extends State<PlayerStatControls> {
   }
 
   IconButton createIconButton(IconData iconData, onPress) {
-    debugPrint("createIconButton");
     return IconButton(
 //      padding: EdgeInsets.all(16.0),
       icon: Icon(iconData),

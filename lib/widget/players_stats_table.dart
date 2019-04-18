@@ -5,12 +5,12 @@ import 'package:sleekstats_flutter_statkeeper/model/player.dart';
 import 'package:sleekstats_flutter_statkeeper/widget/player_stat_row.dart';
 import 'package:sleekstats_flutter_statkeeper/widget/stats_header_row.dart';
 
-class GroupPlayersStatsPage extends StatefulWidget {
+class PlayersStatsTable extends StatefulWidget {
   @override
-  State<GroupPlayersStatsPage> createState() => GroupPlayersStatsPageState();
+  State<PlayersStatsTable> createState() => PlayersStatsTableState();
 }
 
-class GroupPlayersStatsPageState extends State<GroupPlayersStatsPage> {
+class PlayersStatsTableState extends State<PlayersStatsTable> {
   List<Player> players = [];
   String statToSortBy = Player.LABEL_G;
 

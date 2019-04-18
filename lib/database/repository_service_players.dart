@@ -106,6 +106,7 @@ class RepositoryServicePlayers {
     WHERE ${DBContract.ID} =?
     ''';
 
+    print("player id =  ${player.id}" );
     List<String> params = [player.id.toString()];
     final result = await db.rawUpdate(sql, params);
     DBCreator.databaseLog("Update Player", sql, null, result);
