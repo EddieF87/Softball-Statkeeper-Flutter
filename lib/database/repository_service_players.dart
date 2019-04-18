@@ -118,4 +118,9 @@ class RepositoryServicePlayers {
     int count = data[0].values.elementAt(0);
     return count;
   }
+
+  ///Insert newly created player into repository based off newly created SK
+  static onNewPlayerStatKeeper ({String name, String firestoreID}) async {
+    insertPlayer(Player(firestoreID: firestoreID, name: name));
+  }
 }

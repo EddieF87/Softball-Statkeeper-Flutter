@@ -31,10 +31,24 @@ class Team {
     this.firestoreID = json[DBContract.FIRESTORE_ID];
     this.leagueFirestoreID = json[DBContract.LEAGUE_FIRESTORE_ID];
     this.name = json[DBContract.NAME];
-    this.wins = json[DBContract.TEAM];
-    this.losses = json[DBContract.TEAM];
-    this.ties = json[DBContract.TEAM];
-    this.runsScored = json[DBContract.TEAM];
-    this.runsAllowed = json[DBContract.TEAM];
+    this.wins = json[DBContract.WINS];
+    this.losses = json[DBContract.LOSSES];
+    this.ties = json[DBContract.TIES];
+    this.runsScored = json[DBContract.RUNS_SCORED];
+    this.runsAllowed = json[DBContract.RUNS_ALLOWED];
+  }
+
+  double getWinPct() {
+    int games = this.wins + this.losses + this.ties;
+    if(games == 0) {
+      return null;
+    } else {
+      return this.wins/games;
+    }
+  }
+
+  @override
+  String toString() {
+    return "Team: $firestoreID  $leagueFirestoreID\n$name  $wins-$losses-$ties   $runsScored  $runsAllowed";
   }
 }

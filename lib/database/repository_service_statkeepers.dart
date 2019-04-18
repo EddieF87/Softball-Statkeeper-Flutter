@@ -1,5 +1,7 @@
 import 'package:sleekstats_flutter_statkeeper/database/db_contract.dart';
 import 'package:sleekstats_flutter_statkeeper/database/db_creator.dart';
+import 'package:sleekstats_flutter_statkeeper/database/repository_service_players.dart';
+import 'package:sleekstats_flutter_statkeeper/database/repository_service_teams.dart';
 import 'package:sleekstats_flutter_statkeeper/model/statkeeper.dart';
 
 class RepositoryServiceStatKeepers {
@@ -42,7 +44,24 @@ class RepositoryServiceStatKeepers {
       statKeeper.name,
       statKeeper.level
     ];
-
+    switch (statKeeper.type) {
+      case StatKeeper.TYPE_PLAYER:
+        await RepositoryServicePlayers.onNewPlayerStatKeeper(
+          name: statKeeper.name,
+          firestoreID: statKeeper.firestoreID,
+        );
+        break;
+      case StatKeeper.TYPE_TEAM:
+        await RepositoryServiceTeams.onNewTeamStatKeeper(
+          name: statKeeper.name,
+          firestoreID: statKeeper.firestoreID,
+        );
+        break;
+      case StatKeeper.TYPE_LEAGUE:
+        break;
+      default:
+        return;
+    }
     final result = await db.rawInsert(sql, params);
     DBCreator.databaseLog("Add StatKeeper", sql, null, result);
   }

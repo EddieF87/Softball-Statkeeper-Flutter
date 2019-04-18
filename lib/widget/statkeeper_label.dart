@@ -67,6 +67,7 @@ class StatKeeperLabel extends StatelessWidget {
       case StatKeeper.TYPE_TEAM:
         return TeamRoute(
           title: sK.name,
+          teamFirestoreID: sK.firestoreID,
         );
         break;
       case StatKeeper.TYPE_LEAGUE:

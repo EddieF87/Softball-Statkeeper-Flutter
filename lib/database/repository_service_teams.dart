@@ -22,6 +22,7 @@ class RepositoryServiceTeams {
     List<String> params = [firestoreID];
     final data = await db.rawQuery(sql, params);
     final team = Team.fromJson(data[0]);
+    print("retrieved team = ${team.toString()}");
     return team;
   }
 
@@ -57,7 +58,7 @@ class RepositoryServiceTeams {
 
   static Future<void> deleteTeam(Team team) async {
     final sql =
-    '''DELETE ${DBContract.TABLE_TEAMS} WHERE ${DBContract.FIRESTORE_ID}=?''';
+        '''DELETE ${DBContract.TABLE_TEAMS} WHERE ${DBContract.FIRESTORE_ID}=?''';
     List<String> params = [team.firestoreID];
     final result = await db.rawDelete(sql, params);
     DBCreator.databaseLog("Delete Team", sql, null, result);
@@ -85,5 +86,10 @@ class RepositoryServiceTeams {
 
     int count = data[0].values.elementAt(0);
     return count;
+  }
+
+  ///Insert newly created team into repository based off newly created SK
+  static onNewTeamStatKeeper({String name, String firestoreID}) {
+    insertTeam(Team(firestoreID: firestoreID, name: name));
   }
 }
