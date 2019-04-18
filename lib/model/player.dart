@@ -240,7 +240,7 @@ class Player {
   static Comparator<Player> obpComparator() => (a, b) => b.getOBP().compareTo(a.getOBP());
   static Comparator<Player> slgComparator() => (a, b) => b.getSLG().compareTo(a.getSLG());
   static Comparator<Player> opsComparator() => (a, b) => b.getOPS().compareTo(a.getOPS());
-  static Comparator<Player> obproeComparator() => (a, b) => b.getOnBasePlusROE().compareTo(a.getOnBasePlusROE());
+  static Comparator<Player> obproeComparator() => (a, b) => b.getOBPwithROE().compareTo(a.getOBPwithROE());
 
 
   static Map<String, Comparator<Player>> toComparatorMap() => {

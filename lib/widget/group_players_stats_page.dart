@@ -52,23 +52,23 @@ class GroupPlayersStatsPageState extends State<GroupPlayersStatsPage> {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      child: new SizedBox(
-        width: 1326.0,
-        child: Container(
-          decoration: BoxDecoration(
-              border: Border(
-            left: BorderSide(width: 3),
-            right: BorderSide(width: 3),
-          )),
+    Color primaryColor = Theme.of(context).primaryColor;
+
+    return Container(
+      decoration: BoxDecoration(
+        border: Border.all(color: primaryColor, width: 4.0),
+      ),
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: new SizedBox(
+          width: 1320.0,
           child: Column(
             children: <Widget>[
               StatsHeaderRow(
+                statSorted: statToSortBy,
                 onStatSelected: (statLabel) => setState(() {
                       statToSortBy = statLabel;
                     }),
-                statSorted: statToSortBy,
               ),
               Expanded(
                 child: _buildList(statToSortBy),
@@ -87,7 +87,7 @@ class GroupPlayersStatsPageState extends State<GroupPlayersStatsPage> {
       shrinkWrap: true,
       itemBuilder: (BuildContext context, int index) => PlayerStatRow(
             player: players[index],
-            isColor: index.isEven,
+            isColoredRow: index.isOdd,
           ),
       itemCount: players.length,
     );

@@ -5,6 +5,8 @@ import 'package:sleekstats_flutter_statkeeper/widget/stat_cell.dart';
 class StatsHeaderRow extends StatelessWidget {
   final ValueChanged<String> onStatSelected;
   final String statSorted;
+  final Color primaryColor = Color(0xFF689F38);
+  final Color accentColor = Color(0xFFeabd53);
 
   static const String HEADER_STRIKEOUTS = "K";
   static const String HEADER_ROE = "ROE";
@@ -48,14 +50,14 @@ class StatsHeaderRow extends StatelessWidget {
   Widget _createHeaderCell(String data, {double width = 50.0}) {
     bool isSorted = statSorted == data;
     return Container(
-      color: isSorted ? Colors.lightBlueAccent : null,
+      color: isSorted ? accentColor : primaryColor,
       child: InkWell(
         onTap: () => onStatSelected(data),
         child: StatCell(
           data: data,
           fontWeight: FontWeight.bold,
           width: width,
-          border: 3.0,
+          isHeaderRow: true,
         ),
       ),
     );

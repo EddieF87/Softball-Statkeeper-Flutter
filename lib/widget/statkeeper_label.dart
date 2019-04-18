@@ -93,10 +93,9 @@ class StatKeeperLabel extends StatelessWidget {
               elevation: 1.0,
               title: Text(
                 sK.name,
-                style: Theme.of(context).textTheme.display1,
+                style: TextStyle(fontSize: 36),
               ),
               centerTitle: true,
-              backgroundColor: Colors.yellow,
             ),
             body: statKeeperRoute);
       },

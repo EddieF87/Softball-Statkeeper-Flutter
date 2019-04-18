@@ -4,17 +4,19 @@ import 'package:sleekstats_flutter_statkeeper/widget/stat_cell.dart';
 
 class PlayerStatRow extends StatelessWidget {
   final Player player;
-  final bool isColor;
+  final bool isColoredRow;
 
   const PlayerStatRow({
     this.player,
-    this.isColor = false,
+    this.isColoredRow = false,
   }) : assert(player != null);
 
   @override
   Widget build(BuildContext context) {
+    Color primaryColorLight = Theme.of(context).primaryColorLight;
+
     return Container(
-      color: isColor ? Colors.lightBlueAccent : null,
+      color: isColoredRow ? primaryColorLight : null,
       child: Row(
         children: <Widget>[
           StatCell(data: player.name, width: 100.0, fontWeight: FontWeight.bold,),

@@ -13,11 +13,16 @@ class TeamRoute extends StatKeeperRoute {
 class _TeamRouteState extends State<TeamRoute> {
   @override
   Widget build(BuildContext context) {
+    Color primaryColor = Theme.of(context).primaryColor;
+
     return Column(
       children: <Widget>[
         Text("Team ${widget.title}"),
-        Expanded(child:
-        GroupPlayersStatsPage(),
+        Expanded(
+          child: Container(
+            padding: EdgeInsets.all(16.0),
+            child: GroupPlayersStatsPage(),
+          ),
         )
       ],
     );
