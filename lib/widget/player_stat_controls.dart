@@ -50,7 +50,8 @@ class _PlayerStatControlsState extends State<PlayerStatControls> {
           ),
           Expanded(
             child: RaisedButton(
-              onPressed: () => widget.onSubmit(StatToUpdate(name: widget.stat, amount: amount)),
+              onPressed: () => widget
+                  .onSubmit(StatToUpdate(name: widget.stat, amount: amount)),
               child: Text("Update"),
             ),
           ),
@@ -76,5 +77,9 @@ class StatToUpdate {
   final String name;
   final int amount;
 
-  StatToUpdate({this.name, this.amount}) : assert(name != null, amount != null);
+  StatToUpdate({
+    this.name,
+    this.amount,
+  });
+//      : assert(name != null, amount != null)
 }
