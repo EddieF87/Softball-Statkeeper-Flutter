@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sleekstats_flutter_statkeeper/model/player.dart';
+import 'package:sleekstats_flutter_statkeeper/route/player_route.dart';
+import 'package:sleekstats_flutter_statkeeper/widget/player_stats_page.dart';
 import 'package:sleekstats_flutter_statkeeper/widget/stat_cell.dart';
 
 class PlayerStatRow extends StatelessWidget {
@@ -19,7 +21,14 @@ class PlayerStatRow extends StatelessWidget {
       color: isColoredRow ? primaryColorLight : null,
       child: Row(
         children: <Widget>[
-          StatCell(data: player.name, width: 100.0, fontWeight: FontWeight.bold,),
+          InkWell(
+            onTap: () => _navigateToRoute(context, player),
+            child: StatCell(
+              data: player.name,
+              width: 100.0,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
           StatCell(data: player.team, width: 70.0),
           StatCell(data: player.games),
           StatCell(data: player.getPA()),
@@ -45,5 +54,26 @@ class PlayerStatRow extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  /// Navigates to the [PlayerRoute].
+  void _navigateToRoute(BuildContext context, Player player) {
+    Navigator.of(context).push(MaterialPageRoute<Null>(
+      builder: (BuildContext context) {
+        return Scaffold(
+          appBar: AppBar(
+            elevation: 1.0,
+            title: Text(
+              player.name,
+              style: TextStyle(fontSize: 36),
+            ),
+            centerTitle: true,
+          ),
+          body: PlayerStatsPage(
+            player: player,
+          ),
+        );
+      },
+    ));
   }
 }

@@ -81,7 +81,7 @@ class StatKeeperLabel extends StatelessWidget {
     }
   }
 
-  /// Navigates to the [PlayerRoute].
+  /// Navigates to the [StatkeeperRoute].
   void _navigateToRoute(BuildContext context, StatKeeper sK) {
     StatKeeperRoute statKeeperRoute = _getStatKeeperRouter(sK);
     if (statKeeperRoute == null) {
