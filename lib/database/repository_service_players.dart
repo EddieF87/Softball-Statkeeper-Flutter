@@ -3,10 +3,10 @@ import 'package:sleekstats_flutter_statkeeper/database/db_creator.dart';
 import 'package:sleekstats_flutter_statkeeper/model/player.dart';
 
 class RepositoryServicePlayers {
-  static Future<List<Player>> getAllPlayers() async {
-    final sql = '''SELECT * FROM ${DBContract.TABLE_PLAYERS}''';
-    final data = await db.rawQuery(sql);
-
+  static Future<List<Player>> getAllPlayers(
+      String statkeeperFirestoreID) async {
+    final data = await queryPlayerDB(
+        statkeeperFirestoreID, DBContract.TEAM_FIRESTORE_ID);
     List<Player> playerStatsList = [];
     for (final node in data) {
       final playerStats = Player.fromJson(node);
@@ -16,13 +16,16 @@ class RepositoryServicePlayers {
   }
 
   static Future<Player> getPlayer(String firestoreID) async {
-    final sql = '''
-    SELECT * FROM ${DBContract.TABLE_PLAYERS} WHERE ${DBContract.FIRESTORE_ID}=?
-    ''';
-    List<String> params = [firestoreID];
-    final data = await db.rawQuery(sql, params);
-    final playerStats = Player.fromJson(data[0]);
-    return playerStats;
+    final data = await queryPlayerDB(firestoreID, DBContract.FIRESTORE_ID);
+    final player = Player.fromJson(data[0]);
+    return player;
+  }
+
+  static Future<List<Map<String, dynamic>>> queryPlayerDB(
+      String id, String query) async {
+    final sql = '''SELECT * FROM ${DBContract.TABLE_PLAYERS} WHERE $query=?''';
+    List<String> params = [id];
+    return await db.rawQuery(sql, params);
   }
 
   static Future<void> insertPlayer(Player player) async {
@@ -31,6 +34,7 @@ class RepositoryServicePlayers {
     ${DBContract.ID},
     ${DBContract.FIRESTORE_ID},
     ${DBContract.TEAM_FIRESTORE_ID},
+    ${DBContract.STATKEEPER_FIRESTORE_ID},
     ${DBContract.NAME},
     ${DBContract.TEAM},
     ${DBContract.GENDER},
@@ -50,12 +54,13 @@ class RepositoryServicePlayers {
     ${DBContract.HBP}
     )
     VALUES
-    (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     ''';
     List<dynamic> params = [
       player.id,
       player.firestoreID,
       player.teamFirestoreID,
+      player.statkeeperFirestoreID,
       player.name,
       player.team,
       player.gender,
@@ -106,7 +111,7 @@ class RepositoryServicePlayers {
     WHERE ${DBContract.ID} =?
     ''';
 
-    print("player id =  ${player.id}" );
+    print("player id =  ${player.id}");
     List<String> params = [player.id.toString()];
     final result = await db.rawUpdate(sql, params);
     DBCreator.databaseLog("Update Player", sql, null, result);
@@ -121,7 +126,11 @@ class RepositoryServicePlayers {
   }
 
   ///Insert newly created player into repository based off newly created SK
-  static onNewPlayerStatKeeper ({String name, String firestoreID}) async {
-    insertPlayer(Player(firestoreID: firestoreID, name: name));
+  static onNewPlayerStatKeeper({String name, String firestoreID}) async {
+    insertPlayer(Player(
+      firestoreID: firestoreID,
+      statkeeperFirestoreID: firestoreID,
+      name: name,
+    ));
   }
 }

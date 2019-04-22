@@ -42,7 +42,7 @@ class PlayerStatsPageState extends State<PlayerStatsPage> {
   }
 
   void _updateStat(StatToUpdate statToUpdate) {
-    if (Player.CHANGEABLE_LABELS.contains(statToUpdate.name)) {
+    if (statToUpdate != null && Player.CHANGEABLE_LABELS.contains(statToUpdate.name)) {
       setState(() {
         switch (statToUpdate.name) {
           case Player.LABEL_R:

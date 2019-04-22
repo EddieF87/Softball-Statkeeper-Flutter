@@ -7,7 +7,7 @@ class DBContract{
   static const ID = "id";
   static const FIRESTORE_ID = "firestoreID";
   static const TEAM_FIRESTORE_ID = "teamFirestoreID";
-  static const LEAGUE_FIRESTORE_ID = "teamFirestoreID";
+  static const STATKEEPER_FIRESTORE_ID = "statkeeperFirestoreID";
 
   static const NAME = "name";
   static const TEAM = "team";

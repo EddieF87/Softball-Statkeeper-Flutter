@@ -1,11 +1,18 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
+import 'package:sleekstats_flutter_statkeeper/database/repository_service_players.dart';
 import 'package:sleekstats_flutter_statkeeper/model/player.dart';
 import 'package:sleekstats_flutter_statkeeper/widget/player_stat_row.dart';
 import 'package:sleekstats_flutter_statkeeper/widget/stats_header_row.dart';
 
 class PlayersStatsTable extends StatefulWidget {
+  final String statkeeperFirestoreID;
+
+  const PlayersStatsTable({
+    Key key,
+    this.statkeeperFirestoreID,
+  })  : assert(statkeeperFirestoreID != null),
+        super(key: key);
+
   @override
   State<PlayersStatsTable> createState() => PlayersStatsTableState();
 }
@@ -14,31 +21,10 @@ class PlayersStatsTableState extends State<PlayersStatsTable> {
   List<Player> players = [];
   String statToSortBy = Player.LABEL_G;
 
-  @override
-  void initState() {
-    super.initState();
-    Random random = Random();
-    for (int i = 1; i < 90; i++) {
-      players.add(Player(
-          firestoreID: "FVVVVVVVVVV",
-          name: "OFEOOFEO",
-          rbi: random.nextInt(130),
-          runs: random.nextInt(130),
-          stolenBases: random.nextInt(130),
-          strikeOuts: random.nextInt(130),
-          sacFlies: random.nextInt(130),
-          singles: random.nextInt(130),
-          games: random.nextInt(130),
-          hrs: random.nextInt(130),
-          gender: random.nextInt(130),
-          hbp: random.nextInt(130),
-          doubles: random.nextInt(130),
-          triples: random.nextInt(130),
-          walks: random.nextInt(130),
-          outs: random.nextInt(130),
-          reachedOnErrors: random.nextInt(130),
-          team: "REWEVDCSWFD"));
-    }
+  Future<List<Player>> _retrievePlayers() async {
+    debugPrint("_retrievePlayers");
+    return await RepositoryServicePlayers.getAllPlayers(
+        widget.statkeeperFirestoreID);
   }
 
   _sortPlayers(String stat) {
@@ -58,29 +44,57 @@ class PlayersStatsTableState extends State<PlayersStatsTable> {
       decoration: BoxDecoration(
         border: Border.all(color: primaryColor, width: 4.0),
       ),
-      child: SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        child: new SizedBox(
-          width: 1320.0,
-          child: Column(
-            children: <Widget>[
-              StatsHeaderRow(
-                statSorted: statToSortBy,
-                onStatSelected: (statLabel) => setState(() {
-                      statToSortBy = statLabel;
-                    }),
-              ),
-              Expanded(
-                child: _buildList(statToSortBy),
-              ),
-            ],
-          ),
+      child: FutureBuilder(
+        future: _retrievePlayers(),
+        builder: (BuildContext context, AsyncSnapshot<List<Player>> snapshot) {
+          if (snapshot.hasData) {
+            players = snapshot.data;
+            debugPrint("hasData");
+            if (snapshot.data == null || snapshot.data.isEmpty) {
+              debugPrint("snapshot.data == null || snapshot.data.isEmpty");
+              return Center(child: Text("No players yet!"));
+            } else {
+              debugPrint("snapshot.data  here  ");
+              snapshot.data.forEach((Player player) => debugPrint(player.name));
+              return _buildStatsTable();
+            }
+          } else if (snapshot.hasError) {
+            debugPrint("hasError  ");
+            return Center(child: Text("Error: Couldn't find players!"));
+          } else {
+            debugPrint("else  ");
+            return Center(child: CircularProgressIndicator());
+          }
+        },
+      ),
+    );
+  }
+
+  Widget _buildStatsTable() {
+    debugPrint("_buildStatsTable");
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: new SizedBox(
+        width: 1320.0,
+        child: Column(
+          children: <Widget>[
+            StatsHeaderRow(
+              statSorted: statToSortBy,
+              onStatSelected: (statLabel) => setState(() {
+                    statToSortBy = statLabel;
+                  }),
+            ),
+            Expanded(
+              child: _buildList(statToSortBy),
+            ),
+          ],
         ),
       ),
     );
   }
 
   _buildList(String stat) {
+    debugPrint("_buildList $stat  ${players.length}");
     _sortPlayers(stat);
 
     return ListView.builder(

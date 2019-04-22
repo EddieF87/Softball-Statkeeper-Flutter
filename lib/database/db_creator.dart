@@ -7,8 +7,6 @@ import 'package:sqflite/sqflite.dart';
 Database db;
 
 class DBCreator {
-
-
   static void databaseLog(String functionName, String sql,
       [List<Map<String, dynamic>> selectQueryResult,
       int insertAndUpdateQueryResult]) {
@@ -20,7 +18,6 @@ class DBCreator {
       print(insertAndUpdateQueryResult);
     }
   }
-
 
   Future<void> createStatKeepersTable(Database db) async {
     final statkeeperSql = '''CREATE TABLE ${DBContract.TABLE_STATKEEPERS}
@@ -39,7 +36,7 @@ class DBCreator {
     (
    ${DBContract.ID} INTEGER PRIMARY KEY,
    ${DBContract.FIRESTORE_ID} TEXT NOT NULL,
-   ${DBContract.LEAGUE_FIRESTORE_ID} TEXT,
+   ${DBContract.STATKEEPER_FIRESTORE_ID} TEXT NOT NULL,
    ${DBContract.NAME} TEXT NOT NULL,
    ${DBContract.WINS} INTEGER DEFAULT 0,
    ${DBContract.LOSSES} INTEGER DEFAULT 0,
@@ -56,6 +53,7 @@ class DBCreator {
    ${DBContract.ID} INTEGER PRIMARY KEY,
    ${DBContract.FIRESTORE_ID} TEXT NOT NULL,
    ${DBContract.TEAM_FIRESTORE_ID} TEXT,
+   ${DBContract.STATKEEPER_FIRESTORE_ID} TEXT,
    ${DBContract.NAME} TEXT NOT NULL,
    ${DBContract.TEAM} TEXT DEFAULT 'FREE AGENT',
    ${DBContract.GENDER} BIT DEFAULT 0,
@@ -81,8 +79,7 @@ class DBCreator {
     final databasePath = await getDatabasesPath();
     final path = join(databasePath, dbName);
 
-    if(await Directory(dirname(path)).exists()){
-
+    if (await Directory(dirname(path)).exists()) {
     } else {
       await Directory(dirname(path)).create(recursive: true);
     }

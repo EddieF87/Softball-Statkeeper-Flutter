@@ -5,7 +5,7 @@ import 'package:sleekstats_flutter_statkeeper/model/player.dart';
 class Team {
   int id;
   String firestoreID;
-  String leagueFirestoreID;
+  String statkeeperFirestoreID;
   String name;
   int wins;
   int losses;
@@ -18,7 +18,7 @@ class Team {
     this.id,
     @required this.firestoreID,
     @required this.name,
-    this.leagueFirestoreID,
+    this.statkeeperFirestoreID,
     this.wins = 0,
     this.losses = 0,
     this.ties = 0,
@@ -28,8 +28,9 @@ class Team {
         assert(name != null);
 
   Team.fromJson(Map<String, dynamic> json) {
+    this.id = json[DBContract.ID];
     this.firestoreID = json[DBContract.FIRESTORE_ID];
-    this.leagueFirestoreID = json[DBContract.LEAGUE_FIRESTORE_ID];
+    this.statkeeperFirestoreID = json[DBContract.STATKEEPER_FIRESTORE_ID];
     this.name = json[DBContract.NAME];
     this.wins = json[DBContract.WINS];
     this.losses = json[DBContract.LOSSES];
@@ -49,6 +50,6 @@ class Team {
 
   @override
   String toString() {
-    return "Team: $firestoreID  $leagueFirestoreID\n$name  $wins-$losses-$ties   $runsScored  $runsAllowed";
+    return "Team: $firestoreID  $statkeeperFirestoreID\n$name  $wins-$losses-$ties   $runsScored  $runsAllowed";
   }
 }

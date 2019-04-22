@@ -35,7 +35,7 @@ class _PlayerRouteState extends State<PlayerRoute> {
 
         } else if (snapshot.hasError) {
           return Center(
-            child: Text("Error: Couldn't find Team!"),
+            child: Text("Error: Couldn't find player!"),
           );
 
         } else {

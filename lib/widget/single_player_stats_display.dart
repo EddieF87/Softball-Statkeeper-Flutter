@@ -17,6 +17,7 @@ class SinglePlayerStatsDisplay extends StatelessWidget {
         Text(
           player.name,
           style: TextStyle(fontSize: 48.0, fontWeight: FontWeight.bold),
+          maxLines: 1,
         ),
         Expanded(
           child: GridView.count(

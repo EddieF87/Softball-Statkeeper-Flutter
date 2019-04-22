@@ -2,7 +2,6 @@ import 'package:meta/meta.dart';
 import 'package:sleekstats_flutter_statkeeper/database/db_contract.dart';
 
 class Player {
-
   //Display labels for name/team/etc.
   static const String LABEL_NAME = "Name";
   static const String LABEL_TEAM = "Team";
@@ -53,6 +52,7 @@ class Player {
   int id;
   String firestoreID;
   String teamFirestoreID;
+  String statkeeperFirestoreID;
   String name;
   String team;
   int games;
@@ -75,6 +75,8 @@ class Player {
 //    @required
     this.id,
     @required this.firestoreID,
+    this.teamFirestoreID,
+    this.statkeeperFirestoreID,
     @required this.name,
     this.team = "Free Agent",
     this.games = 0,
@@ -99,6 +101,7 @@ class Player {
         DBContract.ID: this.id,
         DBContract.FIRESTORE_ID: this.firestoreID,
         DBContract.TEAM_FIRESTORE_ID: this.teamFirestoreID,
+        DBContract.STATKEEPER_FIRESTORE_ID: this.statkeeperFirestoreID,
         DBContract.NAME: this.name,
         DBContract.TEAM: this.team,
         DBContract.GAMES: this.games,
@@ -119,34 +122,35 @@ class Player {
       };
 
   Map<String, num> toStatsMap() => {
-    LABEL_G: this.games,
-    LABEL_RBI: this.rbi,
-    LABEL_R: this.runs,
-    LABEL_1B: this.singles,
-    LABEL_2B: this.doubles,
-    LABEL_3B: this.triples,
-    LABEL_HR: this.hrs,
-    LABEL_OUT: this.outs,
-    LABEL_BB: this.walks,
-    LABEL_SF: this.sacFlies,
-    LABEL_SB: this.stolenBases,
-    LABEL_K: this.strikeOuts,
-    LABEL_HBP: this.hbp,
-    LABEL_ROE: this.reachedOnErrors,
-    LABEL_H: getHits(),
-    LABEL_AB: getAB(),
-    LABEL_PA: getPA(),
-    LABEL_AVG: getAVG(),
-    LABEL_OBP: getOBP(),
-    LABEL_SLG: getSLG(),
-    LABEL_OPS: getOPS(),
-    LABEL_OBPROE: getOBPwithROE(),
-  };
+        LABEL_G: this.games,
+        LABEL_RBI: this.rbi,
+        LABEL_R: this.runs,
+        LABEL_1B: this.singles,
+        LABEL_2B: this.doubles,
+        LABEL_3B: this.triples,
+        LABEL_HR: this.hrs,
+        LABEL_OUT: this.outs,
+        LABEL_BB: this.walks,
+        LABEL_SF: this.sacFlies,
+        LABEL_SB: this.stolenBases,
+        LABEL_K: this.strikeOuts,
+        LABEL_HBP: this.hbp,
+        LABEL_ROE: this.reachedOnErrors,
+        LABEL_H: getHits(),
+        LABEL_AB: getAB(),
+        LABEL_PA: getPA(),
+        LABEL_AVG: getAVG(),
+        LABEL_OBP: getOBP(),
+        LABEL_SLG: getSLG(),
+        LABEL_OPS: getOPS(),
+        LABEL_OBPROE: getOBPwithROE(),
+      };
 
   Player.fromJson(Map<String, dynamic> json) {
     this.id = json[DBContract.ID];
     this.firestoreID = json[DBContract.FIRESTORE_ID];
     this.teamFirestoreID = json[DBContract.TEAM_FIRESTORE_ID];
+    this.statkeeperFirestoreID = json[DBContract.STATKEEPER_FIRESTORE_ID];
     this.name = json[DBContract.NAME];
     this.team = json[DBContract.TEAM];
     this.gender = json[DBContract.GENDER];
@@ -180,7 +184,7 @@ class Player {
 
   double getAVG() {
     if (getAB() == 0) {
-      return null;
+      return -1;
     } else {
       return getHits() / getAB();
     }
@@ -188,7 +192,7 @@ class Player {
 
   double getOBP() {
     if (getPA() == 0) {
-      return null;
+      return -1;
     } else {
       return getOnBase() / getPA();
     }
@@ -196,7 +200,7 @@ class Player {
 
   double getSLG() {
     if (getAB() == 0) {
-      return null;
+      return -1;
     } else {
       return getTotalBases() / getAB();
     }
@@ -212,63 +216,105 @@ class Player {
 
   double getOBPwithROE() {
     if (getPA() == 0) {
-      return null;
+      return -1;
     } else {
       return getOnBasePlusROE() / getPA();
     }
   }
 
-  static Comparator<Player> nameComparator() => (a, b) => b.name.toLowerCase().compareTo(a.name.toLowerCase());
-  static Comparator<Player> teamComparator() => (a, b) => b.team.toLowerCase().compareTo(a.team.toLowerCase());
-  static Comparator<Player> gameComparator() => (a, b) => b.games.compareTo(a.games);
-  static Comparator<Player> singleComparator() => (a, b) => b.singles.compareTo(a.singles);
-  static Comparator<Player> doubleComparator() => (a, b) => b.doubles.compareTo(a.doubles);
-  static Comparator<Player> tripleComparator() => (a, b) => b.triples.compareTo(a.triples);
-  static Comparator<Player> hrComparator() => (a, b) => b.hrs.compareTo(a.hrs);
-  static Comparator<Player> runComparator() => (a, b) => b.runs.compareTo(a.runs);
-  static Comparator<Player> rbiComparator() => (a, b) => b.rbi.compareTo(a.rbi);
-  static Comparator<Player> walkComparator() => (a, b) => b.walks.compareTo(a.walks);
-  static Comparator<Player> outBaseComparator() => (a, b) => b.outs.compareTo(a.outs);
-  static Comparator<Player> sfComparator() => (a, b) => b.sacFlies.compareTo(a.sacFlies);
-  static Comparator<Player> stolenBaseComparator() => (a, b) => b.stolenBases.compareTo(a.stolenBases);
-  static Comparator<Player> roeComparator() => (a, b) => b.reachedOnErrors.compareTo(a.reachedOnErrors);
-  static Comparator<Player> kComparator() => (a, b) => b.strikeOuts.compareTo(a.strikeOuts);
-  static Comparator<Player> hbpComparator() => (a, b) => b.hbp.compareTo(a.hbp);
-  static Comparator<Player> abComparator() => (a, b) => b.getAB().compareTo(a.getAB());
-  static Comparator<Player> paComparator() => (a, b) => b.getPA().compareTo(a.getPA());
-  static Comparator<Player> hitComparator() => (a, b) => b.getHits().compareTo(a.getHits());
-  static Comparator<Player> avgComparator() => (a, b) => b.getAVG().compareTo(a.getAVG());
-  static Comparator<Player> obpComparator() => (a, b) => b.getOBP().compareTo(a.getOBP());
-  static Comparator<Player> slgComparator() => (a, b) => b.getSLG().compareTo(a.getSLG());
-  static Comparator<Player> opsComparator() => (a, b) => b.getOPS().compareTo(a.getOPS());
-  static Comparator<Player> obproeComparator() => (a, b) => b.getOBPwithROE().compareTo(a.getOBPwithROE());
+  static Comparator<Player> nameComparator() =>
+      (a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase());
 
+  static Comparator<Player> teamComparator() =>
+      (a, b) => b.team.toLowerCase().compareTo(a.team.toLowerCase());
+
+  static Comparator<Player> gameComparator() =>
+      (a, b) => b.games.compareTo(a.games);
+
+  static Comparator<Player> singleComparator() =>
+      (a, b) => b.singles.compareTo(a.singles);
+
+  static Comparator<Player> doubleComparator() =>
+      (a, b) => b.doubles.compareTo(a.doubles);
+
+  static Comparator<Player> tripleComparator() =>
+      (a, b) => b.triples.compareTo(a.triples);
+
+  static Comparator<Player> hrComparator() => (a, b) => b.hrs.compareTo(a.hrs);
+
+  static Comparator<Player> runComparator() =>
+      (a, b) => b.runs.compareTo(a.runs);
+
+  static Comparator<Player> rbiComparator() => (a, b) => b.rbi.compareTo(a.rbi);
+
+  static Comparator<Player> walkComparator() =>
+      (a, b) => b.walks.compareTo(a.walks);
+
+  static Comparator<Player> outBaseComparator() =>
+      (a, b) => b.outs.compareTo(a.outs);
+
+  static Comparator<Player> sfComparator() =>
+      (a, b) => b.sacFlies.compareTo(a.sacFlies);
+
+  static Comparator<Player> stolenBaseComparator() =>
+      (a, b) => b.stolenBases.compareTo(a.stolenBases);
+
+  static Comparator<Player> roeComparator() =>
+      (a, b) => b.reachedOnErrors.compareTo(a.reachedOnErrors);
+
+  static Comparator<Player> kComparator() =>
+      (a, b) => b.strikeOuts.compareTo(a.strikeOuts);
+
+  static Comparator<Player> hbpComparator() => (a, b) => b.hbp.compareTo(a.hbp);
+
+  static Comparator<Player> abComparator() =>
+      (a, b) => b.getAB().compareTo(a.getAB());
+
+  static Comparator<Player> paComparator() =>
+      (a, b) => b.getPA().compareTo(a.getPA());
+
+  static Comparator<Player> hitComparator() =>
+      (a, b) => b.getHits().compareTo(a.getHits());
+
+  static Comparator<Player> avgComparator() =>
+      (a, b) => b.getAVG().compareTo(a.getAVG());
+
+  static Comparator<Player> obpComparator() =>
+      (a, b) => b.getOBP().compareTo(a.getOBP());
+
+  static Comparator<Player> slgComparator() =>
+      (a, b) => b.getSLG().compareTo(a.getSLG());
+
+  static Comparator<Player> opsComparator() =>
+      (a, b) => b.getOPS().compareTo(a.getOPS());
+
+  static Comparator<Player> obproeComparator() =>
+      (a, b) => b.getOBPwithROE().compareTo(a.getOBPwithROE());
 
   static Map<String, Comparator<Player>> toComparatorMap() => {
-    LABEL_NAME: nameComparator(),
-    LABEL_TEAM: teamComparator(),
-    LABEL_G: gameComparator(),
-    LABEL_RBI: rbiComparator(),
-    LABEL_R: runComparator(),
-    LABEL_1B: singleComparator(),
-    LABEL_2B: doubleComparator(),
-    LABEL_3B: tripleComparator(),
-    LABEL_HR: hrComparator(),
-    LABEL_OUT: outBaseComparator(),
-    LABEL_BB: walkComparator(),
-    LABEL_SF: sfComparator(),
-    LABEL_SB: stolenBaseComparator(),
-    LABEL_K: kComparator(),
-    LABEL_HBP: hbpComparator(),
-    LABEL_ROE: roeComparator(),
-    LABEL_H: hitComparator(),
-    LABEL_AB: abComparator(),
-    LABEL_PA: paComparator(),
-    LABEL_AVG: avgComparator(),
-    LABEL_OBP: obpComparator(),
-    LABEL_SLG: slgComparator(),
-    LABEL_OPS: opsComparator(),
-    LABEL_OBPROE: obproeComparator(),
-  };
-
+        LABEL_NAME: nameComparator(),
+        LABEL_TEAM: teamComparator(),
+        LABEL_G: gameComparator(),
+        LABEL_RBI: rbiComparator(),
+        LABEL_R: runComparator(),
+        LABEL_1B: singleComparator(),
+        LABEL_2B: doubleComparator(),
+        LABEL_3B: tripleComparator(),
+        LABEL_HR: hrComparator(),
+        LABEL_OUT: outBaseComparator(),
+        LABEL_BB: walkComparator(),
+        LABEL_SF: sfComparator(),
+        LABEL_SB: stolenBaseComparator(),
+        LABEL_K: kComparator(),
+        LABEL_HBP: hbpComparator(),
+        LABEL_ROE: roeComparator(),
+        LABEL_H: hitComparator(),
+        LABEL_AB: abComparator(),
+        LABEL_PA: paComparator(),
+        LABEL_AVG: avgComparator(),
+        LABEL_OBP: obpComparator(),
+        LABEL_SLG: slgComparator(),
+        LABEL_OPS: opsComparator(),
+        LABEL_OBPROE: obproeComparator(),
+      };
 }

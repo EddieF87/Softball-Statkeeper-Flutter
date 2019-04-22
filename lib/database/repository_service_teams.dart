@@ -30,7 +30,7 @@ class RepositoryServiceTeams {
     final sql = '''INSERT INTO ${DBContract.TABLE_TEAMS}
     ( 
     ${DBContract.FIRESTORE_ID},
-    ${DBContract.LEAGUE_FIRESTORE_ID},
+    ${DBContract.STATKEEPER_FIRESTORE_ID},
     ${DBContract.NAME},
     ${DBContract.WINS},
     ${DBContract.LOSSES},
@@ -43,7 +43,7 @@ class RepositoryServiceTeams {
     ''';
     List<dynamic> params = [
       team.firestoreID,
-      team.leagueFirestoreID,
+      team.statkeeperFirestoreID,
       team.name,
       team.wins,
       team.losses,
@@ -90,6 +90,9 @@ class RepositoryServiceTeams {
 
   ///Insert newly created team into repository based off newly created SK
   static onNewTeamStatKeeper({String name, String firestoreID}) {
-    insertTeam(Team(firestoreID: firestoreID, name: name));
+    insertTeam(Team(
+        firestoreID: firestoreID,
+        statkeeperFirestoreID: firestoreID,
+        name: name));
   }
 }
