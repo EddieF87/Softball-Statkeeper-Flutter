@@ -8,9 +8,6 @@ class StatsHeaderRow extends StatelessWidget {
   final Color primaryColor = Color(0xFF689F38);
   final Color accentColor = Color(0xFFeabd53);
 
-  static const String HEADER_STRIKEOUTS = "K";
-  static const String HEADER_ROE = "ROE";
-
   StatsHeaderRow({
     this.onStatSelected,
     this.statSorted,

@@ -93,8 +93,7 @@ class PlayersStatsTableState extends State<PlayersStatsTable> {
     );
   }
 
-  _buildList(String stat) {
-    debugPrint("_buildList $stat  ${players.length}");
+  Widget _buildList(String stat) {
     _sortPlayers(stat);
 
     return ListView.builder(
