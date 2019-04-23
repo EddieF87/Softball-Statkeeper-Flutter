@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:sleekstats_flutter_statkeeper/model/player.dart';
-import 'package:sleekstats_flutter_statkeeper/route/player_screen.dart';
-import 'package:sleekstats_flutter_statkeeper/widget/player_stats_page.dart';
-import 'package:sleekstats_flutter_statkeeper/widget/stat_cell.dart';
+import 'package:sleekstats_flutter_statkeeper/ui/player/player_screen.dart';
+import 'package:sleekstats_flutter_statkeeper/ui/player/player_stats_page.dart';
+import 'package:sleekstats_flutter_statkeeper/ui/team/stat_cell.dart';
 
 class PlayerStatRow extends StatelessWidget {
   final Player player;

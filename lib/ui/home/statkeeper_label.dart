@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:sleekstats_flutter_statkeeper/model/statkeeper.dart';
-import 'package:sleekstats_flutter_statkeeper/route/league_screen.dart';
-import 'package:sleekstats_flutter_statkeeper/route/player_screen.dart';
-import 'package:sleekstats_flutter_statkeeper/route/statkeeper_screen.dart';
-import 'package:sleekstats_flutter_statkeeper/route/team_screen.dart';
+import 'package:sleekstats_flutter_statkeeper/ui/league/league_screen.dart';
+import 'package:sleekstats_flutter_statkeeper/ui/player/player_screen.dart';
+import 'package:sleekstats_flutter_statkeeper/ui/statkeeper_screen.dart';
+import 'package:sleekstats_flutter_statkeeper/ui/team/team_screen.dart';
 
 class StatKeeperLabel extends StatelessWidget {
   final StatKeeper statKeeper;

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:sleekstats_flutter_statkeeper/model/team.dart';
-import 'package:sleekstats_flutter_statkeeper/widget/add_players_dialog.dart';
-import 'package:sleekstats_flutter_statkeeper/widget/players_stats_table.dart';
-import 'package:sleekstats_flutter_statkeeper/widget/team_controls.dart';
-import 'package:sleekstats_flutter_statkeeper/widget/team_ledger.dart';
+import 'package:sleekstats_flutter_statkeeper/ui/team/add_players_dialog.dart';
+import 'package:sleekstats_flutter_statkeeper/ui/team/players_stats_table.dart';
+import 'package:sleekstats_flutter_statkeeper/ui/team/team_controls.dart';
+import 'package:sleekstats_flutter_statkeeper/ui/team/team_ledger.dart';
 
 class TeamStatsPage extends StatefulWidget {
   final Team team;

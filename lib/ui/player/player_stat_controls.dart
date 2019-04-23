@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:sleekstats_flutter_statkeeper/widget/player_stat_label.dart';
+import 'package:sleekstats_flutter_statkeeper/ui/team/player_stat_label.dart';
 
 class PlayerStatControls extends StatefulWidget {
   final String stat;

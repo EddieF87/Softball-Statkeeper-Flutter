@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sleekstats_flutter_statkeeper/model/player.dart';
-import 'package:sleekstats_flutter_statkeeper/widget/player_stat_label.dart';
+import 'package:sleekstats_flutter_statkeeper/ui/team/player_stat_label.dart';
 
 class SinglePlayerStatsDisplay extends StatelessWidget {
   final ValueChanged onTap;

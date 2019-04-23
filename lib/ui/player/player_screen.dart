@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:sleekstats_flutter_statkeeper/database/repository_service_players.dart';
 import 'package:sleekstats_flutter_statkeeper/model/player.dart';
-import 'package:sleekstats_flutter_statkeeper/route/statkeeper_screen.dart';
-import 'package:sleekstats_flutter_statkeeper/widget/player_stats_page.dart';
+import 'package:sleekstats_flutter_statkeeper/ui/statkeeper_screen.dart';
+import 'package:sleekstats_flutter_statkeeper/ui/player/player_stats_page.dart';
 
 class PlayerScreen extends StatKeeperScreen {
   final String title;

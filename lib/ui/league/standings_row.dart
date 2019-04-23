@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sleekstats_flutter_statkeeper/model/team.dart';
-import 'package:sleekstats_flutter_statkeeper/widget/standings_cell.dart';
+import 'package:sleekstats_flutter_statkeeper/ui/league/standings_cell.dart';
 
 class StandingsRow extends StatelessWidget {
   final Team team;

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sleekstats_flutter_statkeeper/model/team.dart';
 import 'package:sleekstats_flutter_statkeeper/utils/stat_formatter.dart';
-import 'package:sleekstats_flutter_statkeeper/widget/standings_row.dart';
+import 'package:sleekstats_flutter_statkeeper/ui/league/standings_row.dart';
 
 class LeagueStandingsPage extends StatefulWidget {
   final List<Team> teams;

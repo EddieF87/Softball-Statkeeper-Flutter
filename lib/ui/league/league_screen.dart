@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:sleekstats_flutter_statkeeper/model/team.dart';
-import 'package:sleekstats_flutter_statkeeper/route/statkeeper_screen.dart';
-import 'package:sleekstats_flutter_statkeeper/widget/league_standings_page.dart';
-import 'package:sleekstats_flutter_statkeeper/widget/players_stats_table.dart';
-import 'package:sleekstats_flutter_statkeeper/widget/team_controls.dart';
+import 'package:sleekstats_flutter_statkeeper/ui/statkeeper_screen.dart';
+import 'package:sleekstats_flutter_statkeeper/ui/league/league_standings_page.dart';
+import 'package:sleekstats_flutter_statkeeper/ui/team/players_stats_table.dart';
+import 'package:sleekstats_flutter_statkeeper/ui/team/team_controls.dart';
 
 class LeagueScreen extends StatKeeperScreen {
   final String title;

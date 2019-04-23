@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:sleekstats_flutter_statkeeper/database/repository_service_players.dart';
 import 'package:sleekstats_flutter_statkeeper/model/player.dart';
-import 'package:sleekstats_flutter_statkeeper/widget/player_stat_controls.dart';
-import 'package:sleekstats_flutter_statkeeper/widget/single_player_stats_display.dart';
+import 'package:sleekstats_flutter_statkeeper/ui/player/player_stat_controls.dart';
+import 'package:sleekstats_flutter_statkeeper/ui/player/single_player_stats_display.dart';
 
 class PlayerStatsPage extends StatefulWidget {
   final Player player;

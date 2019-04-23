@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sleekstats_flutter_statkeeper/database/db_creator.dart';
-import 'package:sleekstats_flutter_statkeeper/route/home_screen.dart';
+import 'package:sleekstats_flutter_statkeeper/ui/home/home_screen.dart';
 
 void main() async {
   await DBCreator().initDatabase();

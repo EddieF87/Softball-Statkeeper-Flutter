@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:sleekstats_flutter_statkeeper/database/repository_service_players.dart';
 import 'package:sleekstats_flutter_statkeeper/model/player.dart';
-import 'package:sleekstats_flutter_statkeeper/widget/player_stat_row.dart';
-import 'package:sleekstats_flutter_statkeeper/widget/stats_header_row.dart';
+import 'package:sleekstats_flutter_statkeeper/ui/team/player_stat_row.dart';
+import 'package:sleekstats_flutter_statkeeper/ui/team/stats_header_row.dart';
 
 class PlayersStatsTable extends StatefulWidget {
   final String statkeeperFirestoreID;

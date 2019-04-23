@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sleekstats_flutter_statkeeper/model/player.dart';
-import 'package:sleekstats_flutter_statkeeper/widget/stat_cell.dart';
+import 'package:sleekstats_flutter_statkeeper/ui/team/stat_cell.dart';
 
 class StatsHeaderRow extends StatelessWidget {
   final ValueChanged<String> onStatSelected;

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:sleekstats_flutter_statkeeper/database/repository_service_statkeepers.dart';
 import 'package:sleekstats_flutter_statkeeper/model/statkeeper.dart';
-import 'package:sleekstats_flutter_statkeeper/widget/statkeeper_creator_dialog.dart';
-import 'package:sleekstats_flutter_statkeeper/widget/statkeeper_label.dart';
+import 'package:sleekstats_flutter_statkeeper/ui/home/statkeeper_creator_dialog.dart';
+import 'package:sleekstats_flutter_statkeeper/ui/home/statkeeper_label.dart';
 
 class HomeScreen extends StatefulWidget {
   HomeScreen({Key key, this.title}) : super(key: key);
