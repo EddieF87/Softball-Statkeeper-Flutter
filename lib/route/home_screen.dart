@@ -4,15 +4,15 @@ import 'package:sleekstats_flutter_statkeeper/model/statkeeper.dart';
 import 'package:sleekstats_flutter_statkeeper/widget/statkeeper_creator_dialog.dart';
 import 'package:sleekstats_flutter_statkeeper/widget/statkeeper_label.dart';
 
-class HomeRoute extends StatefulWidget {
-  HomeRoute({Key key, this.title}) : super(key: key);
+class HomeScreen extends StatefulWidget {
+  HomeScreen({Key key, this.title}) : super(key: key);
   final String title;
 
   @override
-  _HomeRouteState createState() => _HomeRouteState();
+  _HomeScreenState createState() => _HomeScreenState();
 }
 
-class _HomeRouteState extends State<HomeRoute> {
+class _HomeScreenState extends State<HomeScreen> {
   List<StatKeeper> sKList = [];
 
   @override

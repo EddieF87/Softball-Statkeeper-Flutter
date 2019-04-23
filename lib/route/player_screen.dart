@@ -1,23 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:sleekstats_flutter_statkeeper/database/repository_service_players.dart';
 import 'package:sleekstats_flutter_statkeeper/model/player.dart';
-import 'package:sleekstats_flutter_statkeeper/route/statkeeper_route.dart';
+import 'package:sleekstats_flutter_statkeeper/route/statkeeper_screen.dart';
 import 'package:sleekstats_flutter_statkeeper/widget/player_stats_page.dart';
 
-class PlayerRoute extends StatKeeperRoute {
+class PlayerScreen extends StatKeeperScreen {
   final String title;
   final String firestoreID;
 
-  PlayerRoute({
+  PlayerScreen({
     this.title,
     this.firestoreID,
   }) : assert(firestoreID != null);
 
   @override
-  _PlayerRouteState createState() => _PlayerRouteState();
+  _PlayerScreenState createState() => _PlayerScreenState();
 }
 
-class _PlayerRouteState extends State<PlayerRoute> {
+class _PlayerScreenState extends State<PlayerScreen> {
 
   Future<Player> _retrievePlayer(String fID) async {
     return await RepositoryServicePlayers.getPlayer(fID);

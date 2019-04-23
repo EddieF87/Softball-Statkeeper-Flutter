@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sleekstats_flutter_statkeeper/model/player.dart';
-import 'package:sleekstats_flutter_statkeeper/route/player_route.dart';
+import 'package:sleekstats_flutter_statkeeper/route/player_screen.dart';
 import 'package:sleekstats_flutter_statkeeper/widget/player_stats_page.dart';
 import 'package:sleekstats_flutter_statkeeper/widget/stat_cell.dart';
 
@@ -56,7 +56,7 @@ class PlayerStatRow extends StatelessWidget {
     );
   }
 
-  /// Navigates to the [PlayerRoute].
+  /// Navigates to the [PlayerScreen].
   void _navigateToRoute(BuildContext context, Player player) {
     Navigator.of(context).push(MaterialPageRoute<Null>(
       builder: (BuildContext context) {

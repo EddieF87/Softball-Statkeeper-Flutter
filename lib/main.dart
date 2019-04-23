@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sleekstats_flutter_statkeeper/database/db_creator.dart';
-import 'package:sleekstats_flutter_statkeeper/route/home_route.dart';
+import 'package:sleekstats_flutter_statkeeper/route/home_screen.dart';
 
 void main() async {
   await DBCreator().initDatabase();
@@ -34,7 +34,7 @@ class MyApp extends StatelessWidget {
           ),
         ),
       ),
-      home: HomeRoute(title: 'Sleek Stats Softball Lite'),
+      home: HomeScreen(title: 'Sleek Stats Softball Lite'),
     );
   }
 }

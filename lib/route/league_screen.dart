@@ -1,24 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:sleekstats_flutter_statkeeper/model/team.dart';
-import 'package:sleekstats_flutter_statkeeper/route/statkeeper_route.dart';
+import 'package:sleekstats_flutter_statkeeper/route/statkeeper_screen.dart';
 import 'package:sleekstats_flutter_statkeeper/widget/league_standings_page.dart';
 import 'package:sleekstats_flutter_statkeeper/widget/players_stats_table.dart';
 import 'package:sleekstats_flutter_statkeeper/widget/team_controls.dart';
 
-class LeagueRoute extends StatKeeperRoute {
+class LeagueScreen extends StatKeeperScreen {
   final String title;
   final String firestoreID;
 
-  LeagueRoute({
+  LeagueScreen({
     this.title,
     this.firestoreID,
   }) : assert(firestoreID != null);
 
   @override
-  _LeagueRouteState createState() => _LeagueRouteState();
+  _LeagueScreenState createState() => _LeagueScreenState();
 }
 
-class _LeagueRouteState extends State<LeagueRoute> {
+class _LeagueScreenState extends State<LeagueScreen> {
   @override
   Widget build(BuildContext context) {
     return Padding(

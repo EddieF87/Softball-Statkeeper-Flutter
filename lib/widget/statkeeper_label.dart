@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:sleekstats_flutter_statkeeper/model/statkeeper.dart';
-import 'package:sleekstats_flutter_statkeeper/route/league_route.dart';
-import 'package:sleekstats_flutter_statkeeper/route/player_route.dart';
-import 'package:sleekstats_flutter_statkeeper/route/statkeeper_route.dart';
-import 'package:sleekstats_flutter_statkeeper/route/team_route.dart';
+import 'package:sleekstats_flutter_statkeeper/route/league_screen.dart';
+import 'package:sleekstats_flutter_statkeeper/route/player_screen.dart';
+import 'package:sleekstats_flutter_statkeeper/route/statkeeper_screen.dart';
+import 'package:sleekstats_flutter_statkeeper/route/team_screen.dart';
 
 class StatKeeperLabel extends StatelessWidget {
   final StatKeeper statKeeper;
@@ -56,22 +56,22 @@ class StatKeeperLabel extends StatelessWidget {
   }
 
   /// Gets StatKeeperRoute based on chosen statKeeper type
-  StatKeeperRoute _getStatKeeperRouter(StatKeeper sK) {
+  StatKeeperScreen _getStatKeeperRouter(StatKeeper sK) {
     switch (sK.type) {
       case StatKeeper.TYPE_PLAYER:
-        return PlayerRoute(
+        return PlayerScreen(
           title: sK.name,
           firestoreID: sK.firestoreID,
         );
         break;
       case StatKeeper.TYPE_TEAM:
-        return TeamRoute(
+        return TeamScreen(
           title: sK.name,
           firestoreID: sK.firestoreID,
         );
         break;
       case StatKeeper.TYPE_LEAGUE:
-        return LeagueRoute(
+        return LeagueScreen(
           title: sK.name,
           firestoreID: sK.firestoreID,
         );
@@ -83,7 +83,7 @@ class StatKeeperLabel extends StatelessWidget {
 
   /// Navigates to the [StatkeeperRoute].
   void _navigateToRoute(BuildContext context, StatKeeper sK) {
-    StatKeeperRoute statKeeperRoute = _getStatKeeperRouter(sK);
+    StatKeeperScreen statKeeperRoute = _getStatKeeperRouter(sK);
     if (statKeeperRoute == null) {
       return;
     }

@@ -1,24 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:sleekstats_flutter_statkeeper/database/repository_service_teams.dart';
 import 'package:sleekstats_flutter_statkeeper/model/team.dart';
-import 'package:sleekstats_flutter_statkeeper/route/statkeeper_route.dart';
+import 'package:sleekstats_flutter_statkeeper/route/statkeeper_screen.dart';
 import 'package:sleekstats_flutter_statkeeper/widget/team_stats_page.dart';
 
-class TeamRoute extends StatKeeperRoute {
+class TeamScreen extends StatKeeperScreen {
   final String title;
   final String firestoreID;
 
-  TeamRoute({
+  TeamScreen({
     Key key,
     this.title,
     this.firestoreID,
   }) : assert(firestoreID != null);
 
   @override
-  _TeamRouteState createState() => _TeamRouteState();
+  _TeamScreenState createState() => _TeamScreenState();
 }
 
-class _TeamRouteState extends State<TeamRoute> {
+class _TeamScreenState extends State<TeamScreen> {
 
   Future<Team> _retrieveTeam(String fID) async {
     return await RepositoryServiceTeams.getTeam(fID);
