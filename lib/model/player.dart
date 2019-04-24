@@ -207,7 +207,7 @@ class Player {
   }
 
   double getOPS() {
-    if (getSLG() == null) {
+    if (getSLG() < 0) {
       return getOBP();
     } else {
       return getSLG() + getOBP();

@@ -20,19 +20,53 @@ class MyApp extends StatelessWidget {
         () => Color.fromRGBO(136, 14, 79, (i + 1) * .1),
       );
     }
+    Color primaryColor = Color(0xFF689F38);
+    Color primaryColorLight = Color(0xFFe5f4d3);
+    Color primaryColorDark = Color(0xFF4a7326);
+    Color accentColor = Color(0xFFeabd53);
     return MaterialApp(
       title: 'Sleek Stats Softball Lite',
       theme: ThemeData(
         primarySwatch: MaterialColor(0xFF689F38, primarySwatch),
-        primaryColor: Color(0xFF689F38),
-        primaryColorLight: Color(0xFFe5f4d3),
-        primaryColorDark: Color(0xFF4a7326),
-        accentColor: Color(0xFFeabd53),
+        primaryColor: primaryColor,
+        primaryColorLight: primaryColorLight,
+        primaryColorDark: primaryColorDark,
+        accentColor: accentColor,
+        textTheme: TextTheme(
+//          title: TextStyle(
+//            color: Colors.white,
+//          ),
+          body1: TextStyle(
+            color: primaryColorDark,
+          ),
+          body2: TextStyle(
+            color: primaryColorDark,
+          ),
+          display1: TextStyle(
+            color: primaryColorDark,
+          ),
+          display2: TextStyle(
+            color: primaryColorDark,
+          ),
+        ),
         primaryTextTheme: TextTheme(
           title: TextStyle(
             color: Colors.white,
           ),
+          body1: TextStyle(
+            color: primaryColorDark,
+          ),
+          body2: TextStyle(
+            color: primaryColorDark,
+          ),
+          display1: TextStyle(
+            color: primaryColorDark,
+          ),
+          display2: TextStyle(
+            color: primaryColorDark,
+          ),
         ),
+        scaffoldBackgroundColor: primaryColorLight
       ),
       home: HomeScreen(title: 'Sleek Stats Softball Lite'),
     );

@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:sleekstats_flutter_statkeeper/model/player.dart';
-import 'package:sleekstats_flutter_statkeeper/ui/player/player_screen.dart';
-import 'package:sleekstats_flutter_statkeeper/ui/player/player_stats_page.dart';
 import 'package:sleekstats_flutter_statkeeper/ui/team/stat_cell.dart';
 
 class PlayerStatRow extends StatelessWidget {
   final Player player;
   final bool isColoredRow;
+  final VoidCallback onPlayerSelected;
 
   const PlayerStatRow({
     this.player,
     this.isColoredRow = false,
+    this.onPlayerSelected,
   }) : assert(player != null);
 
   @override
@@ -22,7 +22,7 @@ class PlayerStatRow extends StatelessWidget {
       child: Row(
         children: <Widget>[
           InkWell(
-            onTap: () => _navigateToRoute(context, player),
+            onTap: () => onPlayerSelected(),
             child: StatCell(
               data: player.name,
               width: 100.0,
@@ -54,26 +54,5 @@ class PlayerStatRow extends StatelessWidget {
         ],
       ),
     );
-  }
-
-  /// Navigates to the [PlayerScreen].
-  void _navigateToRoute(BuildContext context, Player player) {
-    Navigator.of(context).push(MaterialPageRoute<Null>(
-      builder: (BuildContext context) {
-        return Scaffold(
-          appBar: AppBar(
-            elevation: 1.0,
-            title: Text(
-              player.name,
-              style: TextStyle(fontSize: 36),
-            ),
-            centerTitle: true,
-          ),
-          body: PlayerStatsPage(
-            player: player,
-          ),
-        );
-      },
-    ));
   }
 }

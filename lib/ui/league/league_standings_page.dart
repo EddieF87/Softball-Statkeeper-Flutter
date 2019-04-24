@@ -19,6 +19,7 @@ class LeagueStandingsPageState extends State<LeagueStandingsPage> {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
+        color: Colors.white,
         border: Border.all(color: Theme.of(context).primaryColor, width: 4.0),
       ),
       child: Column(

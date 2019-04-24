@@ -12,7 +12,14 @@ class PlayerStatLabel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: _decorateBox(),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        border: Player.CHANGEABLE_LABELS.contains(stat)
+            ? Border.all(
+                color: Theme.of(context).accentColor,
+              )
+            : null,
+      ),
       child: InkWell(
         borderRadius: BorderRadius.circular(4.0),
         onTap: setOnTap(),
@@ -26,20 +33,6 @@ class PlayerStatLabel extends StatelessWidget {
       ),
     );
   }
-
-  BoxDecoration _decorateBox() {
-    if (Player.CHANGEABLE_LABELS.contains(stat)) {
-      return BoxDecoration(
-        border: Border.all(
-          color: Colors.green,
-        ),
-      );
-    } else {
-      return BoxDecoration();
-    }
-  }
-
-
 
   ///Change stat to edit based on what user taps
   VoidCallback setOnTap() {

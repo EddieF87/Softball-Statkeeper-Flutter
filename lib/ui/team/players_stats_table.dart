@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:sleekstats_flutter_statkeeper/database/repository_service_players.dart';
 import 'package:sleekstats_flutter_statkeeper/model/player.dart';
 import 'package:sleekstats_flutter_statkeeper/ui/team/player_stat_row.dart';
+import 'package:sleekstats_flutter_statkeeper/ui/team/players_pageview.dart';
 import 'package:sleekstats_flutter_statkeeper/ui/team/stats_header_row.dart';
 
 class PlayersStatsTable extends StatefulWidget {
@@ -42,6 +43,7 @@ class PlayersStatsTableState extends State<PlayersStatsTable> {
 
     return Container(
       decoration: BoxDecoration(
+        color: Colors.white,
         border: Border.all(color: primaryColor, width: 4.0),
       ),
       child: FutureBuilder(
@@ -56,7 +58,7 @@ class PlayersStatsTableState extends State<PlayersStatsTable> {
             } else {
               debugPrint("snapshot.data  here  ");
               snapshot.data.forEach((Player player) => debugPrint(player.name));
-              return _buildStatsTable();
+              return _buildStatsTable(context);
             }
           } else if (snapshot.hasError) {
             debugPrint("hasError  ");
@@ -70,11 +72,12 @@ class PlayersStatsTableState extends State<PlayersStatsTable> {
     );
   }
 
-  Widget _buildStatsTable() {
+  Widget _buildStatsTable(BuildContext context) {
     debugPrint("_buildStatsTable");
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
-      child: new SizedBox(
+      child: new Container(
+        color: Colors.white,
         width: 1320.0,
         child: Column(
           children: <Widget>[
@@ -85,7 +88,7 @@ class PlayersStatsTableState extends State<PlayersStatsTable> {
                   }),
             ),
             Expanded(
-              child: _buildList(statToSortBy),
+              child: _buildList(context, statToSortBy),
             ),
           ],
         ),
@@ -93,7 +96,7 @@ class PlayersStatsTableState extends State<PlayersStatsTable> {
     );
   }
 
-  Widget _buildList(String stat) {
+  Widget _buildList(BuildContext context, String stat) {
     _sortPlayers(stat);
 
     return ListView.builder(
@@ -101,8 +104,23 @@ class PlayersStatsTableState extends State<PlayersStatsTable> {
       itemBuilder: (BuildContext context, int index) => PlayerStatRow(
             player: players[index],
             isColoredRow: index.isOdd,
+            onPlayerSelected: () => _navigateToPageView(context, index),
           ),
       itemCount: players.length,
+    );
+  }
+
+  /// Navigates to the PageView of players.
+  void _navigateToPageView(BuildContext context, int index) {
+    Navigator.of(context).push(
+      MaterialPageRoute<Null>(
+        builder: (BuildContext context) {
+          return PlayersPageView(
+            players: players,
+            startingIndex: index,
+          );
+        },
+      ),
     );
   }
 }
