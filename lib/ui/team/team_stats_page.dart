@@ -46,7 +46,10 @@ class TeamStatsPageState extends State<TeamStatsPage> {
             child: Container(
               padding: EdgeInsets.all(16.0),
               child: players != null
-                  ? PlayersStatsTable(players: players)
+                  ? PlayersStatsTable(
+                      isLeague: false,
+                      players: players,
+                    )
                   : Center(
                       child: CircularProgressIndicator(),
                     ),
@@ -72,6 +75,7 @@ class TeamStatsPageState extends State<TeamStatsPage> {
         return AddPlayersDialog(
           teamFireID: widget.team.firestoreID,
           sKFireID: widget.team.statkeeperFirestoreID,
+          teamName: widget.team.name,
           onNewPlayersSubmitted: () => _retrievePlayers(),
         );
       },

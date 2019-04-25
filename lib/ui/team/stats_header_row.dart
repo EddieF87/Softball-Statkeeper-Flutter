@@ -7,10 +7,12 @@ class StatsHeaderRow extends StatelessWidget {
   final String statSorted;
   final Color primaryColor = Color(0xFF689F38);
   final Color accentColor = Color(0xFFeabd53);
+  final bool isLeague;
 
   StatsHeaderRow({
     this.onStatSelected,
     this.statSorted,
+    this.isLeague = false,
   });
 
   @override
@@ -18,7 +20,7 @@ class StatsHeaderRow extends StatelessWidget {
     return Row(
       children: <Widget>[
         _createHeaderCell(Player.LABEL_NAME, width: 100.0),
-        _createHeaderCell(Player.LABEL_TEAM, width: 70.0),
+        isLeague ?_createHeaderCell(Player.LABEL_TEAM, width: 70.0) : Container(),
         _createHeaderCell(Player.LABEL_G),
         _createHeaderCell(Player.LABEL_PA),
         _createHeaderCell(Player.LABEL_AB),

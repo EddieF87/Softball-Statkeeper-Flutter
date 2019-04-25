@@ -6,11 +6,15 @@ import 'package:sleekstats_flutter_statkeeper/ui/team/stats_header_row.dart';
 
 class PlayersStatsTable extends StatefulWidget {
   final List<Player> players;
+  final ValueSetter<String> onTeamLinkClicked;
+  final bool isLeague;
 
   const PlayersStatsTable({
     Key key,
     this.players,
-  })  : super(key: key);
+    this.onTeamLinkClicked,
+    this.isLeague = false,
+  }) : super(key: key);
 
   @override
   State<PlayersStatsTable> createState() => PlayersStatsTableState();
@@ -49,7 +53,7 @@ class PlayersStatsTableState extends State<PlayersStatsTable> {
       scrollDirection: Axis.horizontal,
       child: new Container(
         color: Colors.white,
-        width: 1320.0,
+        width: widget.isLeague ? 1320.0 : 1250.0,
         child: Column(
           children: <Widget>[
             StatsHeaderRow(
@@ -57,6 +61,7 @@ class PlayersStatsTableState extends State<PlayersStatsTable> {
               onStatSelected: (statLabel) => setState(() {
                     statToSortBy = statLabel;
                   }),
+              isLeague: widget.isLeague,
             ),
             Expanded(
               child: _buildList(context, statToSortBy),
@@ -73,16 +78,19 @@ class PlayersStatsTableState extends State<PlayersStatsTable> {
     return ListView.builder(
       shrinkWrap: true,
       itemBuilder: (BuildContext context, int index) => PlayerStatRow(
+            isLeague: widget.isLeague,
             player: widget.players[index],
             isColoredRow: index.isOdd,
-            onPlayerSelected: () => _navigateToPageView(context, index),
+            onPlayerSelected: () => _navigateToPlayersPageView(context, index),
+            onTeamSelected: (String teamFireID) =>
+                widget.onTeamLinkClicked(teamFireID),
           ),
       itemCount: widget.players.length,
     );
   }
 
   /// Navigates to the PageView of players.
-  void _navigateToPageView(BuildContext context, int index) {
+  void _navigateToPlayersPageView(BuildContext context, int index) {
     Navigator.of(context).push(
       MaterialPageRoute<Null>(
         builder: (BuildContext context) {

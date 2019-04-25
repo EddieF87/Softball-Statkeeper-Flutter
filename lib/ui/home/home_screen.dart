@@ -37,7 +37,7 @@ class _HomeScreenState extends State<HomeScreen> {
           children: <Widget>[
             Container(
               padding: EdgeInsets.all(8.0),
-              color: Theme.of(context).primaryColor,
+              color: Theme.of(context).primaryColorDark,
               child: Text(
                 "My StatKeepers",
                 textAlign: TextAlign.center,

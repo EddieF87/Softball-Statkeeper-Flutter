@@ -49,23 +49,9 @@ class LeagueStandingsPageState extends State<LeagueStandingsPage> {
       itemBuilder: (BuildContext context, int index) => StandingsRow(
             team: widget.teams[index],
             isColoredRow: index.isOdd,
-        onTeamSelected: () => _navigateToPageView(context, index),
+        onTeamSelected: () => _navigateToTeamsPageView(context, index),
           ),
       itemCount: widget.teams.length,
-    );
-  }
-
-  /// Navigates to the PageView of players.
-  void _navigateToPageView(BuildContext context, int index) {
-    Navigator.of(context).push(
-      MaterialPageRoute<Null>(
-        builder: (BuildContext context) {
-          return TeamsPageView(
-            teams: widget.teams,
-            startingIndex: index,
-          );
-        },
-      ),
     );
   }
 
@@ -76,6 +62,20 @@ class LeagueStandingsPageState extends State<LeagueStandingsPage> {
     } else {
       widget.teams.sort(comparatorMap[Team.LABEL_WINPCT]);
     }
+  }
+
+  /// Navigates to the PageView of teams.
+  void _navigateToTeamsPageView(BuildContext context, int index) {
+    Navigator.of(context).push(
+      MaterialPageRoute<Null>(
+        builder: (BuildContext context) {
+          return TeamsPageView(
+            teams: widget.teams,
+            startingIndex: index,
+          );
+        },
+      ),
+    );
   }
 }
 
@@ -114,7 +114,7 @@ class StandingsHeaderRow extends StatelessWidget {
         padding: EdgeInsets.all(4.0),
         color: primaryColor,
         child: InkWell(
-          onTap: () => _ontapped(data),
+          onTap: () => _onTapped(data),
           child: Text(
             StatFormatter.displayAmount(data),
             style: TextStyle(
@@ -128,7 +128,7 @@ class StandingsHeaderRow extends StatelessWidget {
     );
   }
 
-  _ontapped(String data) {
+  _onTapped(String data) {
     debugPrint("_ontapped");
     onStatSelected(data);
   }

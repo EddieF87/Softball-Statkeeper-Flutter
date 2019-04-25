@@ -5,12 +5,14 @@ import 'package:sleekstats_flutter_statkeeper/ui/team/stat_cell.dart';
 class PlayerStatRow extends StatelessWidget {
   final Player player;
   final bool isColoredRow;
+  final bool isLeague;
   final VoidCallback onPlayerSelected;
+  final ValueSetter<String> onTeamSelected;
 
   const PlayerStatRow({
     this.player,
     this.isColoredRow = false,
-    this.onPlayerSelected,
+    this.onPlayerSelected, this.onTeamSelected, this.isLeague = false,
   }) : assert(player != null);
 
   @override
@@ -29,7 +31,10 @@ class PlayerStatRow extends StatelessWidget {
               fontWeight: FontWeight.bold,
             ),
           ),
-          StatCell(data: player.team, width: 70.0),
+          isLeague ? InkWell(
+            onTap: () => onTeamSelected(player.teamFirestoreID),
+            child: StatCell(data: player.team, width: 70.0),
+          ) : new Container(),
           StatCell(data: player.games),
           StatCell(data: player.getPA()),
           StatCell(data: player.getAB()),

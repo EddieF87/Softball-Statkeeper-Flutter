@@ -6,10 +6,15 @@ import 'package:uuid/uuid.dart';
 class AddPlayersDialog extends StatefulWidget {
   final String sKFireID;
   final String teamFireID;
+  final String teamName;
   final VoidCallback onNewPlayersSubmitted;
 
   AddPlayersDialog(
-      {this.sKFireID, this.teamFireID, this.onNewPlayersSubmitted});
+      {this.sKFireID,
+      this.teamFireID,
+      this.onNewPlayersSubmitted,
+      this.teamName})
+      : assert(sKFireID != null);
 
   @override
   State<StatefulWidget> createState() => AddPlayersDialogState();
@@ -21,7 +26,7 @@ class AddPlayersDialogState extends State<AddPlayersDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text('Create New Players'),
+      title: Text('Create New Players for ${widget.teamName}'),
       content: Container(
         width: double.maxFinite,
         height: double.maxFinite,
@@ -85,6 +90,7 @@ class AddPlayersDialogState extends State<AddPlayersDialog> {
           teamFirestoreID: widget.teamFireID,
           statkeeperFirestoreID: widget.sKFireID,
           name: name,
+          team: widget.teamName
         ),
       );
     });
