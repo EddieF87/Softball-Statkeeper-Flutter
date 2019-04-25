@@ -43,9 +43,9 @@ class _StatKeeperCreatorDialogState extends State<StatKeeperCreatorDialog> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: <Widget>[
-                _createRadioItem(0),
-                _createRadioItem(1),
-                _createRadioItem(2),
+                _createRadioItem(context, 0),
+                _createRadioItem(context, 1),
+                _createRadioItem(context, 2),
               ],
             ),
             Text(
@@ -102,11 +102,11 @@ class _StatKeeperCreatorDialogState extends State<StatKeeperCreatorDialog> {
     }
   }
 
-  Widget _createRadioItem(int index) {
+  Widget _createRadioItem(BuildContext context, int index) {
     return Expanded(
       child: InkWell(
-        highlightColor: Colors.red,
-        splashColor: Colors.blueAccent,
+        highlightColor: Theme.of(context).primaryColor,
+        splashColor: Theme.of(context).accentColor,
         onTap: () => _updateRadio(index),
         child: new RadioItem(statKeeperChoices[index]),
       ),
@@ -144,24 +144,26 @@ class RadioItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Color accentColor = Theme.of(context).accentColor;
+    Color primaryColorDark = Theme.of(context).primaryColorDark;
     return Container(
       child: Column(
         children: <Widget>[
-          Icon(_item.iconData),
+          Icon(_item.iconData, color: primaryColorDark,),
           Text(
             _item.buttonText,
             style: TextStyle(
-                color: _item.isSelected ? Colors.white : Colors.black,
+                color: primaryColorDark,
                 fontWeight: FontWeight.bold,
                 fontSize: 18.0),
           ),
         ],
       ),
       decoration: new BoxDecoration(
-        color: _item.isSelected ? Colors.blueAccent : Colors.transparent,
+        color: _item.isSelected ? accentColor : Colors.transparent,
         border: new Border.all(
             width: 1.0,
-            color: _item.isSelected ? Colors.blueAccent : Colors.grey),
+            color: _item.isSelected ? accentColor : Colors.grey),
         borderRadius: const BorderRadius.all(const Radius.circular(2.0)),
       ),
     );
