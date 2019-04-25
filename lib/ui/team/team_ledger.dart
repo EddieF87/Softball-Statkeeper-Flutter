@@ -17,19 +17,25 @@ class TeamLedger extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceAround,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: <Widget>[
-        Text(
-          team.name,
-          style: TextStyle(
-            fontSize: 48.0,
+        Expanded(
+          child: Text(
+            team.name,
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 48.0,
+            ),
+            maxLines: 1,
           ),
-          maxLines: 1,
         ),
-        Column(
-          children: <Widget>[
-            Text("${team.wins}-${team.losses}-${team.ties}"),
-            Text("%: ${StatFormatter.displayAmount(team.getWinPct())}"),
-            Text("RS: ${team.runsScored} RA: ${team.runsScored}"),
-          ],
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            children: <Widget>[
+              Text(
+                  "${team.wins}-${team.losses}-${team.ties}  (${StatFormatter.displayAmount(team.getWinPct())})"),
+              Text("RS: ${team.runsScored} RA: ${team.runsScored}"),
+            ],
+          ),
         )
       ],
     );

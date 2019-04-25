@@ -317,4 +317,9 @@ class Player {
         LABEL_OPS: opsComparator(),
         LABEL_OBPROE: obproeComparator(),
       };
+
+  @override
+  String toString() {
+    return "Player $name  id:$id fireID:$firestoreID  sKID:$statkeeperFirestoreID  teamID:$teamFirestoreID";
+  }
 }

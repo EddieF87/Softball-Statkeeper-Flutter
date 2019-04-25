@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sleekstats_flutter_statkeeper/model/team.dart';
+import 'package:sleekstats_flutter_statkeeper/ui/league/teams_pageview.dart';
 import 'package:sleekstats_flutter_statkeeper/utils/stat_formatter.dart';
 import 'package:sleekstats_flutter_statkeeper/ui/league/standings_row.dart';
 
@@ -48,8 +49,23 @@ class LeagueStandingsPageState extends State<LeagueStandingsPage> {
       itemBuilder: (BuildContext context, int index) => StandingsRow(
             team: widget.teams[index],
             isColoredRow: index.isOdd,
+        onTeamSelected: () => _navigateToPageView(context, index),
           ),
       itemCount: widget.teams.length,
+    );
+  }
+
+  /// Navigates to the PageView of players.
+  void _navigateToPageView(BuildContext context, int index) {
+    Navigator.of(context).push(
+      MaterialPageRoute<Null>(
+        builder: (BuildContext context) {
+          return TeamsPageView(
+            teams: widget.teams,
+            startingIndex: index,
+          );
+        },
+      ),
     );
   }
 

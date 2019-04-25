@@ -209,6 +209,8 @@ class StatKeeperLabel extends StatelessWidget {
     Navigator.of(context).push(MaterialPageRoute<Null>(
       builder: (BuildContext context) {
         return Scaffold(
+            backgroundColor:
+                sK.type == StatKeeper.TYPE_PLAYER ? Colors.white : null,
             appBar: AppBar(
               elevation: 1.0,
               title: Text(
@@ -217,7 +219,8 @@ class StatKeeperLabel extends StatelessWidget {
               ),
               centerTitle: true,
             ),
-            body: statKeeperRoute);
+            body: statKeeperRoute
+        );
       },
     ));
   }

@@ -19,6 +19,7 @@ class TeamScreen extends StatKeeperScreen {
 }
 
 class _TeamScreenState extends State<TeamScreen> {
+  Team team;
 
   Future<Team> _retrieveTeam(String fID) async {
     return await RepositoryServiceTeams.getTeam(fID);

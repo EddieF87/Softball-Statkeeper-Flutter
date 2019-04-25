@@ -3,27 +3,27 @@ import 'package:sleekstats_flutter_statkeeper/database/db_creator.dart';
 import 'package:sleekstats_flutter_statkeeper/model/team.dart';
 
 class RepositoryServiceTeams {
-  static Future<List<Team>> getAllTeams() async {
-    final sql = '''SELECT * FROM ${DBContract.TABLE_TEAMS}''';
-    final data = await db.rawQuery(sql);
-
-    List<Team> teamList = [];
+  static Future<List<Team>> getAllTeams(String statkeeperFirestoreID) async {
+    final data = await queryTeamDB(
+        statkeeperFirestoreID, DBContract.STATKEEPER_FIRESTORE_ID);
+    List<Team> teamsList = [];
     for (final node in data) {
-      final team = Team.fromJson(node);
-      teamList.add(team);
+      final playerStats = Team.fromJson(node);
+      teamsList.add(playerStats);
     }
-    return teamList;
+    return teamsList;
   }
 
   static Future<Team> getTeam(String firestoreID) async {
-    final sql = '''
-    SELECT * FROM ${DBContract.TABLE_TEAMS} WHERE ${DBContract.FIRESTORE_ID}=?
-    ''';
-    List<String> params = [firestoreID];
-    final data = await db.rawQuery(sql, params);
-    final team = Team.fromJson(data[0]);
-    print("retrieved team = ${team.toString()}");
-    return team;
+    final data = await queryTeamDB(firestoreID, DBContract.FIRESTORE_ID);
+    return Team.fromJson(data[0]);
+  }
+
+  static Future<List<Map<String, dynamic>>> queryTeamDB(
+      String id, String query) async {
+    final sql = '''SELECT * FROM ${DBContract.TABLE_TEAMS} WHERE $query=?''';
+    List<String> params = [id];
+    return await db.rawQuery(sql, params);
   }
 
   static Future<void> insertTeam(Team team) async {

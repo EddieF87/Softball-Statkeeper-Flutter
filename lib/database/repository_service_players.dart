@@ -6,7 +6,7 @@ class RepositoryServicePlayers {
   static Future<List<Player>> getAllPlayers(
       String statkeeperFirestoreID) async {
     final data = await queryPlayerDB(
-        statkeeperFirestoreID, DBContract.TEAM_FIRESTORE_ID);
+        statkeeperFirestoreID, DBContract.STATKEEPER_FIRESTORE_ID);
     List<Player> playerStatsList = [];
     for (final node in data) {
       final playerStats = Player.fromJson(node);
@@ -15,10 +15,26 @@ class RepositoryServicePlayers {
     return playerStatsList;
   }
 
+  static Future<List<Player>> getAllPlayersFromTeam(
+      String statkeeperFirestoreID, String teamFirestoreID) async {
+    final sql = '''SELECT * FROM ${DBContract.TABLE_PLAYERS} 
+    WHERE ${DBContract.STATKEEPER_FIRESTORE_ID}=? 
+    AND ${DBContract.TEAM_FIRESTORE_ID}=?''';
+
+    List<String> params = [statkeeperFirestoreID, teamFirestoreID];
+    final data = await db.rawQuery(sql, params);
+    List<Player> playerStatsList = [];
+    for (final node in data) {
+      final playerStats = Player.fromJson(node);
+      print(playerStats);
+      playerStatsList.add(playerStats);
+    }
+    return playerStatsList;
+  }
+
   static Future<Player> getPlayer(String firestoreID) async {
     final data = await queryPlayerDB(firestoreID, DBContract.FIRESTORE_ID);
-    final player = Player.fromJson(data[0]);
-    return player;
+    return Player.fromJson(data[0]);
   }
 
   static Future<List<Map<String, dynamic>>> queryPlayerDB(

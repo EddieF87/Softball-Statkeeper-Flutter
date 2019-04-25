@@ -1,39 +1,30 @@
 import 'package:flutter/material.dart';
-import 'package:sleekstats_flutter_statkeeper/database/repository_service_players.dart';
 import 'package:sleekstats_flutter_statkeeper/model/player.dart';
 import 'package:sleekstats_flutter_statkeeper/ui/team/player_stat_row.dart';
 import 'package:sleekstats_flutter_statkeeper/ui/team/players_pageview.dart';
 import 'package:sleekstats_flutter_statkeeper/ui/team/stats_header_row.dart';
 
 class PlayersStatsTable extends StatefulWidget {
-  final String statkeeperFirestoreID;
+  final List<Player> players;
 
   const PlayersStatsTable({
     Key key,
-    this.statkeeperFirestoreID,
-  })  : assert(statkeeperFirestoreID != null),
-        super(key: key);
+    this.players,
+  })  : super(key: key);
 
   @override
   State<PlayersStatsTable> createState() => PlayersStatsTableState();
 }
 
 class PlayersStatsTableState extends State<PlayersStatsTable> {
-  List<Player> players = [];
   String statToSortBy = Player.LABEL_G;
-
-  Future<List<Player>> _retrievePlayers() async {
-    debugPrint("_retrievePlayers");
-    return await RepositoryServicePlayers.getAllPlayers(
-        widget.statkeeperFirestoreID);
-  }
 
   _sortPlayers(String stat) {
     Map<String, Comparator<Player>> comparatorMap = Player.toComparatorMap();
     if (comparatorMap.containsKey(stat)) {
-      players.sort(comparatorMap[stat]);
+      widget.players.sort(comparatorMap[stat]);
     } else {
-      players.sort(comparatorMap[Player.LABEL_G]);
+      widget.players.sort(comparatorMap[Player.LABEL_G]);
     }
   }
 
@@ -46,29 +37,9 @@ class PlayersStatsTableState extends State<PlayersStatsTable> {
         color: Colors.white,
         border: Border.all(color: primaryColor, width: 4.0),
       ),
-      child: FutureBuilder(
-        future: _retrievePlayers(),
-        builder: (BuildContext context, AsyncSnapshot<List<Player>> snapshot) {
-          if (snapshot.hasData) {
-            players = snapshot.data;
-            debugPrint("hasData");
-            if (snapshot.data == null || snapshot.data.isEmpty) {
-              debugPrint("snapshot.data == null || snapshot.data.isEmpty");
-              return Center(child: Text("No players yet!"));
-            } else {
-              debugPrint("snapshot.data  here  ");
-              snapshot.data.forEach((Player player) => debugPrint(player.name));
-              return _buildStatsTable(context);
-            }
-          } else if (snapshot.hasError) {
-            debugPrint("hasError  ");
-            return Center(child: Text("Error: Couldn't find players!"));
-          } else {
-            debugPrint("else  ");
-            return Center(child: CircularProgressIndicator());
-          }
-        },
-      ),
+      child: widget.players.isEmpty
+          ? Center(child: Text("Add players!"))
+          : _buildStatsTable(context),
     );
   }
 
@@ -102,11 +73,11 @@ class PlayersStatsTableState extends State<PlayersStatsTable> {
     return ListView.builder(
       shrinkWrap: true,
       itemBuilder: (BuildContext context, int index) => PlayerStatRow(
-            player: players[index],
+            player: widget.players[index],
             isColoredRow: index.isOdd,
             onPlayerSelected: () => _navigateToPageView(context, index),
           ),
-      itemCount: players.length,
+      itemCount: widget.players.length,
     );
   }
 
@@ -116,7 +87,7 @@ class PlayersStatsTableState extends State<PlayersStatsTable> {
       MaterialPageRoute<Null>(
         builder: (BuildContext context) {
           return PlayersPageView(
-            players: players,
+            players: widget.players,
             startingIndex: index,
           );
         },
