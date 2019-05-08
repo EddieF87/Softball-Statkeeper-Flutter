@@ -3,6 +3,7 @@ import 'package:sleekstats_flutter_statkeeper/database/repository_service_player
 import 'package:sleekstats_flutter_statkeeper/database/repository_service_teams.dart';
 import 'package:sleekstats_flutter_statkeeper/model/player.dart';
 import 'package:sleekstats_flutter_statkeeper/model/team.dart';
+import 'package:sleekstats_flutter_statkeeper/ui/game/game_screen.dart';
 import 'package:sleekstats_flutter_statkeeper/ui/league/add_teams_dialog.dart';
 import 'package:sleekstats_flutter_statkeeper/ui/league/teams_pageview.dart';
 import 'package:sleekstats_flutter_statkeeper/ui/statkeeper_screen.dart';
@@ -83,33 +84,38 @@ class _LeagueScreenState extends State<LeagueScreen> {
                   teams != null
                       ? LeagueStandingsPage(teams: teams)
                       : Center(
-                    child: CircularProgressIndicator(),
-                  ),
+                          child: CircularProgressIndicator(),
+                        ),
                   Padding(
                     padding: EdgeInsets.only(right: 32.0, left: 32.0),
-                    child: players != null
+                    child: (players != null && teams != null)
                         ? PlayersStatsTable(
-                      isLeague: true,
-                      players: players,
-                      onTeamLinkClicked: (String teamFireID) =>
-                          _navigateToTeamsPageViewByTeamFireID(
-                            context,
-                            teamFireID,
-                          ),
-                    )
+                            isLeague: true,
+                            players: players,
+                            onTeamLinkClicked: (String teamFireID) =>
+                                _navigateToTeamsPageViewByTeamFireID(
+                                  context,
+                                  teamFireID,
+                                ),
+                          )
                         : Center(
-                      child: CircularProgressIndicator(),
-                    ),
+                            child: CircularProgressIndicator(),
+                          ),
                   ),
                   Padding(
                     padding: EdgeInsets.only(left: 32.0),
-                    child: players != null
-                        ? PlayersStatsTable(
-                      players: players,
-                    )
+                    child: (players != null && teams != null)
+                        ? Center(
+                            child: FlatButton(
+                              onPressed: _goToGame,
+                              child: Text(
+                                "Start Game",
+                              ),
+                            ),
+                          )
                         : Center(
-                      child: CircularProgressIndicator(),
-                    ),
+                            child: CircularProgressIndicator(),
+                          ),
                   ),
                 ],
               ),
@@ -133,8 +139,7 @@ class _LeagueScreenState extends State<LeagueScreen> {
       builder: (BuildContext context) {
         return AddChoiceDialog(
           teams: teams,
-          onAddPlayersChoice: (Team team) =>
-              _showAddPlayersDialog(
+          onAddPlayersChoice: (Team team) => _showAddPlayersDialog(
                 teamFirestoreID: team.firestoreID,
                 teamName: team.name,
                 statkeeperFirestoreID: widget.firestoreID,
@@ -160,9 +165,10 @@ class _LeagueScreenState extends State<LeagueScreen> {
     );
   }
 
-  Future<void> _showAddPlayersDialog({String teamFirestoreID,
-    String statkeeperFirestoreID,
-    String teamName}) async {
+  Future<void> _showAddPlayersDialog(
+      {String teamFirestoreID,
+      String statkeeperFirestoreID,
+      String teamName}) async {
     return showDialog<void>(
       context: context,
       builder: (BuildContext context) {
@@ -179,8 +185,8 @@ class _LeagueScreenState extends State<LeagueScreen> {
   _showScores() {}
 
   /// Navigates to the PageView of teams.
-  void _navigateToTeamsPageViewByTeamFireID(BuildContext context,
-      String teamFireID) {
+  void _navigateToTeamsPageViewByTeamFireID(
+      BuildContext context, String teamFireID) {
     if (teams == null) {
       return;
     }
@@ -200,6 +206,18 @@ class _LeagueScreenState extends State<LeagueScreen> {
       ),
     );
   }
+
+  _goToGame() {
+    Navigator.of(context).push(
+      MaterialPageRoute<Null>(
+        builder: (BuildContext context) => GameScreen(
+              statkeeperFirestoreID: widget.firestoreID,
+              awayTeamFirestoreID: teams[0].firestoreID,
+              homeTeamFirestoreID: teams[0].firestoreID,
+            ),
+      ),
+    );
+  }
 }
 
 class AddChoiceDialog extends StatefulWidget {
@@ -212,8 +230,7 @@ class AddChoiceDialog extends StatefulWidget {
     this.teams,
     this.onAddPlayersChoice,
     this.onAddTeamsChoice,
-  })
-      : assert(teams != null),
+  })  : assert(teams != null),
         super(key: key);
 
   @override
@@ -262,8 +279,7 @@ class AddChoiceDialogState extends State<AddChoiceDialog> {
               title: const Text('Teams:'),
               groupValue: choice,
               value: Choice.TEAM,
-              onChanged: (value) =>
-                  setState(() {
+              onChanged: (value) => setState(() {
                     choice = value;
                     isPlayersChoice = false;
                   }),
@@ -278,8 +294,7 @@ class AddChoiceDialogState extends State<AddChoiceDialog> {
                     title: const Text('Players:'),
                     groupValue: choice,
                     value: Choice.PLAYER,
-                    onChanged: (value) =>
-                        setState(() {
+                    onChanged: (value) => setState(() {
                           choice = value;
                           isPlayersChoice = true;
                         }),
@@ -311,9 +326,7 @@ class AddChoiceDialogState extends State<AddChoiceDialog> {
 
   _createDialogButton(BuildContext context, String text, {Function onPressed}) {
     return FlatButton(
-      color: Theme
-          .of(context)
-          .accentColor,
+      color: Theme.of(context).accentColor,
       onPressed: onPressed,
       child: Text(
         text,

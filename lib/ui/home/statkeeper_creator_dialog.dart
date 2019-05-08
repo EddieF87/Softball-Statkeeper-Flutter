@@ -16,7 +16,7 @@ class _StatKeeperCreatorDialogState extends State<StatKeeperCreatorDialog> {
   List<RadioModel> statKeeperChoices = [
     RadioModel(true, "Player", StatKeeper.TYPE_PLAYER, Icons.person),
     RadioModel(false, "Team", StatKeeper.TYPE_TEAM, Icons.people),
-    RadioModel(false, "League", StatKeeper.TYPE_LEAGUE, Icons.cake),
+    RadioModel(false, "League", StatKeeper.TYPE_LEAGUE, Icons.public),
   ];
 
   final myController = TextEditingController();

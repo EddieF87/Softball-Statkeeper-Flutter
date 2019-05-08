@@ -121,7 +121,7 @@ class StatKeeperLabel extends StatelessWidget {
       case StatKeeper.TYPE_TEAM:
         return Icons.people;
       case StatKeeper.TYPE_LEAGUE:
-        return Icons.cake;
+        return Icons.public;
       default:
         return Icons.error;
     }
@@ -206,9 +206,10 @@ class StatKeeperLabel extends StatelessWidget {
       return;
     }
 
-    Navigator.of(context).push(MaterialPageRoute<Null>(
-      builder: (BuildContext context) {
-        return Scaffold(
+    Navigator.of(context).push(
+      MaterialPageRoute<Null>(
+        builder: (BuildContext context) {
+          return Scaffold(
             backgroundColor:
                 sK.type == StatKeeper.TYPE_PLAYER ? Colors.white : null,
             appBar: AppBar(
@@ -219,9 +220,10 @@ class StatKeeperLabel extends StatelessWidget {
               ),
               centerTitle: true,
             ),
-            body: statKeeperRoute
-        );
-      },
-    ));
+            body: statKeeperRoute,
+          );
+        },
+      ),
+    );
   }
 }

@@ -12,13 +12,13 @@ class Team {
   int ties;
   int runsScored;
   int runsAllowed;
-  List<Player> players;
+  final List<Player> players = [];
 
   static const String LABEL_TEAM = "Team";
   static const String LABEL_W = "W";
   static const String LABEL_L = "L";
   static const String LABEL_T = "T";
-  static const String LABEL_WINPCT = "Win%";
+  static const String LABEL_WINPCT = "WinPct";
   static const String LABEL_RS = "RS";
   static const String LABEL_RA = "RA";
   static const String LABEL_RUNDIFF = "Diff";
