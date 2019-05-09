@@ -3,16 +3,20 @@ import 'package:sleekstats_flutter_statkeeper/model/player.dart';
 
 class Diamond extends StatefulWidget {
   final List<Player> bases;
+  final ValueSetter<Player> onRunScored;
 
-  const Diamond({Key key, this.bases}) : super(key: key);
+  const Diamond({Key key, this.bases, this.onRunScored}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => DiamondState();
 }
 
 class DiamondState extends State<Diamond> {
+
   @override
   Widget build(BuildContext context) {
+    Color accentColor = Theme.of(context).accentColor;
+
     return Padding(
       padding: const EdgeInsets.all(24.0),
       child: Stack(
@@ -48,23 +52,14 @@ class DiamondState extends State<Diamond> {
                 return Container(
                   width: 90,
                   height: 90,
-                  color: Colors.yellow,
                   child: Stack(
                     children: <Widget>[
                       Icon(
                         Icons.highlight_off,
                         size: 90,
+                        color: accentColor,
                       ),
-                      Align(
-                        alignment: Alignment.bottomCenter,
-                        child: Text(
-                          "OUT",
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            backgroundColor: Colors.white,
-                          ),
-                        ),
-                      ),
+                      _nameBox(name: Player.LABEL_OUT),
                     ],
                   ),
                 );
@@ -141,6 +136,9 @@ class DiamondState extends State<Diamond> {
       },
       onAccept: (data) {
         print("onAccept");
+        if(base == 4) {
+          widget.onRunScored(widget.bases[data]);
+        }
         setState(() {
           widget.bases[base] = widget.bases[data];
           widget.bases[4] = null;

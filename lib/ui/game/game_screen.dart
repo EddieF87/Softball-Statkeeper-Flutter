@@ -26,8 +26,9 @@ class GameScreenState extends State<GameScreen> {
   bool reset = false;
   String batterID;
   Player batter;
-  List<Player> basesOccupied  = [null, null, null, null, null];
-  List<Player> prevBasesOccupied  = [null, null, null, null, null];
+  String playResult;
+  List<Player> basesOccupied = [null, null, null, null, null];
+  List<Player> prevBasesOccupied = [null, null, null, null, null];
   final runsScored = [];
   final lineup = [];
   int awayTeamRuns;
@@ -37,6 +38,7 @@ class GameScreenState extends State<GameScreen> {
   int outs;
   bool inningRuns;
   int lineupNumber = 0;
+  Color accentColor;
 
   @override
   void initState() {
@@ -64,8 +66,8 @@ class GameScreenState extends State<GameScreen> {
     debugPrint("_retrieveBatter retrieved");
     setState(() {
       batter = batter;
-      basesOccupied[0]  = batter;
-      prevBasesOccupied[0]  = basesOccupied[0];
+      basesOccupied[0] = batter;
+      prevBasesOccupied[0] = basesOccupied[0];
     });
     debugPrint("_retrieveBatter batterName =  ${batter.name}");
   }
@@ -91,6 +93,7 @@ class GameScreenState extends State<GameScreen> {
     if (batter == null) {
       return Text("F");
     }
+    accentColor = Theme.of(context).accentColor;
     Color primaryColor = Theme.of(context).primaryColor;
     return Scaffold(
       backgroundColor: primaryColor,
@@ -126,39 +129,121 @@ class GameScreenState extends State<GameScreen> {
             flex: 4,
             child: Diamond(
               bases: basesOccupied,
+              onRunScored: (Player p) => addRunAndRBI(p),
             ),
           ),
           Flexible(
             flex: 2,
-            child: Wrap(
-              runAlignment: WrapAlignment.spaceBetween,
-              children: <Widget>[
-                FlatButton(
-                  onPressed: onBack,
-                  child: Text("BACK"),
-                  color: Colors.green,
-                ),
-                FlatButton(
-                  onPressed: onForward,
-                  child: Text("NEXT"),
-                  color: Colors.green,
-                ),
-                FlatButton(
-                  onPressed: onReset,
-                  child: Text("RESET"),
-                  color: Colors.green,
-                ),
-                FlatButton(
-                  onPressed: onNextBatter,
-                  child: Text("Next Batter"),
-                  color: Colors.green,
-                ),
-              ],
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                children: <Widget>[
+                  Row(
+                    children: <Widget>[
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: FlatButton(
+                            onPressed: onReset,
+                            child: Text("RESET"),
+                            color: accentColor,
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        child: playResult != null
+                            ? FlatButton(
+                                onPressed: onSubmitPlay,
+                                child: Text("Submit Play"),
+                                color: accentColor,
+                              )
+                            : Container(),
+                      ),
+                    ],
+                  ),
+                  _resultButtons(row1),
+                  _resultButtons(row2),
+                ],
+              ),
             ),
           ),
         ],
       ),
     );
+  }
+
+  final List<String> row1 = [
+    Player.LABEL_1B,
+    Player.LABEL_2B,
+    Player.LABEL_3B,
+    Player.LABEL_HR,
+    Player.LABEL_BB,
+    Player.LABEL_K,
+  ];
+  final List<String> row2 = [
+    Player.LABEL_OUT,
+    Player.LABEL_SF,
+    "Sac Bunt",
+    Player.LABEL_ROE,
+    Player.LABEL_SB,
+    Player.LABEL_HBP,
+  ];
+
+  Row _resultButtons(List<String> row) {
+    List<Widget> buttons = new List();
+    row.forEach((label) => buttons.add(
+          Expanded(
+            child: MaterialButton(
+              shape: Border.all(color: accentColor),
+              padding: EdgeInsets.all(0),
+              onPressed: () => setState(() => playResult = label),
+              child: Text(label),
+              color: label == playResult ? accentColor : Colors.white,
+              highlightColor: accentColor,
+              minWidth: 8.0,
+              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            ),
+          ),
+        ));
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: buttons,
+    );
+  }
+
+  void _onResultEntered(String result) {
+    switch (result) {
+      case Player.LABEL_1B:
+        batter.singles++;
+        break;
+      case Player.LABEL_2B:
+        batter.doubles++;
+        break;
+      case Player.LABEL_3B:
+        batter.triples++;
+        break;
+      case Player.LABEL_HR:
+        batter.hrs++;
+        break;
+      case Player.LABEL_ROE:
+        batter.reachedOnErrors++;
+        break;
+      case Player.LABEL_BB:
+        batter.walks++;
+        break;
+      case Player.LABEL_K:
+        batter.strikeOuts++;
+        break;
+      case Player.LABEL_OUT:
+        batter.outs++;
+        break;
+      case Player.LABEL_HBP:
+        batter.hbp++;
+        break;
+      case Player.LABEL_SF:
+        batter.sacFlies++;
+        break;
+    }
   }
 
   void onBack() {
@@ -171,22 +256,37 @@ class GameScreenState extends State<GameScreen> {
 
   void onReset() {
     setState(() {
-      debugPrint("onReset");
-      basesOccupied.forEach((s) => debugPrint("basesOccupied  ${s?.name}"));
-      prevBasesOccupied.forEach((s) => debugPrint("prevBasesOccupied  ${s?.name}"));
+      _log("onReset");
       resetBases();
     });
   }
 
-  void onNextBatter() {
+  void onSubmitPlay() {
+    _onResultEntered(playResult);
     advanceLineup();
     setState(() {
-      debugPrint("onNextBatter");
+      _log("onNextBatter");
       basesOccupied[0] = batter;
+      _updatePlayerStats();
       updatePrevBases();
-      basesOccupied.forEach((s) => debugPrint("basesOccupied  ${s?.name}"));
-      prevBasesOccupied.forEach((s) => debugPrint("prevBasesOccupied  ${s?.name}"));
+      playResult = null;
     });
+  }
+
+  void _updatePlayerStats() async {
+    prevBasesOccupied.forEach((player) {
+      if (player != null) {
+        RepositoryServicePlayers.updatePlayer(player);
+      }
+    });
+  }
+
+  void _log(String name) {
+    debugPrint(name);
+    basesOccupied.forEach((s) =>
+        debugPrint("basesOccupied  ${s?.name}   r:${s?.runs}  rbi:${s?.rbi}"));
+    prevBasesOccupied.forEach((s) => debugPrint(
+        "prevBasesOccupied  ${s?.name}   r:${s?.runs}  rbi:${s?.rbi}"));
   }
 
   void resetBases() {
@@ -217,5 +317,10 @@ class GameScreenState extends State<GameScreen> {
     }
     debugPrint("lineuep $lineupNumber");
     _retrieveBatter();
+  }
+
+  addRunAndRBI(Player p) {
+    p.runs++;
+    batter.rbi++;
   }
 }
