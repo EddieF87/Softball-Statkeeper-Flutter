@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:sleekstats_flutter_statkeeper/model/player.dart';
 
 class Diamond extends StatefulWidget {
-  final basesOccupied;
+  final List<Player> bases;
 
-  const Diamond({Key key, this.basesOccupied}) : super(key: key);
+  const Diamond({Key key, this.bases}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => DiamondState();
@@ -16,21 +17,21 @@ class DiamondState extends State<Diamond> {
       padding: const EdgeInsets.all(24.0),
       child: Stack(
         children: <Widget>[
-          widget.basesOccupied[0]
+          widget.bases[0] != null
               ? _createRunner(
                   base: 0, alignment: Alignment.center, onBase: false)
               : Container(),
           _createBase(
               base: 1,
               alignment: Alignment.centerRight,
-              isOccupied: widget.basesOccupied[1]),
+              isOccupied: widget.bases[1] != null),
           _createBase(
-            isOccupied: widget.basesOccupied[2],
+            isOccupied: widget.bases[2] != null,
             base: 2,
             alignment: Alignment.topCenter,
           ),
           _createBase(
-            isOccupied: widget.basesOccupied[3],
+            isOccupied: widget.bases[3] != null,
             base: 3,
             alignment: Alignment.centerLeft,
           ),
@@ -41,11 +42,52 @@ class DiamondState extends State<Diamond> {
           ),
           Align(
             alignment: Alignment.bottomRight,
-            child: Container(
-              width: 30,
-              height: 30,
-              color: Colors.yellow,
+            child: DragTarget(
+              builder: (BuildContext context, List<int> candidateData,
+                  List rejectedData) {
+                return Container(
+                  width: 90,
+                  height: 90,
+                  color: Colors.yellow,
+                  child: Stack(
+                    children: <Widget>[
+                      Icon(
+                        Icons.highlight_off,
+                        size: 90,
+                      ),
+                      Align(
+                        alignment: Alignment.bottomCenter,
+                        child: Text(
+                          "OUT",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            backgroundColor: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              },
+              onLeave: (data) {
+                print("onLeave");
+              },
+              onWillAccept: (data) {
+                return true;
+              },
+              onAccept: (data) {
+                print("onAccept");
+                setState(() {});
+              },
             ),
+          ),
+          Align(
+            alignment: Alignment.topLeft,
+            child: IconButton(icon: Icon(Icons.fast_rewind), onPressed: null),
+          ),
+          Align(
+            alignment: Alignment.topRight,
+            child: IconButton(icon: Icon(Icons.fast_forward), onPressed: null),
           ),
         ],
       ),
@@ -90,18 +132,18 @@ class DiamondState extends State<Diamond> {
           return false;
         }
         for (var i = data + 1; i < base; i++) {
-          if (widget.basesOccupied[i]) {
+          if (widget.bases[i] != null) {
             print("base $i occupied");
             return false;
           }
         }
-        return !widget.basesOccupied[base];
+        return widget.bases[base] == null;
       },
       onAccept: (data) {
         print("onAccept");
         setState(() {
-          widget.basesOccupied[base] = true;
-          widget.basesOccupied[4] = false;
+          widget.bases[base] = widget.bases[data];
+          widget.bases[4] = null;
         });
       },
     );
@@ -112,33 +154,75 @@ class DiamondState extends State<Diamond> {
       alignment: alignment,
       child: Draggable(
         data: base,
-        child: onBase ? _runnerOnBaseIcon() : _batterIcon(),
+        child: onBase ? _onBaseIcon(name: widget.bases[base].name) : _batterIcon(name: widget.bases[base].name),
         feedback: Icon(
           Icons.directions_run,
           size: 90,
         ),
         childWhenDragging: Container(),
         onDragCompleted: () =>
-            setState(() => widget.basesOccupied[base] = false),
+            setState(() => widget.bases[base] = null),
       ),
     );
   }
 
-  Widget _runnerOnBaseIcon() {
+  Widget _onBaseIcon({String name}) {
     return Transform.rotate(
       angle: -0.785398,
-      child: Icon(
-        Icons.directions_run,
-        size: 90,
+      child: Container(
+        width: 90,
+        height: 90,
+        child: Stack(
+          children: <Widget>[
+            Center(
+              child: Icon(
+                Icons.person,
+                size: 90,
+              ),
+            ),
+            _nameBox(name: name),
+          ],
+        ),
       ),
     );
   }
 
-  Widget _batterIcon() {
-    return Image(
-      image: AssetImage("assets/img_batter.png"),
+  Widget _batterIcon({String name}) {
+    return Container(
       width: 90,
       height: 90,
+      child: Stack(
+        children: <Widget>[
+          Center(
+            child: Image(
+              image: AssetImage("assets/img_batter.png"),
+              fit: BoxFit.contain,
+            ),
+          ),
+          _nameBox(name: name),
+        ],
+      ),
+    );
+  }
+
+  Widget _nameBox({String name}) {
+    return Align(
+      alignment: Alignment.bottomCenter,
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          border: Border.all(
+            color: Colors.red,
+          ),
+        ),
+        padding: EdgeInsets.all(2.0),
+        child: Text(
+          name,
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ),
     );
   }
 }

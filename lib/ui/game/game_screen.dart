@@ -11,10 +11,11 @@ class GameScreen extends StatefulWidget {
   final String awayTeamFirestoreID;
   final String homeTeamFirestoreID;
 
-  const GameScreen({Key key,
-    this.statkeeperFirestoreID,
-    this.awayTeamFirestoreID,
-    this.homeTeamFirestoreID})
+  const GameScreen(
+      {Key key,
+      this.statkeeperFirestoreID,
+      this.awayTeamFirestoreID,
+      this.homeTeamFirestoreID})
       : super(key: key);
 
   @override
@@ -25,8 +26,8 @@ class GameScreenState extends State<GameScreen> {
   bool reset = false;
   String batterID;
   Player batter;
-  var basesOccupied = [true, false, false, false, false];
-  final prevBasesOccupied = [true, false, false, false, false];
+  List<Player> basesOccupied  = [null, null, null, null, null];
+  List<Player> prevBasesOccupied  = [null, null, null, null, null];
   final runsScored = [];
   final lineup = [];
   int awayTeamRuns;
@@ -45,8 +46,7 @@ class GameScreenState extends State<GameScreen> {
 
   void _retrieveLineup() async {
     debugPrint("_retrieveLineup");
-    List<Player> playerList =
-    await RepositoryServicePlayers.getAllPlayers(
+    List<Player> playerList = await RepositoryServicePlayers.getAllPlayers(
         widget.statkeeperFirestoreID);
     debugPrint("playerList ${playerList.length}");
     playerList.forEach((p) => lineup.add(p.firestoreID));
@@ -61,16 +61,19 @@ class GameScreenState extends State<GameScreen> {
     batterID = lineup[lineupNumber];
     debugPrint("_retrieveBatter  $batterID   $lineupNumber");
     batter = await RepositoryServicePlayers.getPlayer(batterID);
-    debugPrint("_retrieveBatter YESSSSSS");
+    debugPrint("_retrieveBatter retrieved");
     setState(() {
       batter = batter;
+      basesOccupied[0]  = batter;
+      prevBasesOccupied[0]  = basesOccupied[0];
     });
-    debugPrint("grgtg  ${batter.name}");
+    debugPrint("_retrieveBatter batterName =  ${batter.name}");
   }
 
   void _retrievePlay() async {
-    Play play = await RepositoryServicePlays.getPlay(widget.statkeeperFirestoreID, 0);
-    debugPrint("_retrieveBatter YESSSSSS");
+    Play play =
+        await RepositoryServicePlays.getPlay(widget.statkeeperFirestoreID, 0);
+    debugPrint("_retrievePlay");
     setState(() {
       batterID = play.batter;
       basesOccupied = play.bases;
@@ -88,9 +91,7 @@ class GameScreenState extends State<GameScreen> {
     if (batter == null) {
       return Text("F");
     }
-    Color primaryColor = Theme
-        .of(context)
-        .primaryColor;
+    Color primaryColor = Theme.of(context).primaryColor;
     return Scaffold(
       backgroundColor: primaryColor,
       appBar: AppBar(
@@ -124,13 +125,13 @@ class GameScreenState extends State<GameScreen> {
           Flexible(
             flex: 4,
             child: Diamond(
-              basesOccupied: basesOccupied,
+              bases: basesOccupied,
             ),
           ),
           Flexible(
             flex: 2,
-            child: ButtonBar(
-              alignment: MainAxisAlignment.spaceEvenly,
+            child: Wrap(
+              runAlignment: WrapAlignment.spaceBetween,
               children: <Widget>[
                 FlatButton(
                   onPressed: onBack,
@@ -171,8 +172,8 @@ class GameScreenState extends State<GameScreen> {
   void onReset() {
     setState(() {
       debugPrint("onReset");
-      basesOccupied.forEach((s) => debugPrint("basesOccupied  $s"));
-      prevBasesOccupied.forEach((s) => debugPrint("prevBasesOccupied  $s"));
+      basesOccupied.forEach((s) => debugPrint("basesOccupied  ${s?.name}"));
+      prevBasesOccupied.forEach((s) => debugPrint("prevBasesOccupied  ${s?.name}"));
       resetBases();
     });
   }
@@ -181,10 +182,10 @@ class GameScreenState extends State<GameScreen> {
     advanceLineup();
     setState(() {
       debugPrint("onNextBatter");
-      basesOccupied[0] = true;
+      basesOccupied[0] = batter;
       updatePrevBases();
-      basesOccupied.forEach((s) => debugPrint("basesOccupied  $s"));
-      prevBasesOccupied.forEach((s) => debugPrint("prevBasesOccupied  $s"));
+      basesOccupied.forEach((s) => debugPrint("basesOccupied  ${s?.name}"));
+      prevBasesOccupied.forEach((s) => debugPrint("prevBasesOccupied  ${s?.name}"));
     });
   }
 
@@ -202,7 +203,7 @@ class GameScreenState extends State<GameScreen> {
 
   decreaseLineup() {
     lineupNumber--;
-    if(lineupNumber < 0) {
+    if (lineupNumber < 0) {
       lineupNumber = lineup.length - 1;
     }
     _retrieveBatter();
@@ -210,7 +211,7 @@ class GameScreenState extends State<GameScreen> {
 
   advanceLineup() {
     lineupNumber++;
-    if(lineupNumber >= lineup.length) {
+    if (lineupNumber >= lineup.length) {
       debugPrint("lineuep $lineupNumber  >=  ${lineup.length}");
       lineupNumber = 0;
     }
