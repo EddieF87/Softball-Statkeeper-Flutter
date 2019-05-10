@@ -4,8 +4,9 @@ import 'package:sleekstats_flutter_statkeeper/model/player.dart';
 class Diamond extends StatefulWidget {
   final List<Player> bases;
   final ValueSetter<Player> onRunScored;
+  final VoidCallback onBatterMoved;
 
-  const Diamond({Key key, this.bases, this.onRunScored}) : super(key: key);
+  const Diamond({Key key, this.bases, this.onRunScored, this.onBatterMoved}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => DiamondState();
@@ -141,7 +142,11 @@ class DiamondState extends State<Diamond> {
         }
         setState(() {
           widget.bases[base] = widget.bases[data];
+          widget.bases[data] = null;
           widget.bases[4] = null;
+          if(data == 0) {
+            widget.onBatterMoved();
+          }
         });
       },
     );

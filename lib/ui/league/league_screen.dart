@@ -29,12 +29,12 @@ class _LeagueScreenState extends State<LeagueScreen> {
   List<Player> players;
   List<Team> teams;
 
-  _retrievePlayers() async {
+  void _retrievePlayers() async {
     players = await RepositoryServicePlayers.getAllPlayers(widget.firestoreID);
     setState(() => players = players);
   }
 
-  _retrieveTeams() async {
+  void _retrieveTeams() async {
     teams = await RepositoryServiceTeams.getAllTeams(widget.firestoreID);
     setState(() => teams = teams);
   }
@@ -208,15 +208,17 @@ class _LeagueScreenState extends State<LeagueScreen> {
   }
 
   _goToGame() {
-    Navigator.of(context).push(
-      MaterialPageRoute<Null>(
-        builder: (BuildContext context) => GameScreen(
-              statkeeperFirestoreID: widget.firestoreID,
-              awayTeamFirestoreID: teams[0].firestoreID,
-              homeTeamFirestoreID: teams[0].firestoreID,
-            ),
-      ),
-    );
+    Navigator.of(context)
+        .push(
+          MaterialPageRoute<Null>(
+            builder: (BuildContext context) => GameScreen(
+                  statkeeperFirestoreID: widget.firestoreID,
+                  awayTeamFirestoreID: teams[0].firestoreID,
+                  homeTeamFirestoreID: teams[0].firestoreID,
+                ),
+          ),
+        )
+        .whenComplete(_retrieveLeagueData);
   }
 }
 

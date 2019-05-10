@@ -27,8 +27,8 @@ class GameScreenState extends State<GameScreen> {
   String batterID;
   Player batter;
   String playResult;
-  List<Player> basesOccupied = [null, null, null, null, null];
-  List<Player> prevBasesOccupied = [null, null, null, null, null];
+  List<Player> bases = [null, null, null, null, null];
+  List<Player> prevBases = [null, null, null, null, null];
   final runsScored = [];
   final lineup = [];
   int awayTeamRuns;
@@ -66,8 +66,8 @@ class GameScreenState extends State<GameScreen> {
     debugPrint("_retrieveBatter retrieved");
     setState(() {
       batter = batter;
-      basesOccupied[0] = batter;
-      prevBasesOccupied[0] = basesOccupied[0];
+      bases[0] = batter;
+      prevBases[0] = bases[0];
     });
     debugPrint("_retrieveBatter batterName =  ${batter.name}");
   }
@@ -78,7 +78,7 @@ class GameScreenState extends State<GameScreen> {
     debugPrint("_retrievePlay");
     setState(() {
       batterID = play.batter;
-      basesOccupied = play.bases;
+      bases = play.bases;
       awayTeamRuns = play.awayTeamRuns;
       homeTeamRuns = play.homeTeamRuns;
       innings = play.innings;
@@ -128,8 +128,13 @@ class GameScreenState extends State<GameScreen> {
           Flexible(
             flex: 4,
             child: Diamond(
-              bases: basesOccupied,
+              bases: bases,
               onRunScored: (Player p) => addRunAndRBI(p),
+              onBatterMoved: () {
+                setState(() {
+                  bases[0] = null;
+                });
+              },
             ),
           ),
           Flexible(
@@ -151,7 +156,7 @@ class GameScreenState extends State<GameScreen> {
                         ),
                       ),
                       Expanded(
-                        child: playResult != null
+                        child: playResult != null && bases[0] == null
                             ? FlatButton(
                                 onPressed: onSubmitPlay,
                                 child: Text("Submit Play"),
@@ -258,6 +263,7 @@ class GameScreenState extends State<GameScreen> {
     setState(() {
       _log("onReset");
       resetBases();
+      playResult = null;
     });
   }
 
@@ -266,7 +272,7 @@ class GameScreenState extends State<GameScreen> {
     advanceLineup();
     setState(() {
       _log("onNextBatter");
-      basesOccupied[0] = batter;
+      bases[0] = batter;
       _updatePlayerStats();
       updatePrevBases();
       playResult = null;
@@ -274,7 +280,7 @@ class GameScreenState extends State<GameScreen> {
   }
 
   void _updatePlayerStats() async {
-    prevBasesOccupied.forEach((player) {
+    prevBases.forEach((player) {
       if (player != null) {
         RepositoryServicePlayers.updatePlayer(player);
       }
@@ -283,21 +289,21 @@ class GameScreenState extends State<GameScreen> {
 
   void _log(String name) {
     debugPrint(name);
-    basesOccupied.forEach((s) =>
+    bases.forEach((s) =>
         debugPrint("basesOccupied  ${s?.name}   r:${s?.runs}  rbi:${s?.rbi}"));
-    prevBasesOccupied.forEach((s) => debugPrint(
+    prevBases.forEach((s) => debugPrint(
         "prevBasesOccupied  ${s?.name}   r:${s?.runs}  rbi:${s?.rbi}"));
   }
 
   void resetBases() {
-    for (int i = 0; i < basesOccupied.length; i++) {
-      basesOccupied[i] = prevBasesOccupied[i];
+    for (int i = 0; i < bases.length; i++) {
+      bases[i] = prevBases[i];
     }
   }
 
   void updatePrevBases() {
-    for (int i = 0; i < prevBasesOccupied.length; i++) {
-      prevBasesOccupied[i] = basesOccupied[i];
+    for (int i = 0; i < prevBases.length; i++) {
+      prevBases[i] = bases[i];
     }
   }
 
