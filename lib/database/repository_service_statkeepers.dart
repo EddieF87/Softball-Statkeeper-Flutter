@@ -27,7 +27,7 @@ class RepositoryServiceStatKeepers {
     return statKeeper;
   }
 
-  static Future<void> insertStatKeeper(StatKeeper statKeeper) async {
+  static Future<int> insertStatKeeper(StatKeeper statKeeper) async {
     final sql = '''INSERT INTO ${DBContract.TABLE_STATKEEPERS}
     ( 
     ${DBContract.FIRESTORE_ID},
@@ -60,21 +60,23 @@ class RepositoryServiceStatKeepers {
       case StatKeeper.TYPE_LEAGUE:
         break;
       default:
-        return;
+        return -1;
     }
-    final result = await db.rawInsert(sql, params);
+    final int result = await db.rawInsert(sql, params);
     DBCreator.databaseLog("Add StatKeeper", sql, null, result);
+    return result;
   }
 
-  static Future<void> deleteStatKeeper(StatKeeper statKeeper) async {
+  static Future<int> deleteStatKeeper(StatKeeper statKeeper) async {
     final sql =
         '''DELETE ${DBContract.TABLE_STATKEEPERS} WHERE ${DBContract.FIRESTORE_ID}=?''';
     List<String> params = [statKeeper.firestoreID];
     final result = await db.rawDelete(sql, params);
     DBCreator.databaseLog("Delete StatKeeper", sql, null, result);
+    return result;
   }
 
-  static Future<void> updateStatKeeper(StatKeeper statKeeper) async {
+  static Future<int> updateStatKeeper(StatKeeper statKeeper) async {
     final sql = '''UPDATE ${DBContract.TABLE_STATKEEPERS} 
     SET ${DBContract.NAME} = ${statKeeper.name},
     ${DBContract.LEVEL} = ${statKeeper.level}
@@ -84,6 +86,7 @@ class RepositoryServiceStatKeepers {
     List<String> params = [statKeeper.firestoreID];
     final result = await db.rawUpdate(sql, params);
     DBCreator.databaseLog("Update StatKeeper", sql, null, result);
+    return result;
   }
 
   static Future<int> statkeeperCount() async {

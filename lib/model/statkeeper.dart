@@ -34,6 +34,5 @@ class StatKeeper {
     this.name = json[DBContract.NAME];
     this.type = json[DBContract.TYPE];
     this.level = json[DBContract.LEVEL];
-
   }
 }

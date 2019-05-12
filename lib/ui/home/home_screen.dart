@@ -1,37 +1,29 @@
 import 'package:flutter/material.dart';
-import 'package:sleekstats_flutter_statkeeper/database/repository_service_statkeepers.dart';
+import 'package:provider/provider.dart';
 import 'package:sleekstats_flutter_statkeeper/model/statkeeper.dart';
+import 'package:sleekstats_flutter_statkeeper/store/user_store.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:sleekstats_flutter_statkeeper/ui/home/statkeeper_creator_dialog.dart';
 import 'package:sleekstats_flutter_statkeeper/ui/league/league_screen.dart';
 import 'package:sleekstats_flutter_statkeeper/ui/player/player_screen.dart';
 import 'package:sleekstats_flutter_statkeeper/ui/statkeeper_screen.dart';
 import 'package:sleekstats_flutter_statkeeper/ui/team/team_screen.dart';
 
-class HomeScreen extends StatefulWidget {
-  HomeScreen({Key key, this.title}) : super(key: key);
+class HomeScreen extends StatelessWidget {
   final String title;
 
-  @override
-  _HomeScreenState createState() => _HomeScreenState();
-}
-
-class _HomeScreenState extends State<HomeScreen> {
-  List<StatKeeper> sKList = [];
-
-  @override
-  void initState() {
-    super.initState();
-    _getAllStatKeepers();
-  }
+  HomeScreen({Key key, this.title}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    debugPrint("HomeScreen build!!!!");
+    UserStore userStore = Provider.of<UserStore>(context);
+
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title),
+        title: Text(title),
       ),
       body: Container(
-//        color: Theme.of(context).primaryColorLight,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
@@ -50,58 +42,58 @@ class _HomeScreenState extends State<HomeScreen> {
             Expanded(
               child: Padding(
                 padding: EdgeInsets.all(16.0),
-                child: _buildStatKeeperWidgets(),
-//              ),
+                child: StatKeeperList(userStore),
               ),
             ),
           ],
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: _showCreateSKDialog,
+        onPressed: () => _showCreateSKDialog(context),
         child: Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+      ),
     );
   }
 
-  Widget _buildStatKeeperWidgets() {
-    return ListView.builder(
-      itemBuilder: (BuildContext context, int index) => StatKeeperLabel(
-            statKeeper: sKList[index],
-          ),
-      itemCount: sKList.length,
-    );
-  }
+  Future<void> _showCreateSKDialog(BuildContext context) async {
+    UserStore userStore = Provider.of<UserStore>(context);
 
-  ///Query statkeepers from repository
-  _getAllStatKeepers() async {
-    sKList = await RepositoryServiceStatKeepers.getAllStatKeepers();
-    setState(() {
-      sKList = sKList;
-    });
-  }
-
-  ///Insert newly created statkeeper into repository
-  _insertNewStatKeeper(StatKeeper sK) async {
-    await RepositoryServiceStatKeepers.insertStatKeeper(sK);
-
-    setState(() {
-      sKList.add(sK);
-    });
-  }
-
-  ///Callback received from CreateStatKeeperDialog with info of new StatKeeper
-  _onNewSKCreated(StatKeeper sK) {
-    _insertNewStatKeeper(sK);
-  }
-
-  Future<void> _showCreateSKDialog() async {
     return showDialog<void>(
       context: context,
       builder: (BuildContext context) {
         return StatKeeperCreatorDialog(
-          onSKCreated: (StatKeeper sK) => _onNewSKCreated(sK),
+          onSKCreated: (StatKeeper sK) => userStore.addStatKeeper(sK),
         );
+      },
+    );
+  }
+}
+
+class StatKeeperList extends StatelessWidget {
+  final UserStore _userStore;
+
+  const StatKeeperList(this._userStore);
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<List<StatKeeper>>(
+      future: _userStore.getStatKeepers(),
+      builder: (BuildContext context, AsyncSnapshot snapshot) {
+        if (snapshot.connectionState == ConnectionState.done) {
+          if(_userStore.statKeepers.isEmpty) {
+            return Center(child: Text("Create a StatKeeper!"));
+          }
+          return Observer(
+            builder: (_) => ListView.builder(
+                itemBuilder: (BuildContext context, int index) =>
+                    StatKeeperLabel(
+                      statKeeper: _userStore.statKeepers[index],
+                    ),
+                itemCount: _userStore.statKeepers.length),
+          );
+        } else {
+          return Center(child: CircularProgressIndicator());
+        }
       },
     );
   }
@@ -173,7 +165,7 @@ class StatKeeperLabel extends StatelessWidget {
     );
   }
 
-  /// Gets StatKeeperRoute based on chosen statKeeper type
+  /// Get StatKeeperScreen based on chosen statKeeper type
   StatKeeperScreen _getStatKeeperRouter(StatKeeper sK) {
     switch (sK.type) {
       case StatKeeper.TYPE_PLAYER:
@@ -199,10 +191,10 @@ class StatKeeperLabel extends StatelessWidget {
     }
   }
 
-  /// Navigates to the [StatkeeperRoute].
+  /// Navigates to the [StatKeeperScreen].
   void _navigateToRoute(BuildContext context, StatKeeper sK) {
-    StatKeeperScreen statKeeperRoute = _getStatKeeperRouter(sK);
-    if (statKeeperRoute == null) {
+    StatKeeperScreen statKeeperScreen = _getStatKeeperRouter(sK);
+    if (statKeeperScreen == null) {
       return;
     }
 
@@ -220,7 +212,7 @@ class StatKeeperLabel extends StatelessWidget {
               ),
               centerTitle: true,
             ),
-            body: statKeeperRoute,
+            body: statKeeperScreen,
           );
         },
       ),

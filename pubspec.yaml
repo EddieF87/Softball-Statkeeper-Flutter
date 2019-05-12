@@ -14,7 +14,7 @@ description: Lite Version of Softball Statkeeper
 version: 1.0.0+1
 
 environment:
-  sdk: ">=2.2.0 <3.0.0"
+  sdk: ">=2.2.0-dev <3.0.0"
 
 dependencies:
   flutter:
@@ -23,6 +23,9 @@ dependencies:
   sqflite: ^1.1.0
   uuid: 2.0.0
   material_search: ^0.2.8
+  provider: ^2.0.0+1
+  mobx:
+  flutter_mobx:
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -31,6 +34,8 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  build_runner:
+  mobx_codegen:
 
 
 # For information on the generic Dart part of this file, see the

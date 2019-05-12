@@ -25,6 +25,8 @@ class _PlayerScreenState extends State<PlayerScreen> {
 
   @override
   Widget build(BuildContext context) {
+
+    debugPrint("_PlayerScreenState");
     return FutureBuilder(
       future: _retrievePlayer(widget.firestoreID),
       builder: (BuildContext context, AsyncSnapshot<Player> snapshot) {
