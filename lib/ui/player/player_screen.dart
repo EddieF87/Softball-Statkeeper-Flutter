@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:sleekstats_flutter_statkeeper/database/repository_service_players.dart';
+import 'package:provider/provider.dart';
 import 'package:sleekstats_flutter_statkeeper/model/player.dart';
-import 'package:sleekstats_flutter_statkeeper/ui/statkeeper_screen.dart';
+import 'package:sleekstats_flutter_statkeeper/store/player_store.dart';
 import 'package:sleekstats_flutter_statkeeper/ui/player/player_stats_page.dart';
 
-class PlayerScreen extends StatKeeperScreen {
+class PlayerScreen extends StatelessWidget {
   final String title;
   final String firestoreID;
 
@@ -14,32 +14,23 @@ class PlayerScreen extends StatKeeperScreen {
   }) : assert(firestoreID != null);
 
   @override
-  _PlayerScreenState createState() => _PlayerScreenState();
-}
-
-class _PlayerScreenState extends State<PlayerScreen> {
-
-  Future<Player> _retrievePlayer(String fID) async {
-    return await RepositoryServicePlayers.getPlayer(fID);
-  }
-
-  @override
   Widget build(BuildContext context) {
-
     debugPrint("_PlayerScreenState");
-    return FutureBuilder(
-      future: _retrievePlayer(widget.firestoreID),
+    PlayerStore playerStore = Provider.of<PlayerStore>(context);
+
+    return FutureBuilder<Player>(
+      future: playerStore.getPlayerFromDB(firestoreID, firestoreID),
       builder: (BuildContext context, AsyncSnapshot<Player> snapshot) {
-        if (snapshot.hasData) {
-          return PlayerStatsPage(
-            player: snapshot.data,
-          );
-
-        } else if (snapshot.hasError) {
-          return Center(
-            child: Text("Error: Couldn't find player!"),
-          );
-
+        if (snapshot.connectionState == ConnectionState.done) {
+          if (snapshot.hasData) {
+            return PlayerStatsPage(
+              player: playerStore.player,
+            );
+          } else {
+            return Center(
+              child: Text("Couldn't find player!"),
+            );
+          }
         } else {
           return Center(
             child: CircularProgressIndicator(),

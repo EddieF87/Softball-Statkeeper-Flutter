@@ -48,6 +48,13 @@ mixin _$UserStore on _UserStore, Store {
     return _$getStatKeepersAsyncAction.run(() => super.getStatKeepers());
   }
 
+  final _$updateStatKeepersAsyncAction = AsyncAction('updateStatKeepers');
+
+  @override
+  Future<dynamic> updateStatKeepers() {
+    return _$updateStatKeepersAsyncAction.run(() => super.updateStatKeepers());
+  }
+
   final _$addStatKeeperAsyncAction = AsyncAction('addStatKeeper');
 
   @override

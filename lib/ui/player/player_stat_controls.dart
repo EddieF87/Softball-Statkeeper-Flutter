@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:sleekstats_flutter_statkeeper/store/player_store.dart';
 import 'package:sleekstats_flutter_statkeeper/ui/team/player_stat_label.dart';
 
 class PlayerStatControls extends StatefulWidget {
-  final String stat;
-  final ValueSetter onSubmit;
+  final PlayerStore playerStore;
 
-  PlayerStatControls({
-    this.stat,
-    this.onSubmit,
-  });
+  PlayerStatControls({this.playerStore});
 
   @override
   State<StatefulWidget> createState() => _PlayerStatControlsState();
@@ -40,9 +38,11 @@ class _PlayerStatControlsState extends State<PlayerStatControls> {
             child: createIconButton(Icons.remove_circle, decreaseAmount),
           ),
           Expanded(
-            child: PlayerStatLabel(
-              stat: widget.stat,
-              amount: this.amount,
+            child: Observer(
+              builder: (_) => PlayerStatLabel(
+                    stat: widget.playerStore.statToUpdate,
+                    amount: this.amount,
+                  ),
             ),
           ),
           Expanded(
@@ -50,8 +50,7 @@ class _PlayerStatControlsState extends State<PlayerStatControls> {
           ),
           Expanded(
             child: RaisedButton(
-              onPressed: () => widget
-                  .onSubmit(StatToUpdate(name: widget.stat, amount: amount)),
+              onPressed: () => widget.playerStore.updateCountingStat(amount),
               child: Text("Update"),
             ),
           ),
@@ -71,15 +70,4 @@ class _PlayerStatControlsState extends State<PlayerStatControls> {
       splashColor: Colors.yellow,
     );
   }
-}
-
-class StatToUpdate {
-  final String name;
-  final int amount;
-
-  StatToUpdate({
-    this.name,
-    this.amount,
-  });
-//      : assert(name != null, amount != null)
 }

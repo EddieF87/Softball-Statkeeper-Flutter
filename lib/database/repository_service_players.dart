@@ -4,9 +4,13 @@ import 'package:sleekstats_flutter_statkeeper/model/player.dart';
 
 class RepositoryServicePlayers {
   static Future<List<Player>> getAllPlayers(
-      String statkeeperFirestoreID) async {
-    final data = await queryPlayerDB(
-        statkeeperFirestoreID, DBContract.STATKEEPER_FIRESTORE_ID);
+      String statKeeperFirestoreID) async {
+    final sql = '''SELECT * FROM${DBContract.TABLE_PLAYERS} 
+    WHERE ${DBContract.STATKEEPER_FIRESTORE_ID}=?''';
+
+    List<String> params = [statKeeperFirestoreID];
+    final data = await db.rawQuery(sql, params);
+
     List<Player> playerStatsList = [];
     for (final node in data) {
       final playerStats = Player.fromJson(node);
@@ -17,12 +21,14 @@ class RepositoryServicePlayers {
 
   static Future<List<Player>> getAllPlayersFromTeam(
       String statkeeperFirestoreID, String teamFirestoreID) async {
+
     final sql = '''SELECT * FROM ${DBContract.TABLE_PLAYERS} 
     WHERE ${DBContract.STATKEEPER_FIRESTORE_ID}=? 
     AND ${DBContract.TEAM_FIRESTORE_ID}=?''';
 
     List<String> params = [statkeeperFirestoreID, teamFirestoreID];
     final data = await db.rawQuery(sql, params);
+
     List<Player> playerStatsList = [];
     for (final node in data) {
       final playerStats = Player.fromJson(node);
@@ -32,15 +38,23 @@ class RepositoryServicePlayers {
     return playerStatsList;
   }
 
-  static Future<Player> getPlayer(String firestoreID) async {
-    final data = await queryPlayerDB(firestoreID, DBContract.FIRESTORE_ID);
+  static Future<Player> getPlayer(
+      String statKeeperFirestoreID, String firestoreID) async {
+
+    final sql = '''SELECT * FROM ${DBContract.TABLE_PLAYERS} WHERE 
+    ${DBContract.STATKEEPER_FIRESTORE_ID}=? AND ${DBContract.FIRESTORE_ID}=?''';
+
+    List<String> params = [statKeeperFirestoreID, firestoreID];
+    final data = await db.rawQuery(sql, params);
+
     return Player.fromJson(data[0]);
   }
 
   static Future<List<Map<String, dynamic>>> queryPlayerDB(
-      String id, String query) async {
-    final sql = '''SELECT * FROM ${DBContract.TABLE_PLAYERS} WHERE $query=?''';
-    List<String> params = [id];
+      String statKeeperFirestoreID, String id, String query) async {
+    final sql = '''SELECT * FROM ${DBContract.TABLE_PLAYERS} WHERE 
+    ${DBContract.STATKEEPER_FIRESTORE_ID}=? AND $query=?''';
+    List<String> params = [statKeeperFirestoreID, id];
     return await db.rawQuery(sql, params);
   }
 

@@ -72,7 +72,6 @@ class Player {
   int reachedOnErrors;
 
   Player({
-//    @required
     this.id,
     @required this.firestoreID,
     this.teamFirestoreID,
@@ -174,13 +173,13 @@ class Player {
 
   int getTotalBases() => singles + doubles * 2 + triples * 3 + hrs * 4;
 
-  int getOnBase() => getHits() + walks;
+  int getOnBase() => getHits() + walks + hbp;
 
   int getOnBasePlusROE() => getOnBase() + reachedOnErrors;
 
   int getAB() => getHits() + outs + reachedOnErrors;
 
-  int getPA() => getAB() + walks + sacFlies;
+  int getPA() => getAB() + walks + sacFlies + hbp;
 
   double getAVG() {
     if (getAB() == 0) {

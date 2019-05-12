@@ -62,7 +62,7 @@ class GameScreenState extends State<GameScreen> {
   void _retrieveBatter() async {
     batterID = lineup[lineupNumber];
     debugPrint("_retrieveBatter  $batterID   $lineupNumber");
-    batter = await RepositoryServicePlayers.getPlayer(batterID);
+    batter = await RepositoryServicePlayers.getPlayer(widget.statkeeperFirestoreID, batterID);
     debugPrint("_retrieveBatter retrieved");
     setState(() {
       batter = batter;

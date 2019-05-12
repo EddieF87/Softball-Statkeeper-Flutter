@@ -6,13 +6,12 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:sleekstats_flutter_statkeeper/ui/home/statkeeper_creator_dialog.dart';
 import 'package:sleekstats_flutter_statkeeper/ui/league/league_screen.dart';
 import 'package:sleekstats_flutter_statkeeper/ui/player/player_screen.dart';
-import 'package:sleekstats_flutter_statkeeper/ui/statkeeper_screen.dart';
 import 'package:sleekstats_flutter_statkeeper/ui/team/team_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   final String title;
 
-  HomeScreen({Key key, this.title}) : super(key: key);
+  const HomeScreen({Key key, this.title}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -165,8 +164,8 @@ class StatKeeperLabel extends StatelessWidget {
     );
   }
 
-  /// Get StatKeeperScreen based on chosen statKeeper type
-  StatKeeperScreen _getStatKeeperRouter(StatKeeper sK) {
+  /// Get statKeeperScreen based on chosen statKeeper type
+  Widget _getStatKeeperRouter(StatKeeper sK) {
     switch (sK.type) {
       case StatKeeper.TYPE_PLAYER:
         return PlayerScreen(
@@ -191,9 +190,9 @@ class StatKeeperLabel extends StatelessWidget {
     }
   }
 
-  /// Navigates to the [StatKeeperScreen].
+  /// Navigates to the [statKeeperScreen].
   void _navigateToRoute(BuildContext context, StatKeeper sK) {
-    StatKeeperScreen statKeeperScreen = _getStatKeeperRouter(sK);
+    Widget statKeeperScreen = _getStatKeeperRouter(sK);
     if (statKeeperScreen == null) {
       return;
     }

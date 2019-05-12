@@ -6,13 +6,12 @@ import 'package:sleekstats_flutter_statkeeper/model/team.dart';
 import 'package:sleekstats_flutter_statkeeper/ui/game/game_screen.dart';
 import 'package:sleekstats_flutter_statkeeper/ui/league/add_teams_dialog.dart';
 import 'package:sleekstats_flutter_statkeeper/ui/league/teams_pageview.dart';
-import 'package:sleekstats_flutter_statkeeper/ui/statkeeper_screen.dart';
 import 'package:sleekstats_flutter_statkeeper/ui/league/league_standings_page.dart';
 import 'package:sleekstats_flutter_statkeeper/ui/team/add_players_dialog.dart';
 import 'package:sleekstats_flutter_statkeeper/ui/team/players_stats_table.dart';
 import 'package:sleekstats_flutter_statkeeper/ui/team/team_controls.dart';
 
-class LeagueScreen extends StatKeeperScreen {
+class LeagueScreen extends StatefulWidget {
   final String title;
   final String firestoreID;
 

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sleekstats_flutter_statkeeper/database/db_creator.dart';
+import 'package:sleekstats_flutter_statkeeper/store/player_store.dart';
 import 'package:sleekstats_flutter_statkeeper/store/user_store.dart';
 import 'package:sleekstats_flutter_statkeeper/ui/home/home_screen.dart';
 
@@ -31,6 +32,10 @@ class MyApp extends StatelessWidget {
       providers: [
         Provider(
           builder: (_) => UserStore(),
+          dispose: (context, value) => value.dispose(),
+        ),
+        Provider(
+          builder: (_) => PlayerStore(),
           dispose: (context, value) => value.dispose(),
         ),
       ],
@@ -77,7 +82,7 @@ class MyApp extends StatelessWidget {
               ),
             ),
             scaffoldBackgroundColor: primaryColorLight),
-        home: HomeScreen(title: 'Sleek Stats Softball Lite'),
+        home: const HomeScreen(title: 'Sleek Stats Softball Lite'),
       ),
     );
   }

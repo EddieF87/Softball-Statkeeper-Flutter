@@ -3,10 +3,9 @@ import 'package:sleekstats_flutter_statkeeper/database/repository_service_player
 import 'package:sleekstats_flutter_statkeeper/database/repository_service_teams.dart';
 import 'package:sleekstats_flutter_statkeeper/model/player.dart';
 import 'package:sleekstats_flutter_statkeeper/model/team.dart';
-import 'package:sleekstats_flutter_statkeeper/ui/statkeeper_screen.dart';
 import 'package:sleekstats_flutter_statkeeper/ui/team/team_stats_page.dart';
 
-class TeamScreen extends StatKeeperScreen {
+class TeamScreen extends StatefulWidget {
   final String title;
   final String firestoreID;
 
