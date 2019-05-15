@@ -25,7 +25,6 @@ abstract class _UserStore implements Store {
 
   @action
   Future<ObservableList<StatKeeper>> getStatKeepers() async {
-    print("userStore  getStatKeepers");
     statKeepers.clear();
     statKeepers.addAll(ObservableList.of(await RepositoryServiceStatKeepers.getAllStatKeepers()));
     return statKeepers;
@@ -33,21 +32,18 @@ abstract class _UserStore implements Store {
 
   @action
   Future updateStatKeepers() async {
-    print("userStore  getStatKeepers");
     statKeepers.clear();
     statKeepers.addAll(ObservableList.of(await RepositoryServiceStatKeepers.getAllStatKeepers()));
   }
 
   @action
   Future addStatKeeper(StatKeeper statKeeper) async {
-    print("userStore  addStatKeeper");
     await RepositoryServiceStatKeepers.insertStatKeeper(statKeeper);
     statKeepers.add(statKeeper);
   }
 
   @action
   Future removeStatKeeper(StatKeeper statKeeper) async {
-    print("userStore  deleteStatKeeper");
     await RepositoryServiceStatKeepers.deleteStatKeeper(statKeeper);
     statKeepers.remove(statKeeper);
   }

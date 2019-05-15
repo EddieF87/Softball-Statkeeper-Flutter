@@ -7,15 +7,15 @@ import 'package:sleekstats_flutter_statkeeper/ui/game/diamond.dart';
 import 'package:sleekstats_flutter_statkeeper/ui/game/scoreboard.dart';
 
 class GameScreen extends StatefulWidget {
-  final String statkeeperFirestoreID;
-  final String awayTeamFirestoreID;
-  final String homeTeamFirestoreID;
+  final String statkeeperFireID;
+  final String awayTeamFireID;
+  final String homeTeamFireID;
 
   const GameScreen(
       {Key key,
-      this.statkeeperFirestoreID,
-      this.awayTeamFirestoreID,
-      this.homeTeamFirestoreID})
+      this.statkeeperFireID,
+      this.awayTeamFireID,
+      this.homeTeamFireID})
       : super(key: key);
 
   @override
@@ -47,13 +47,10 @@ class GameScreenState extends State<GameScreen> {
   }
 
   void _retrieveLineup() async {
-    debugPrint("_retrieveLineup");
     List<Player> playerList = await RepositoryServicePlayers.getAllPlayers(
-        widget.statkeeperFirestoreID);
-    debugPrint("playerList ${playerList.length}");
-    playerList.forEach((p) => lineup.add(p.firestoreID));
+        widget.statkeeperFireID);
+    playerList.forEach((p) => lineup.add(p.fireID));
     if (lineup == null || lineup.isEmpty) {
-      debugPrint("lineup == null");
       return;
     }
     _retrieveBatter();
@@ -62,7 +59,7 @@ class GameScreenState extends State<GameScreen> {
   void _retrieveBatter() async {
     batterID = lineup[lineupNumber];
     debugPrint("_retrieveBatter  $batterID   $lineupNumber");
-    batter = await RepositoryServicePlayers.getPlayer(widget.statkeeperFirestoreID, batterID);
+    batter = await RepositoryServicePlayers.getPlayer(widget.statkeeperFireID, batterID);
     debugPrint("_retrieveBatter retrieved");
     setState(() {
       batter = batter;
@@ -74,7 +71,7 @@ class GameScreenState extends State<GameScreen> {
 
   void _retrievePlay() async {
     Play play =
-        await RepositoryServicePlays.getPlay(widget.statkeeperFirestoreID, 0);
+        await RepositoryServicePlays.getPlay(widget.statkeeperFireID, 0);
     debugPrint("_retrievePlay");
     setState(() {
       batterID = play.batter;
@@ -85,7 +82,6 @@ class GameScreenState extends State<GameScreen> {
       inningRuns = play.inningRuns;
       inningChanged = play.inningChanged;
     });
-    debugPrint("grgtg  ${batter.name}");
   }
 
   @override

@@ -43,19 +43,17 @@ mixin _$PlayerStore on _PlayerStore, Store {
   final _$setPlayerFromDBAsyncAction = AsyncAction('setPlayerFromDB');
 
   @override
-  Future<dynamic> setPlayerFromDB(
-      String statKeeperFirestoreID, String firestoreID) {
+  Future<dynamic> setPlayerFromDB(String statKeeperFireID, String fireID) {
     return _$setPlayerFromDBAsyncAction
-        .run(() => super.setPlayerFromDB(statKeeperFirestoreID, firestoreID));
+        .run(() => super.setPlayerFromDB(statKeeperFireID, fireID));
   }
 
   final _$getPlayerFromDBAsyncAction = AsyncAction('getPlayerFromDB');
 
   @override
-  Future<Player> getPlayerFromDB(
-      String statKeeperFirestoreID, String firestoreID) {
+  Future<Player> getPlayerFromDB(String statKeeperFireID, String fireID) {
     return _$getPlayerFromDBAsyncAction
-        .run(() => super.getPlayerFromDB(statKeeperFirestoreID, firestoreID));
+        .run(() => super.getPlayerFromDB(statKeeperFireID, fireID));
   }
 
   final _$updateCountingStatAsyncAction = AsyncAction('updateCountingStat');
@@ -73,6 +71,16 @@ mixin _$PlayerStore on _PlayerStore, Store {
     final _$actionInfo = _$_PlayerStoreActionController.startAction();
     try {
       return super.setStatToUpdate(stat);
+    } finally {
+      _$_PlayerStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  dynamic setPlayer(Player newPlayer) {
+    final _$actionInfo = _$_PlayerStoreActionController.startAction();
+    try {
+      return super.setPlayer(newPlayer);
     } finally {
       _$_PlayerStoreActionController.endAction(_$actionInfo);
     }

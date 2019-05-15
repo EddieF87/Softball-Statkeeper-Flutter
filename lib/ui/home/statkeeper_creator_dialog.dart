@@ -133,7 +133,7 @@ class _StatKeeperCreatorDialogState extends State<StatKeeperCreatorDialog> {
 
   _createNewStatKeeper(String name, int type) {
     var uuid = new Uuid();
-    widget.onSKCreated(new StatKeeper(firestoreID: uuid.v1(), name: name, type: type, level: StatKeeper.LEVEL_CREATOR));
+    widget.onSKCreated(new StatKeeper(fireID: uuid.v1(), name: name, type: type, level: StatKeeper.LEVEL_CREATOR));
   }
 }
 

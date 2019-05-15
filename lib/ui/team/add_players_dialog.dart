@@ -1,20 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:sleekstats_flutter_statkeeper/database/repository_service_players.dart';
-import 'package:sleekstats_flutter_statkeeper/model/player.dart';
-import 'package:uuid/uuid.dart';
+import 'package:sleekstats_flutter_statkeeper/store/team_store.dart';
 
 class AddPlayersDialog extends StatefulWidget {
-  final String sKFireID;
-  final String teamFireID;
-  final String teamName;
-  final VoidCallback onNewPlayersSubmitted;
+  final TeamStore teamStore;
 
-  AddPlayersDialog(
-      {this.sKFireID,
-      this.teamFireID,
-      this.onNewPlayersSubmitted,
-      this.teamName})
-      : assert(sKFireID != null);
+  AddPlayersDialog({
+    this.teamStore,
+  }) : assert(teamStore != null);
 
   @override
   State<StatefulWidget> createState() => AddPlayersDialogState();
@@ -26,7 +18,7 @@ class AddPlayersDialogState extends State<AddPlayersDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text('Create New Players for ${widget.teamName}'),
+      title: Text('Create New Players for ${widget.teamStore.team.name}'),
       content: Container(
         width: double.maxFinite,
         height: double.maxFinite,
@@ -80,20 +72,6 @@ class AddPlayersDialogState extends State<AddPlayersDialog> {
   }
 
   _submitNewPlayers() {
-    debugPrint("New players = ");
-    var uuid = new Uuid();
-    playerNames.forEach((key, name) {
-      debugPrint("$key, $name");
-      RepositoryServicePlayers.insertPlayer(
-        Player(
-          firestoreID: uuid.v1(),
-          teamFirestoreID: widget.teamFireID,
-          statkeeperFirestoreID: widget.sKFireID,
-          name: name,
-          team: widget.teamName
-        ),
-      );
-    });
-    widget.onNewPlayersSubmitted();
+    widget.teamStore.addPlayers(playerNames);
   }
 }

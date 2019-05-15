@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sleekstats_flutter_statkeeper/model/statkeeper.dart';
+import 'package:sleekstats_flutter_statkeeper/store/team_store.dart';
 import 'package:sleekstats_flutter_statkeeper/store/user_store.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:sleekstats_flutter_statkeeper/ui/home/statkeeper_creator_dialog.dart';
@@ -15,7 +16,6 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    debugPrint("HomeScreen build!!!!");
     UserStore userStore = Provider.of<UserStore>(context);
 
     return Scaffold(
@@ -170,19 +170,19 @@ class StatKeeperLabel extends StatelessWidget {
       case StatKeeper.TYPE_PLAYER:
         return PlayerScreen(
           title: sK.name,
-          firestoreID: sK.firestoreID,
+          fireID: sK.fireID,
         );
         break;
       case StatKeeper.TYPE_TEAM:
         return TeamScreen(
           title: sK.name,
-          firestoreID: sK.firestoreID,
+          fireID: sK.fireID,
         );
         break;
       case StatKeeper.TYPE_LEAGUE:
         return LeagueScreen(
           title: sK.name,
-          firestoreID: sK.firestoreID,
+          fireID: sK.fireID,
         );
         break;
       default:
@@ -196,6 +196,8 @@ class StatKeeperLabel extends StatelessWidget {
     if (statKeeperScreen == null) {
       return;
     }
+    TeamStore teamStore = Provider.of(context);
+    teamStore.clearTeam();
 
     Navigator.of(context).push(
       MaterialPageRoute<Null>(

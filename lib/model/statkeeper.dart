@@ -3,7 +3,7 @@ import 'package:sleekstats_flutter_statkeeper/database/db_contract.dart';
 
 class StatKeeper {
   int id;
-  String firestoreID;
+  String fireID;
   String name;
   int type;
   int level;
@@ -20,17 +20,17 @@ class StatKeeper {
   static const TYPE_LEAGUE = 2;
 
   StatKeeper({
-    @required this.firestoreID,
+    @required this.fireID,
     @required this.name,
     @required this.type,
     this.level = LEVEL_VIEW_ONLY,
-  })  : assert(firestoreID != null),
+  })  : assert(fireID != null),
         assert(name != null),
         assert(type != null),
         assert(level != null);
 
   StatKeeper.fromJson(Map<String, dynamic> json) {
-    this.firestoreID = json[DBContract.FIRESTORE_ID];
+    this.fireID = json[DBContract.FIRESTORE_ID];
     this.name = json[DBContract.NAME];
     this.type = json[DBContract.TYPE];
     this.level = json[DBContract.LEVEL];

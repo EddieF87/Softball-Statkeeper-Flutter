@@ -6,25 +6,24 @@ import 'package:sleekstats_flutter_statkeeper/ui/player/player_stats_page.dart';
 
 class PlayerScreen extends StatelessWidget {
   final String title;
-  final String firestoreID;
+  final String fireID;
 
   PlayerScreen({
     this.title,
-    this.firestoreID,
-  }) : assert(firestoreID != null);
+    this.fireID,
+  }) : assert(fireID != null);
 
   @override
   Widget build(BuildContext context) {
-    debugPrint("_PlayerScreenState");
     PlayerStore playerStore = Provider.of<PlayerStore>(context);
 
     return FutureBuilder<Player>(
-      future: playerStore.getPlayerFromDB(firestoreID, firestoreID),
+      future: playerStore.getPlayerFromDB(fireID, fireID),
       builder: (BuildContext context, AsyncSnapshot<Player> snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
           if (snapshot.hasData) {
-            return PlayerStatsPage(
-              player: playerStore.player,
+            return PlayerPage(
+//              player: playerStore.player,
             );
           } else {
             return Center(

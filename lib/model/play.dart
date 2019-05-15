@@ -4,7 +4,7 @@ class Play {
 
   int id;
   int number;
-  String statkeeperFirestoreID;
+  String statkeeperFireID;
   String play;
   String batter;
   String onDeck;
@@ -22,7 +22,7 @@ class Play {
   Play({
     this.id,
     this.number,
-    this.statkeeperFirestoreID,
+    this.statkeeperFireID,
     this.play,
     this.batter,
     this.onDeck,
@@ -34,12 +34,12 @@ class Play {
     this.inningRuns,
     this.bases,
     this.runsScored
-  }) : assert(statkeeperFirestoreID != null, id != null);
+  }) : assert(statkeeperFireID != null, id != null);
 
   Map<String, dynamic> toJson() => {
     DBContract.ID: this.id,
     DBContract.PLAY_NUMBER: this.number,
-    DBContract.STATKEEPER_FIRESTORE_ID: this.statkeeperFirestoreID,
+    DBContract.STATKEEPER_FIRESTORE_ID: this.statkeeperFireID,
     DBContract.PLAY: this.play,
     DBContract.BATTER: this.batter,
     DBContract.ON_DECK: this.onDeck,
@@ -63,7 +63,7 @@ class Play {
   Play.fromJson(Map<String, dynamic> json) {
     this.id= json[DBContract.ID];
     this.number= json[DBContract.PLAY_NUMBER];
-    this.statkeeperFirestoreID= json[DBContract.STATKEEPER_FIRESTORE_ID];
+    this.statkeeperFireID= json[DBContract.STATKEEPER_FIRESTORE_ID];
     this.play= json[DBContract.PLAY];
     this.batter= json[DBContract.BATTER];
     this.onDeck= json[DBContract.ON_DECK];
@@ -80,6 +80,6 @@ class Play {
 
   @override
   String toString() {
-    return "Play $play  id:$id  sKID:$statkeeperFirestoreID";
+    return "Play $play  id:$id  sKID:$statkeeperFireID";
   }
 }

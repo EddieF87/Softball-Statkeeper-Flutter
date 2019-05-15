@@ -1,24 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:sleekstats_flutter_statkeeper/database/repository_service_players.dart';
 import 'package:sleekstats_flutter_statkeeper/database/repository_service_teams.dart';
 import 'package:sleekstats_flutter_statkeeper/model/player.dart';
 import 'package:sleekstats_flutter_statkeeper/model/team.dart';
+import 'package:sleekstats_flutter_statkeeper/store/team_store.dart';
 import 'package:sleekstats_flutter_statkeeper/ui/game/game_screen.dart';
 import 'package:sleekstats_flutter_statkeeper/ui/league/add_teams_dialog.dart';
 import 'package:sleekstats_flutter_statkeeper/ui/league/teams_pageview.dart';
 import 'package:sleekstats_flutter_statkeeper/ui/league/league_standings_page.dart';
 import 'package:sleekstats_flutter_statkeeper/ui/team/add_players_dialog.dart';
-import 'package:sleekstats_flutter_statkeeper/ui/team/players_stats_table.dart';
 import 'package:sleekstats_flutter_statkeeper/ui/team/team_controls.dart';
 
 class LeagueScreen extends StatefulWidget {
   final String title;
-  final String firestoreID;
+  final String fireID;
 
   LeagueScreen({
     this.title,
-    this.firestoreID,
-  }) : assert(firestoreID != null);
+    this.fireID,
+  }) : assert(fireID != null);
 
   @override
   _LeagueScreenState createState() => _LeagueScreenState();
@@ -29,18 +30,18 @@ class _LeagueScreenState extends State<LeagueScreen> {
   List<Team> teams;
 
   void _retrievePlayers() async {
-    players = await RepositoryServicePlayers.getAllPlayers(widget.firestoreID);
+    players = await RepositoryServicePlayers.getAllPlayers(widget.fireID);
     setState(() => players = players);
   }
 
   void _retrieveTeams() async {
-    teams = await RepositoryServiceTeams.getAllTeams(widget.firestoreID);
+    teams = await RepositoryServiceTeams.getAllTeams(widget.fireID);
     setState(() => teams = teams);
   }
 
   void _retrieveLeagueData() async {
-    teams = await RepositoryServiceTeams.getAllTeams(widget.firestoreID);
-    players = await RepositoryServicePlayers.getAllPlayers(widget.firestoreID);
+    teams = await RepositoryServiceTeams.getAllTeams(widget.fireID);
+    players = await RepositoryServicePlayers.getAllPlayers(widget.fireID);
 
     setState(() {
       teams = teams;
@@ -88,15 +89,18 @@ class _LeagueScreenState extends State<LeagueScreen> {
                   Padding(
                     padding: EdgeInsets.only(right: 32.0, left: 32.0),
                     child: (players != null && teams != null)
-                        ? PlayersStatsTable(
-                            isLeague: true,
-                            players: players,
-                            onTeamLinkClicked: (String teamFireID) =>
-                                _navigateToTeamsPageViewByTeamFireID(
-                                  context,
-                                  teamFireID,
-                                ),
-                          )
+                        ?
+                        Container()
+                    //todo fix
+//                    PlayersStatsTable(
+//                            isLeague: true,
+//                            players: players,
+//                            onTeamLinkClicked: (String teamFireID) =>
+//                                _navigateToTeamsPageViewByTeamFireID(
+//                                  context,
+//                                  teamFireID,
+//                                ),
+//                          )
                         : Center(
                             child: CircularProgressIndicator(),
                           ),
@@ -139,23 +143,23 @@ class _LeagueScreenState extends State<LeagueScreen> {
         return AddChoiceDialog(
           teams: teams,
           onAddPlayersChoice: (Team team) => _showAddPlayersDialog(
-                teamFirestoreID: team.firestoreID,
+                teamFireID: team.fireID,
                 teamName: team.name,
-                statkeeperFirestoreID: widget.firestoreID,
+                statkeeperFireID: widget.fireID,
               ),
           onAddTeamsChoice: () =>
-              _showAddTeamsDialog(statkeeperFirestoreID: widget.firestoreID),
+              _showAddTeamsDialog(statkeeperFireID: widget.fireID),
         );
       },
     );
   }
 
-  Future<void> _showAddTeamsDialog({String statkeeperFirestoreID}) async {
+  Future<void> _showAddTeamsDialog({String statkeeperFireID}) async {
     return showDialog<void>(
       context: context,
       builder: (BuildContext context) {
         return AddTeamsDialog(
-          sKFireID: statkeeperFirestoreID,
+          sKFireID: statkeeperFireID,
           onNewTeamsSubmitted: () {
             _retrieveTeams();
           },
@@ -164,19 +168,19 @@ class _LeagueScreenState extends State<LeagueScreen> {
     );
   }
 
-  Future<void> _showAddPlayersDialog(
-      {String teamFirestoreID,
-      String statkeeperFirestoreID,
-      String teamName}) async {
+  Future<void> _showAddPlayersDialog({
+    String teamFireID,
+    String statkeeperFireID,
+    String teamName,
+  }) async {
+    //todo fix
+    TeamStore teamStore = Provider.of<TeamStore>(context);
     return showDialog<void>(
       context: context,
       builder: (BuildContext context) {
-        return AddPlayersDialog(
-          teamFireID: teamFirestoreID,
-          sKFireID: statkeeperFirestoreID,
-          teamName: teamName,
-          onNewPlayersSubmitted: () => _retrievePlayers(),
-        );
+        return AddPlayersDialog(teamStore: teamStore
+//          onNewPlayersSubmitted: () => _retrievePlayers(),
+            );
       },
     );
   }
@@ -189,7 +193,7 @@ class _LeagueScreenState extends State<LeagueScreen> {
     if (teams == null) {
       return;
     }
-    int index = teams.indexWhere((team) => team.firestoreID == teamFireID);
+    int index = teams.indexWhere((team) => team.fireID == teamFireID);
     if (index < 0) {
       return;
     }
@@ -211,9 +215,9 @@ class _LeagueScreenState extends State<LeagueScreen> {
         .push(
           MaterialPageRoute<Null>(
             builder: (BuildContext context) => GameScreen(
-                  statkeeperFirestoreID: widget.firestoreID,
-                  awayTeamFirestoreID: teams[0].firestoreID,
-                  homeTeamFirestoreID: teams[0].firestoreID,
+                  statkeeperFireID: widget.fireID,
+                  awayTeamFireID: teams[0].fireID,
+                  homeTeamFireID: teams[0].fireID,
                 ),
           ),
         )

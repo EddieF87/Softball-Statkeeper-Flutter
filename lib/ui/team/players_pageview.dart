@@ -1,17 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:sleekstats_flutter_statkeeper/model/player.dart';
+import 'package:sleekstats_flutter_statkeeper/store/player_store.dart';
+import 'package:sleekstats_flutter_statkeeper/store/players_group_store.dart';
 import 'package:sleekstats_flutter_statkeeper/ui/player/player_stats_page.dart';
 import 'package:sleekstats_flutter_statkeeper/utils/stat_formatter.dart';
 
 class PlayersPageView extends StatefulWidget {
-  final List<Player> players;
+  final PlayerStore playerStore;
+  final PlayersGroupStore playersGroupStore;
   final int startingIndex;
 
   PlayersPageView({
     Key key,
-    this.players,
+    this.playerStore,
+    this.playersGroupStore,
     this.startingIndex = 0,
-  })  : assert(players != null),
+  })  : assert(playersGroupStore != null),
         super(key: key);
 
   @override
@@ -25,6 +29,15 @@ class PlayersPageViewState extends State<PlayersPageView> {
   void initState() {
     super.initState();
     _pageController = PageController(initialPage: widget.startingIndex);
+    widget.playerStore
+        .setPlayer(widget.playersGroupStore.players[widget.startingIndex]);
+  }
+
+
+  @override
+  void dispose() {
+    _pageController?.dispose();
+    super.dispose();
   }
 
   @override
@@ -41,24 +54,26 @@ class PlayersPageViewState extends State<PlayersPageView> {
           IconButton(
             icon: Icon(Icons.search),
             onPressed: () => showSearch(
-                context: context,
-                delegate: PlayerSearch(
-                    players: widget.players,
-                    onPlayerSelected: (index) => _moveToPlayerPage(index))),
+                  context: context,
+                  delegate: PlayerSearch(
+                    players: widget.playersGroupStore.players,
+                    onPlayerSelected: (index) => _moveToPlayerPage(index),
+                  ),
+                ),
           ),
         ],
       ),
       body: PageView.builder(
-        itemBuilder: (BuildContext context, int index) => PlayerStatsPage(
-              player: widget.players[index],
-            ),
-        itemCount: widget.players.length,
+        itemBuilder: (BuildContext context, int index) => PlayerPage(),
+        itemCount: widget.playersGroupStore.players.length,
+        onPageChanged: (index) => widget.playerStore.setPlayer(widget.playersGroupStore.players[index]),
         controller: _pageController,
       ),
     );
   }
 
   void _moveToPlayerPage(int index) {
+    widget.playerStore.setPlayer(widget.playersGroupStore.players[index]);
     _pageController.jumpToPage(index);
   }
 }
@@ -90,11 +105,15 @@ class PlayerSearch extends SearchDelegate<Player> {
 
   @override
   Widget buildSuggestions(BuildContext context) {
-    if (players == null || players.isEmpty) {
-      return Center(child: Text("No Players!"));
+    if (players == null) {
+      return Center(child: Text("PLAYERSNULLLLLLLL!"));
+    } else if (players.isEmpty) {
+      return Center(child: Text("No Players! ${players.length}"));
     }
-    final results = players.where(
-        (player) => player.name.toLowerCase().contains(query.toLowerCase()));
+    final results = query.isEmpty
+        ? players
+        : players.where((player) =>
+            player.name.toLowerCase().contains(query.toLowerCase()));
     return Padding(
       padding: const EdgeInsets.all(32.0),
       child: ListView(

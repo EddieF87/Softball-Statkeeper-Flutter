@@ -4,11 +4,11 @@ import 'package:sleekstats_flutter_statkeeper/model/player.dart';
 
 class RepositoryServicePlayers {
   static Future<List<Player>> getAllPlayers(
-      String statKeeperFirestoreID) async {
-    final sql = '''SELECT * FROM${DBContract.TABLE_PLAYERS} 
+      String statKeeperFireID) async {
+    final sql = '''SELECT * FROM ${DBContract.TABLE_PLAYERS} 
     WHERE ${DBContract.STATKEEPER_FIRESTORE_ID}=?''';
 
-    List<String> params = [statKeeperFirestoreID];
+    List<String> params = [statKeeperFireID];
     final data = await db.rawQuery(sql, params);
 
     List<Player> playerStatsList = [];
@@ -20,41 +20,40 @@ class RepositoryServicePlayers {
   }
 
   static Future<List<Player>> getAllPlayersFromTeam(
-      String statkeeperFirestoreID, String teamFirestoreID) async {
+      String statkeeperFireID, String teamFireID) async {
 
     final sql = '''SELECT * FROM ${DBContract.TABLE_PLAYERS} 
     WHERE ${DBContract.STATKEEPER_FIRESTORE_ID}=? 
     AND ${DBContract.TEAM_FIRESTORE_ID}=?''';
 
-    List<String> params = [statkeeperFirestoreID, teamFirestoreID];
+    List<String> params = [statkeeperFireID, teamFireID];
     final data = await db.rawQuery(sql, params);
 
     List<Player> playerStatsList = [];
     for (final node in data) {
       final playerStats = Player.fromJson(node);
-      print(playerStats);
       playerStatsList.add(playerStats);
     }
     return playerStatsList;
   }
 
   static Future<Player> getPlayer(
-      String statKeeperFirestoreID, String firestoreID) async {
+      String statKeeperFireID, String fireID) async {
 
     final sql = '''SELECT * FROM ${DBContract.TABLE_PLAYERS} WHERE 
     ${DBContract.STATKEEPER_FIRESTORE_ID}=? AND ${DBContract.FIRESTORE_ID}=?''';
 
-    List<String> params = [statKeeperFirestoreID, firestoreID];
+    List<String> params = [statKeeperFireID, fireID];
     final data = await db.rawQuery(sql, params);
 
     return Player.fromJson(data[0]);
   }
 
   static Future<List<Map<String, dynamic>>> queryPlayerDB(
-      String statKeeperFirestoreID, String id, String query) async {
+      String statKeeperFireID, String id, String query) async {
     final sql = '''SELECT * FROM ${DBContract.TABLE_PLAYERS} WHERE 
     ${DBContract.STATKEEPER_FIRESTORE_ID}=? AND $query=?''';
-    List<String> params = [statKeeperFirestoreID, id];
+    List<String> params = [statKeeperFireID, id];
     return await db.rawQuery(sql, params);
   }
 
@@ -88,9 +87,9 @@ class RepositoryServicePlayers {
     ''';
     List<dynamic> params = [
       player.id,
-      player.firestoreID,
-      player.teamFirestoreID,
-      player.statkeeperFirestoreID,
+      player.fireID,
+      player.teamFireID,
+      player.statkeeperFireID,
       player.name,
       player.team,
       player.gender,
@@ -141,7 +140,6 @@ class RepositoryServicePlayers {
     WHERE ${DBContract.ID} =?
     ''';
 
-    print("player id =  ${player.id}");
     List<String> params = [player.id.toString()];
     final result = await db.rawUpdate(sql, params);
     DBCreator.databaseLog("Update Player", sql, null, result);
@@ -156,10 +154,10 @@ class RepositoryServicePlayers {
   }
 
   ///Insert newly created player into repository based off newly created SK
-  static onNewPlayerStatKeeper({String name, String firestoreID}) async {
+  static onNewPlayerStatKeeper({String name, String fireID}) async {
     insertPlayer(Player(
-      firestoreID: firestoreID,
-      statkeeperFirestoreID: firestoreID,
+      fireID: fireID,
+      statkeeperFireID: fireID,
       name: name,
     ));
   }

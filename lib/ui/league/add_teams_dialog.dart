@@ -76,14 +76,13 @@ class AddTeamsDialogState extends State<AddTeamsDialog> {
   }
 
   _submitNewTeams() {
-    debugPrint("New teams = ");
     var uuid = new Uuid();
     teamNames.forEach((key, name) {
       debugPrint("$key, $name");
       RepositoryServiceTeams.insertTeam(
         Team(
-          firestoreID: uuid.v1(),
-          statkeeperFirestoreID: widget.sKFireID,
+          fireID: uuid.v1(),
+          statkeeperFireID: widget.sKFireID,
           name: name,
         ),
       );

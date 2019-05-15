@@ -4,8 +4,8 @@ import 'package:sleekstats_flutter_statkeeper/model/player.dart';
 
 class Team {
   int id;
-  String firestoreID;
-  String statkeeperFirestoreID;
+  String fireID;
+  String statkeeperFireID;
   String name;
   int wins;
   int losses;
@@ -25,21 +25,21 @@ class Team {
 
   Team({
     this.id,
-    @required this.firestoreID,
+    @required this.fireID,
     @required this.name,
-    this.statkeeperFirestoreID,
+    this.statkeeperFireID,
     this.wins = 0,
     this.losses = 0,
     this.ties = 0,
     this.runsScored = 0,
     this.runsAllowed = 0,
-  })  : assert(firestoreID != null),
+  })  : assert(fireID != null),
         assert(name != null);
 
   Team.fromJson(Map<String, dynamic> json) {
     this.id = json[DBContract.ID];
-    this.firestoreID = json[DBContract.FIRESTORE_ID];
-    this.statkeeperFirestoreID = json[DBContract.STATKEEPER_FIRESTORE_ID];
+    this.fireID = json[DBContract.FIRESTORE_ID];
+    this.statkeeperFireID = json[DBContract.STATKEEPER_FIRESTORE_ID];
     this.name = json[DBContract.NAME];
     this.wins = json[DBContract.WINS];
     this.losses = json[DBContract.LOSSES];
@@ -61,7 +61,7 @@ class Team {
 
   @override
   String toString() {
-    return "Team: $firestoreID  $statkeeperFirestoreID\n$name  $wins-$losses-$ties   $runsScored  $runsAllowed";
+    return "Team: $fireID  $statkeeperFireID\n$name  $wins-$losses-$ties   $runsScored  $runsAllowed";
   }
 
   static Comparator<Team> nameComparator() =>

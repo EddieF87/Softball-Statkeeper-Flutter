@@ -1,41 +1,30 @@
 import 'package:flutter/material.dart';
-import 'package:sleekstats_flutter_statkeeper/database/repository_service_players.dart';
-import 'package:sleekstats_flutter_statkeeper/database/repository_service_teams.dart';
-import 'package:sleekstats_flutter_statkeeper/model/player.dart';
+import 'package:provider/provider.dart';
 import 'package:sleekstats_flutter_statkeeper/model/team.dart';
+import 'package:sleekstats_flutter_statkeeper/store/team_store.dart';
 import 'package:sleekstats_flutter_statkeeper/ui/team/team_stats_page.dart';
 
-class TeamScreen extends StatefulWidget {
+class TeamScreen extends StatelessWidget {
   final String title;
-  final String firestoreID;
+  final String fireID;
 
-  TeamScreen({
+  const TeamScreen({
     Key key,
     this.title,
-    this.firestoreID,
-  }) : assert(firestoreID != null);
-
-  @override
-  _TeamScreenState createState() => _TeamScreenState();
-}
-
-class _TeamScreenState extends State<TeamScreen> {
-  Team team;
-
-  Future<Team> _retrieveTeam(String fID) async {
-    List<Player> players = await RepositoryServicePlayers.getAllPlayersFromTeam(widget.firestoreID, widget.firestoreID);
-    Team retrievedTeam = await RepositoryServiceTeams.getTeam(fID);
-    retrievedTeam.players.addAll(players);
-    return retrievedTeam;
-  }
+    this.fireID,
+  }) : assert(fireID != null);
 
   @override
   Widget build(BuildContext context) {
+    TeamStore teamStore = Provider.of<TeamStore>(context);
+
     return FutureBuilder(
-      future: _retrieveTeam(widget.firestoreID),
+      future: teamStore.getTeamFromDB(fireID, fireID),
       builder: (BuildContext context, AsyncSnapshot<Team> snapshot) {
-        if (snapshot.hasData) {
-          team = snapshot.data;
+        if (snapshot.connectionState == ConnectionState.done) {
+          if (!snapshot.hasData) {
+            return Center(child: Text("Can't find team!"));
+          }
           return DefaultTabController(
             length: 2,
             child: Column(
@@ -50,23 +39,7 @@ class _TeamScreenState extends State<TeamScreen> {
                     )
                   ],
                 ),
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: TabBarView(
-                      children: <Widget>[
-                        TeamStatsPage(
-                          team: team,
-                        ),
-                        Center(
-                          child: Text(
-                            "GamePage",
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
-                ),
+                TeamTabView(teamStore),
               ],
             ),
           );
@@ -76,6 +49,33 @@ class _TeamScreenState extends State<TeamScreen> {
           return Center(child: CircularProgressIndicator());
         }
       },
+    );
+  }
+}
+
+class TeamTabView extends StatelessWidget {
+  final TeamStore teamStore;
+
+  const TeamTabView(this.teamStore);
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: TabBarView(
+          children: <Widget>[
+            TeamStatsPage(
+              teamStore: teamStore,
+            ),
+            Center(
+              child: Text(
+                "GamePage",
+              ),
+            )
+          ],
+        ),
+      ),
     );
   }
 }

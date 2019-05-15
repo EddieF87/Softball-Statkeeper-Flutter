@@ -50,9 +50,9 @@ class Player {
   static const String LABEL_OBPROE = "OBP+E";
 
   int id;
-  String firestoreID;
-  String teamFirestoreID;
-  String statkeeperFirestoreID;
+  String fireID;
+  String teamFireID;
+  String statkeeperFireID;
   String name;
   String team;
   int games;
@@ -73,9 +73,9 @@ class Player {
 
   Player({
     this.id,
-    @required this.firestoreID,
-    this.teamFirestoreID,
-    this.statkeeperFirestoreID,
+    @required this.fireID,
+    this.teamFireID,
+    this.statkeeperFireID,
     @required this.name,
     this.team = "Free Agent",
     this.games = 0,
@@ -93,14 +93,14 @@ class Player {
     this.hbp = 0,
     this.gender = 0,
     this.reachedOnErrors = 0,
-  })  : assert(firestoreID != null),
+  })  : assert(fireID != null),
         assert(name != null);
 
   Map<String, dynamic> toJson() => {
         DBContract.ID: this.id,
-        DBContract.FIRESTORE_ID: this.firestoreID,
-        DBContract.TEAM_FIRESTORE_ID: this.teamFirestoreID,
-        DBContract.STATKEEPER_FIRESTORE_ID: this.statkeeperFirestoreID,
+        DBContract.FIRESTORE_ID: this.fireID,
+        DBContract.TEAM_FIRESTORE_ID: this.teamFireID,
+        DBContract.STATKEEPER_FIRESTORE_ID: this.statkeeperFireID,
         DBContract.NAME: this.name,
         DBContract.TEAM: this.team,
         DBContract.GAMES: this.games,
@@ -147,9 +147,9 @@ class Player {
 
   Player.fromJson(Map<String, dynamic> json) {
     this.id = json[DBContract.ID];
-    this.firestoreID = json[DBContract.FIRESTORE_ID];
-    this.teamFirestoreID = json[DBContract.TEAM_FIRESTORE_ID];
-    this.statkeeperFirestoreID = json[DBContract.STATKEEPER_FIRESTORE_ID];
+    this.fireID = json[DBContract.FIRESTORE_ID];
+    this.teamFireID = json[DBContract.TEAM_FIRESTORE_ID];
+    this.statkeeperFireID = json[DBContract.STATKEEPER_FIRESTORE_ID];
     this.name = json[DBContract.NAME];
     this.team = json[DBContract.TEAM];
     this.gender = json[DBContract.GENDER];
@@ -318,7 +318,13 @@ class Player {
       };
 
   @override
-  String toString() {
-    return "Player $name  id:$id fireID:$firestoreID  sKID:$statkeeperFirestoreID  teamID:$teamFirestoreID";
-  }
+  String toString() =>
+      "Player $name  id:$id fireID:$fireID  sKID:$statkeeperFireID  teamID:$teamFireID";
+
+  @override
+  bool operator ==(other) => (identical(this, other) ||
+      (other is Player && other.fireID == this.fireID));
+
+  @override
+  int get hashCode => this.fireID.hashCode;
 }

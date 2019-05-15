@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:sleekstats_flutter_statkeeper/model/team.dart';
+import 'package:sleekstats_flutter_statkeeper/store/team_store.dart';
 import 'package:sleekstats_flutter_statkeeper/ui/league/teams_pageview.dart';
 import 'package:sleekstats_flutter_statkeeper/utils/stat_formatter.dart';
 import 'package:sleekstats_flutter_statkeeper/ui/league/standings_row.dart';
@@ -27,13 +29,7 @@ class LeagueStandingsPageState extends State<LeagueStandingsPage> {
         children: <Widget>[
           StandingsHeaderRow(
             statSorted: statToSortBy,
-            onStatSelected: (stat) {
-              debugPrint("onStatSelected $stat");
-              setState(() {
-                debugPrint("setState");
-                statToSortBy = stat;
-              });
-            },
+            onStatSelected: (stat) => setState(() => statToSortBy = stat),
           ),
           Expanded(child: _buildList(statToSortBy)),
         ],
@@ -69,8 +65,10 @@ class LeagueStandingsPageState extends State<LeagueStandingsPage> {
     Navigator.of(context).push(
       MaterialPageRoute<Null>(
         builder: (BuildContext context) {
+          final TeamStore teamStore = Provider.of<TeamStore>(context);
           return TeamsPageView(
             teams: widget.teams,
+            teamStore: teamStore,
             startingIndex: index,
           );
         },
@@ -129,7 +127,6 @@ class StandingsHeaderRow extends StatelessWidget {
   }
 
   _onTapped(String data) {
-    debugPrint("_ontapped");
     onStatSelected(data);
   }
 }

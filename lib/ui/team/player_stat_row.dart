@@ -32,7 +32,7 @@ class PlayerStatRow extends StatelessWidget {
             ),
           ),
           isLeague ? InkWell(
-            onTap: () => onTeamSelected(player.teamFirestoreID),
+            onTap: () => onTeamSelected(player.teamFireID),
             child: StatCell(data: player.team, width: 70.0),
           ) : new Container(),
           StatCell(data: player.games),

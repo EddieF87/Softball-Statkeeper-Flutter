@@ -2,25 +2,32 @@ import 'package:flutter/material.dart';
 import 'package:sleekstats_flutter_statkeeper/model/player.dart';
 import 'package:sleekstats_flutter_statkeeper/ui/team/stat_cell.dart';
 
-class StatsHeaderRow extends StatelessWidget {
+class StatsHeaderRow extends StatefulWidget {
   final ValueChanged<String> onStatSelected;
-  final String statSorted;
-  final Color primaryColor = Color(0xFF689F38);
-  final Color accentColor = Color(0xFFeabd53);
   final bool isLeague;
 
   StatsHeaderRow({
     this.onStatSelected,
-    this.statSorted,
     this.isLeague = false,
   });
+
+  @override
+  _StatsHeaderRowState createState() => _StatsHeaderRowState();
+}
+
+class _StatsHeaderRowState extends State<StatsHeaderRow> {
+  final Color primaryColor = Color(0xFF689F38);
+  final Color accentColor = Color(0xFFeabd53);
+  String selectedStat;
 
   @override
   Widget build(BuildContext context) {
     return Row(
       children: <Widget>[
         _createHeaderCell(Player.LABEL_NAME, width: 100.0),
-        isLeague ?_createHeaderCell(Player.LABEL_TEAM, width: 70.0) : Container(),
+        widget.isLeague
+            ? _createHeaderCell(Player.LABEL_TEAM, width: 70.0)
+            : Container(),
         _createHeaderCell(Player.LABEL_G),
         _createHeaderCell(Player.LABEL_PA),
         _createHeaderCell(Player.LABEL_AB),
@@ -46,14 +53,16 @@ class StatsHeaderRow extends StatelessWidget {
     );
   }
 
-  Widget _createHeaderCell(String data, {double width = 50.0}) {
-    bool isSorted = statSorted == data;
+  Widget _createHeaderCell(String stat, {double width = 50.0}) {
     return Container(
-      color: isSorted ? accentColor : primaryColor,
+      color: selectedStat == stat ? accentColor : primaryColor,
       child: InkWell(
-        onTap: () => onStatSelected(data),
+        onTap: () {
+          setState(() => selectedStat = stat);
+          widget.onStatSelected(stat);
+        },
         child: StatCell(
-          data: data,
+          data: stat,
           fontWeight: FontWeight.bold,
           width: width,
           isHeaderRow: true,

@@ -4,10 +4,10 @@ import 'package:sleekstats_flutter_statkeeper/model/play.dart';
 
 class RepositoryServicePlays {
 
-  static Future<List<Play>> getAllPlays(String statkeeperFirestoreID) async {
+  static Future<List<Play>> getAllPlays(String statkeeperFireID) async {
     final sql = '''SELECT * FROM ${DBContract.TABLE_PLAYS} 
     WHERE ${DBContract.STATKEEPER_FIRESTORE_ID}=?''';
-    List<String> params = [statkeeperFirestoreID];
+    List<String> params = [statkeeperFireID];
     final data = await db.rawQuery(sql, params);
     List<Play> playsList = [];
     for (final node in data) {
@@ -17,10 +17,10 @@ class RepositoryServicePlays {
     return playsList;
   }
 
-  static Future<Play> getPlay(String statkeeperFirestoreID, int playNumber) async {
+  static Future<Play> getPlay(String statkeeperFireID, int playNumber) async {
     final sql = '''SELECT * FROM ${DBContract.TABLE_PLAYS} 
     WHERE ${DBContract.STATKEEPER_FIRESTORE_ID}=? AND ${DBContract.PLAY_NUMBER}=?''';
-    List<String> params = [statkeeperFirestoreID, playNumber.toString()];
+    List<String> params = [statkeeperFireID, playNumber.toString()];
     final data = await db.rawQuery(sql, params);
     return Play.fromJson(data[0]);
   }
@@ -55,7 +55,7 @@ class RepositoryServicePlays {
     List<dynamic> params = [
       play.id,
       play.number,
-      play.statkeeperFirestoreID,
+      play.statkeeperFireID,
       play.play,
       play.batter,
       play.onDeck,

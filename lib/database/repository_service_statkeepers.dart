@@ -17,11 +17,11 @@ class RepositoryServiceStatKeepers {
     return statKeeperList;
   }
 
-  static Future<StatKeeper> getStatKeeper(String firestoreID) async {
+  static Future<StatKeeper> getStatKeeper(String fireID) async {
     final sql = '''
     SELECT * FROM ${DBContract.TABLE_STATKEEPERS} WHERE ${DBContract.FIRESTORE_ID}=?
     ''';
-    List<String> params = [firestoreID];
+    List<String> params = [fireID];
     final data = await db.rawQuery(sql, params);
     final statKeeper = StatKeeper.fromJson(data[0]);
     return statKeeper;
@@ -39,7 +39,7 @@ class RepositoryServiceStatKeepers {
     (?, ?, ?, ?)
     ''';
     List<dynamic> params = [
-      statKeeper.firestoreID,
+      statKeeper.fireID,
       statKeeper.type,
       statKeeper.name,
       statKeeper.level
@@ -48,13 +48,13 @@ class RepositoryServiceStatKeepers {
       case StatKeeper.TYPE_PLAYER:
         await RepositoryServicePlayers.onNewPlayerStatKeeper(
           name: statKeeper.name,
-          firestoreID: statKeeper.firestoreID,
+          fireID: statKeeper.fireID,
         );
         break;
       case StatKeeper.TYPE_TEAM:
         await RepositoryServiceTeams.onNewTeamStatKeeper(
           name: statKeeper.name,
-          firestoreID: statKeeper.firestoreID,
+          fireID: statKeeper.fireID,
         );
         break;
       case StatKeeper.TYPE_LEAGUE:
@@ -70,7 +70,7 @@ class RepositoryServiceStatKeepers {
   static Future<int> deleteStatKeeper(StatKeeper statKeeper) async {
     final sql =
         '''DELETE ${DBContract.TABLE_STATKEEPERS} WHERE ${DBContract.FIRESTORE_ID}=?''';
-    List<String> params = [statKeeper.firestoreID];
+    List<String> params = [statKeeper.fireID];
     final result = await db.rawDelete(sql, params);
     DBCreator.databaseLog("Delete StatKeeper", sql, null, result);
     return result;
@@ -83,7 +83,7 @@ class RepositoryServiceStatKeepers {
     WHERE ${DBContract.FIRESTORE_ID} =?
     ''';
 
-    List<String> params = [statKeeper.firestoreID];
+    List<String> params = [statKeeper.fireID];
     final result = await db.rawUpdate(sql, params);
     DBCreator.databaseLog("Update StatKeeper", sql, null, result);
     return result;

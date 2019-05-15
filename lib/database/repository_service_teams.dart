@@ -3,9 +3,9 @@ import 'package:sleekstats_flutter_statkeeper/database/db_creator.dart';
 import 'package:sleekstats_flutter_statkeeper/model/team.dart';
 
 class RepositoryServiceTeams {
-  static Future<List<Team>> getAllTeams(String statkeeperFirestoreID) async {
+  static Future<List<Team>> getAllTeams(String statkeeperFireID) async {
     final data = await queryTeamDB(
-        statkeeperFirestoreID, DBContract.STATKEEPER_FIRESTORE_ID);
+        statkeeperFireID, DBContract.STATKEEPER_FIRESTORE_ID);
     List<Team> teamsList = [];
     for (final node in data) {
       final playerStats = Team.fromJson(node);
@@ -14,8 +14,8 @@ class RepositoryServiceTeams {
     return teamsList;
   }
 
-  static Future<Team> getTeam(String firestoreID) async {
-    final data = await queryTeamDB(firestoreID, DBContract.FIRESTORE_ID);
+  static Future<Team> getTeam(String fireID) async {
+    final data = await queryTeamDB(fireID, DBContract.FIRESTORE_ID);
     return Team.fromJson(data[0]);
   }
 
@@ -42,8 +42,8 @@ class RepositoryServiceTeams {
     (?, ?, ?, ?, ?, ?, ?, ?)
     ''';
     List<dynamic> params = [
-      team.firestoreID,
-      team.statkeeperFirestoreID,
+      team.fireID,
+      team.statkeeperFireID,
       team.name,
       team.wins,
       team.losses,
@@ -59,7 +59,7 @@ class RepositoryServiceTeams {
   static Future<void> deleteTeam(Team team) async {
     final sql =
         '''DELETE ${DBContract.TABLE_TEAMS} WHERE ${DBContract.FIRESTORE_ID}=?''';
-    List<String> params = [team.firestoreID];
+    List<String> params = [team.fireID];
     final result = await db.rawDelete(sql, params);
     DBCreator.databaseLog("Delete Team", sql, null, result);
   }
@@ -75,7 +75,7 @@ class RepositoryServiceTeams {
     WHERE ${DBContract.FIRESTORE_ID} =?
     ''';
 
-    List<String> params = [team.firestoreID];
+    List<String> params = [team.fireID];
     final result = await db.rawUpdate(sql, params);
     DBCreator.databaseLog("Update Team", sql, null, result);
   }
@@ -89,10 +89,10 @@ class RepositoryServiceTeams {
   }
 
   ///Insert newly created team into repository based off newly created SK
-  static onNewTeamStatKeeper({String name, String firestoreID}) {
+  static onNewTeamStatKeeper({String name, String fireID}) {
     insertTeam(Team(
-        firestoreID: firestoreID,
-        statkeeperFirestoreID: firestoreID,
+        fireID: fireID,
+        statkeeperFireID: fireID,
         name: name));
   }
 }
