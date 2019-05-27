@@ -13,10 +13,10 @@ class LeagueStore = _LeagueStore with _$LeagueStore implements PlayersGroupStore
 abstract class _LeagueStore implements Store {
 
   @observable
-  ObservableList<Team> teams;
+  ObservableList<Team> teams = ObservableList();
 
   @observable
-  ObservableList<Player> players;
+  ObservableList<Player> players = ObservableList();
 
   String playerStatToSortBy;
 
@@ -42,5 +42,11 @@ abstract class _LeagueStore implements Store {
     } else {
       players.sort(comparatorMap[Player.LABEL_G]);
     }
+  }
+
+  @action
+  void clearLeague() {
+    teams.clear();
+    players.clear();
   }
 }

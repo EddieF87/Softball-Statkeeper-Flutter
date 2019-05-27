@@ -57,4 +57,14 @@ mixin _$LeagueStore on _LeagueStore, Store {
       _$_LeagueStoreActionController.endAction(_$actionInfo);
     }
   }
+
+  @override
+  void clearLeague() {
+    final _$actionInfo = _$_LeagueStoreActionController.startAction();
+    try {
+      return super.clearLeague();
+    } finally {
+      _$_LeagueStoreActionController.endAction(_$actionInfo);
+    }
+  }
 }

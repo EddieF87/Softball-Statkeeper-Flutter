@@ -99,4 +99,11 @@ abstract class _PlayerStore implements Store {
     await RepositoryServicePlayers.updatePlayer(player);
     player = player;
   }
+
+
+
+  @action
+  void clearPlayer() {
+    player = null;
+  }
 }

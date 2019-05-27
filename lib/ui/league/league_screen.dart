@@ -4,6 +4,7 @@ import 'package:sleekstats_flutter_statkeeper/database/repository_service_player
 import 'package:sleekstats_flutter_statkeeper/database/repository_service_teams.dart';
 import 'package:sleekstats_flutter_statkeeper/model/player.dart';
 import 'package:sleekstats_flutter_statkeeper/model/team.dart';
+import 'package:sleekstats_flutter_statkeeper/store/league_store.dart';
 import 'package:sleekstats_flutter_statkeeper/store/team_store.dart';
 import 'package:sleekstats_flutter_statkeeper/ui/game/game_screen.dart';
 import 'package:sleekstats_flutter_statkeeper/ui/league/add_teams_dialog.dart';
@@ -57,6 +58,8 @@ class _LeagueScreenState extends State<LeagueScreen> {
 
   @override
   Widget build(BuildContext context) {
+    LeagueStore leagueStore = Provider.of<LeagueStore>(context);
+
     return DefaultTabController(
       length: 3,
       child: Column(

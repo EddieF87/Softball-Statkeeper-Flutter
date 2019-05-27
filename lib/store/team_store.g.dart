@@ -83,6 +83,16 @@ mixin _$TeamStore on _TeamStore, Store {
   }
 
   @override
+  void clearTeam() {
+    final _$actionInfo = _$_TeamStoreActionController.startAction();
+    try {
+      return super.clearTeam();
+    } finally {
+      _$_TeamStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   dynamic sortPlayers(String statToSortBy) {
     final _$actionInfo = _$_TeamStoreActionController.startAction();
     try {

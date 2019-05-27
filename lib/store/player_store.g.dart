@@ -85,4 +85,14 @@ mixin _$PlayerStore on _PlayerStore, Store {
       _$_PlayerStoreActionController.endAction(_$actionInfo);
     }
   }
+
+  @override
+  void clearPlayer() {
+    final _$actionInfo = _$_PlayerStoreActionController.startAction();
+    try {
+      return super.clearPlayer();
+    } finally {
+      _$_PlayerStoreActionController.endAction(_$actionInfo);
+    }
+  }
 }

@@ -44,6 +44,7 @@ abstract class _TeamStore implements Store {
   @action
   void clearTeam() {
     team = null;
+    players.clear();
   }
 
   @action

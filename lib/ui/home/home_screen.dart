@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sleekstats_flutter_statkeeper/model/statkeeper.dart';
-import 'package:sleekstats_flutter_statkeeper/store/team_store.dart';
 import 'package:sleekstats_flutter_statkeeper/store/user_store.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:sleekstats_flutter_statkeeper/ui/home/statkeeper_creator_dialog.dart';
-import 'package:sleekstats_flutter_statkeeper/ui/league/league_screen.dart';
-import 'package:sleekstats_flutter_statkeeper/ui/player/player_screen.dart';
-import 'package:sleekstats_flutter_statkeeper/ui/team/team_screen.dart';
+
+import '../../loading_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   final String title;
@@ -79,7 +77,7 @@ class StatKeeperList extends StatelessWidget {
       future: _userStore.getStatKeepers(),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
-          if(_userStore.statKeepers.isEmpty) {
+          if (_userStore.statKeepers.isEmpty) {
             return Center(child: Text("Create a StatKeeper!"));
           }
           return Observer(
@@ -132,7 +130,7 @@ class StatKeeperLabel extends StatelessWidget {
         ),
         elevation: 4.0,
         child: InkWell(
-          onTap: () => _navigateToRoute(context, statKeeper),
+          onTap: () => _navigateToLoadingScreen(context, statKeeper),
           child: Padding(
             padding: EdgeInsets.all(16.0),
             child: Row(
@@ -164,41 +162,8 @@ class StatKeeperLabel extends StatelessWidget {
     );
   }
 
-  /// Get statKeeperScreen based on chosen statKeeper type
-  Widget _getStatKeeperRouter(StatKeeper sK) {
-    switch (sK.type) {
-      case StatKeeper.TYPE_PLAYER:
-        return PlayerScreen(
-          title: sK.name,
-          fireID: sK.fireID,
-        );
-        break;
-      case StatKeeper.TYPE_TEAM:
-        return TeamScreen(
-          title: sK.name,
-          fireID: sK.fireID,
-        );
-        break;
-      case StatKeeper.TYPE_LEAGUE:
-        return LeagueScreen(
-          title: sK.name,
-          fireID: sK.fireID,
-        );
-        break;
-      default:
-        return null;
-    }
-  }
-
-  /// Navigates to the [statKeeperScreen].
-  void _navigateToRoute(BuildContext context, StatKeeper sK) {
-    Widget statKeeperScreen = _getStatKeeperRouter(sK);
-    if (statKeeperScreen == null) {
-      return;
-    }
-    TeamStore teamStore = Provider.of(context);
-    teamStore.clearTeam();
-
+  /// Navigates to the [LoadingScreen].
+  _navigateToLoadingScreen(BuildContext context, StatKeeper sK) {
     Navigator.of(context).push(
       MaterialPageRoute<Null>(
         builder: (BuildContext context) {
@@ -213,7 +178,7 @@ class StatKeeperLabel extends StatelessWidget {
               ),
               centerTitle: true,
             ),
-            body: statKeeperScreen,
+            body: LoadingScreen(statKeeper: sK),
           );
         },
       ),
