@@ -26,7 +26,7 @@ class RepositoryServiceTeams {
     return await db.rawQuery(sql, params);
   }
 
-  static Future<void> insertTeam(Team team) async {
+  static Future<int> insertTeam(Team team) async {
     final sql = '''INSERT INTO ${DBContract.TABLE_TEAMS}
     ( 
     ${DBContract.FIRESTORE_ID},
@@ -52,8 +52,8 @@ class RepositoryServiceTeams {
       team.runsAllowed
     ];
 
-    final result = await db.rawInsert(sql, params);
-    DBCreator.databaseLog("Add Team", sql, null, result);
+    return await db.rawInsert(sql, params);
+//    DBCreator.databaseLog("Add Team", sql, null, result);
   }
 
   static Future<void> deleteTeam(Team team) async {

@@ -1,7 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:sleekstats_flutter_statkeeper/model/player.dart';
-import 'package:sleekstats_flutter_statkeeper/store/player_store.dart';
 import 'package:sleekstats_flutter_statkeeper/ui/player/player_stats_page.dart';
 
 class PlayerScreen extends StatelessWidget {
@@ -15,27 +12,6 @@ class PlayerScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    PlayerStore playerStore = Provider.of<PlayerStore>(context);
-
-    return FutureBuilder<Player>(
-      future: playerStore.getPlayerFromDB(fireID, fireID),
-      builder: (BuildContext context, AsyncSnapshot<Player> snapshot) {
-        if (snapshot.connectionState == ConnectionState.done) {
-          if (snapshot.hasData) {
-            return PlayerPage(
-//              player: playerStore.player,
-            );
-          } else {
-            return Center(
-              child: Text("Couldn't find player!"),
-            );
-          }
-        } else {
-          return Center(
-            child: CircularProgressIndicator(),
-          );
-        }
-      },
-    );
+    return PlayerPage();
   }
 }

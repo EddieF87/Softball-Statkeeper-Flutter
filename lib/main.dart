@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sleekstats_flutter_statkeeper/database/db_creator.dart';
-import 'package:sleekstats_flutter_statkeeper/store/league_store.dart';
-import 'package:sleekstats_flutter_statkeeper/store/player_store.dart';
-import 'package:sleekstats_flutter_statkeeper/store/team_store.dart';
+import 'package:sleekstats_flutter_statkeeper/store/statkeeper_store.dart';
 import 'package:sleekstats_flutter_statkeeper/store/user_store.dart';
 import 'package:sleekstats_flutter_statkeeper/ui/home/home_screen.dart';
 
@@ -37,15 +35,7 @@ class MyApp extends StatelessWidget {
           dispose: (context, value) => value.dispose(),
         ),
         Provider(
-          builder: (_) => PlayerStore(),
-          dispose: (context, value) => value.dispose(),
-        ),
-        Provider(
-          builder: (_) => TeamStore(),
-          dispose: (context, value) => value.dispose(),
-        ),
-        Provider(
-          builder: (_) => LeagueStore(),
+          builder: (_) => StatKeeperStore(),
           dispose: (context, value) => value.dispose(),
         ),
       ],

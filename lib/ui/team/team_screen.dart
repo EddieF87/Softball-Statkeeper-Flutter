@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:sleekstats_flutter_statkeeper/store/team_store.dart';
+import 'package:sleekstats_flutter_statkeeper/store/statkeeper_store.dart';
 import 'package:sleekstats_flutter_statkeeper/ui/team/team_stats_page.dart';
 
 class TeamScreen extends StatelessWidget {
@@ -16,7 +16,7 @@ class TeamScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     debugPrint("buildTEAMSCREEN");
-    TeamStore teamStore = Provider.of<TeamStore>(context);
+    StatKeeperStore teamStore = Provider.of<StatKeeperStore>(context);
 
     return DefaultTabController(
       length: 2,
@@ -40,7 +40,7 @@ class TeamScreen extends StatelessWidget {
 }
 
 class TeamTabView extends StatelessWidget {
-  final TeamStore teamStore;
+  final StatKeeperStore teamStore;
 
   const TeamTabView(this.teamStore);
 
@@ -52,7 +52,7 @@ class TeamTabView extends StatelessWidget {
         child: TabBarView(
           children: <Widget>[
             TeamStatsPage(
-              teamStore: teamStore,
+              statKeeperStore: teamStore,
             ),
             Center(
               child: Text(

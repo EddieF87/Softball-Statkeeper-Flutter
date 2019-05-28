@@ -1,25 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:provider/provider.dart';
 import 'package:sleekstats_flutter_statkeeper/model/team.dart';
-import 'package:sleekstats_flutter_statkeeper/store/team_store.dart';
+import 'package:sleekstats_flutter_statkeeper/store/statkeeper_store.dart';
 import 'package:sleekstats_flutter_statkeeper/ui/league/teams_pageview.dart';
 import 'package:sleekstats_flutter_statkeeper/utils/stat_formatter.dart';
 import 'package:sleekstats_flutter_statkeeper/ui/league/standings_row.dart';
 
-class LeagueStandingsPage extends StatefulWidget {
-  final List<Team> teams;
-
-  const LeagueStandingsPage({Key key, this.teams}) : super(key: key);
-
-  @override
-  State<StatefulWidget> createState() => LeagueStandingsPageState();
-}
-
-class LeagueStandingsPageState extends State<LeagueStandingsPage> {
-  String statToSortBy = Team.LABEL_WINPCT;
-
+class LeagueStandingsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    StatKeeperStore statKeeperStore = Provider.of<StatKeeperStore>(context);
+
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
@@ -28,65 +20,54 @@ class LeagueStandingsPageState extends State<LeagueStandingsPage> {
       child: Column(
         children: <Widget>[
           StandingsHeaderRow(
-            statSorted: statToSortBy,
-            onStatSelected: (stat) => setState(() => statToSortBy = stat),
+            onStatSelected: (stat) => statKeeperStore.sortTeams(stat),
           ),
-          Expanded(child: _buildList(statToSortBy)),
+          Expanded(
+            child: Observer(
+              builder: (_) => ListView.builder(
+                    shrinkWrap: true,
+                    itemBuilder: (BuildContext context, int index) =>
+                        StandingsRow(
+                          team: statKeeperStore.teams[index],
+                          isColoredRow: index.isOdd,
+                          onTeamSelected: () =>
+                              _navigateToTeamsPageView(context, index),
+                        ),
+                    itemCount: statKeeperStore.teams.length,
+                  ),
+            ),
+          ),
         ],
       ),
     );
   }
 
-  Widget _buildList(String stat) {
-    _sortTeams(stat);
-
-    return ListView.builder(
-      shrinkWrap: true,
-      itemBuilder: (BuildContext context, int index) => StandingsRow(
-            team: widget.teams[index],
-            isColoredRow: index.isOdd,
-        onTeamSelected: () => _navigateToTeamsPageView(context, index),
-          ),
-      itemCount: widget.teams.length,
-    );
-  }
-
-  void _sortTeams(String stat) {
-    Map<String, Comparator<Team>> comparatorMap = Team.toComparatorMap();
-    if (comparatorMap.containsKey(stat)) {
-      widget.teams.sort(comparatorMap[stat]);
-    } else {
-      widget.teams.sort(comparatorMap[Team.LABEL_WINPCT]);
-    }
-  }
-
   /// Navigates to the PageView of teams.
   void _navigateToTeamsPageView(BuildContext context, int index) {
+    StatKeeperStore statKeeperStore = Provider.of<StatKeeperStore>(context);
+
     Navigator.of(context).push(
       MaterialPageRoute<Null>(
-        builder: (BuildContext context) {
-          final TeamStore teamStore = Provider.of<TeamStore>(context);
-          return TeamsPageView(
-            teams: widget.teams,
-            teamStore: teamStore,
-            startingIndex: index,
-          );
-        },
+        builder: (BuildContext context) =>
+            TeamsPageView(statKeeperStore: statKeeperStore, startingIndex: index),
       ),
     );
   }
 }
 
-class StandingsHeaderRow extends StatelessWidget {
+class StandingsHeaderRow extends StatefulWidget {
   final ValueChanged<String> onStatSelected;
-  final String statSorted;
+
+  StandingsHeaderRow({this.onStatSelected});
+
+  @override
+  _StandingsHeaderRowState createState() => _StandingsHeaderRowState();
+}
+
+class _StandingsHeaderRowState extends State<StandingsHeaderRow> {
   final Color primaryColor = Color(0xFF689F38);
   final Color accentColor = Color(0xFFeabd53);
-
-  StandingsHeaderRow({
-    this.onStatSelected,
-    this.statSorted,
-  });
+  String selectedStat;
 
   @override
   Widget build(BuildContext context) {
@@ -105,14 +86,17 @@ class StandingsHeaderRow extends StatelessWidget {
   }
 
   Widget _createHeaderCell(String data, {int flexAmount = 1}) {
-    bool isSorted = statSorted == data;
+    bool isSorted = selectedStat == data;
     return Expanded(
       flex: flexAmount,
       child: Container(
         padding: EdgeInsets.all(4.0),
         color: primaryColor,
         child: InkWell(
-          onTap: () => _onTapped(data),
+          onTap: () {
+            setState(() => selectedStat = data);
+            widget.onStatSelected(data);
+          },
           child: Text(
             StatFormatter.displayAmount(data),
             style: TextStyle(
@@ -124,9 +108,5 @@ class StandingsHeaderRow extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  _onTapped(String data) {
-    onStatSelected(data);
   }
 }

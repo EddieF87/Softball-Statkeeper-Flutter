@@ -1,64 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:sleekstats_flutter_statkeeper/database/repository_service_players.dart';
-import 'package:sleekstats_flutter_statkeeper/database/repository_service_teams.dart';
-import 'package:sleekstats_flutter_statkeeper/model/player.dart';
 import 'package:sleekstats_flutter_statkeeper/model/team.dart';
-import 'package:sleekstats_flutter_statkeeper/store/league_store.dart';
-import 'package:sleekstats_flutter_statkeeper/store/team_store.dart';
+import 'package:sleekstats_flutter_statkeeper/store/statkeeper_store.dart';
 import 'package:sleekstats_flutter_statkeeper/ui/game/game_screen.dart';
 import 'package:sleekstats_flutter_statkeeper/ui/league/add_teams_dialog.dart';
 import 'package:sleekstats_flutter_statkeeper/ui/league/teams_pageview.dart';
 import 'package:sleekstats_flutter_statkeeper/ui/league/league_standings_page.dart';
 import 'package:sleekstats_flutter_statkeeper/ui/team/add_players_dialog.dart';
+import 'package:sleekstats_flutter_statkeeper/ui/team/players_stats_table.dart';
 import 'package:sleekstats_flutter_statkeeper/ui/team/team_controls.dart';
 
-class LeagueScreen extends StatefulWidget {
+class LeagueScreen extends StatelessWidget {
+  final String leagueFireID;
   final String title;
-  final String fireID;
 
-  LeagueScreen({
-    this.title,
-    this.fireID,
-  }) : assert(fireID != null);
-
-  @override
-  _LeagueScreenState createState() => _LeagueScreenState();
-}
-
-class _LeagueScreenState extends State<LeagueScreen> {
-  List<Player> players;
-  List<Team> teams;
-
-  void _retrievePlayers() async {
-    players = await RepositoryServicePlayers.getAllPlayers(widget.fireID);
-    setState(() => players = players);
-  }
-
-  void _retrieveTeams() async {
-    teams = await RepositoryServiceTeams.getAllTeams(widget.fireID);
-    setState(() => teams = teams);
-  }
-
-  void _retrieveLeagueData() async {
-    teams = await RepositoryServiceTeams.getAllTeams(widget.fireID);
-    players = await RepositoryServicePlayers.getAllPlayers(widget.fireID);
-
-    setState(() {
-      teams = teams;
-      players = players;
-    });
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _retrieveLeagueData();
-  }
+  const LeagueScreen({Key key, this.leagueFireID, this.title})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    LeagueStore leagueStore = Provider.of<LeagueStore>(context);
+    StatKeeperStore statKeeperStore = Provider.of<StatKeeperStore>(context);
 
     return DefaultTabController(
       length: 3,
@@ -84,44 +45,27 @@ class _LeagueScreenState extends State<LeagueScreen> {
               padding: const EdgeInsets.all(8.0),
               child: TabBarView(
                 children: <Widget>[
-                  teams != null
-                      ? LeagueStandingsPage(teams: teams)
-                      : Center(
-                          child: CircularProgressIndicator(),
-                        ),
+                  LeagueStandingsPage(),
                   Padding(
                     padding: EdgeInsets.only(right: 32.0, left: 32.0),
-                    child: (players != null && teams != null)
-                        ?
-                        Container()
-                    //todo fix
-//                    PlayersStatsTable(
-//                            isLeague: true,
-//                            players: players,
-//                            onTeamLinkClicked: (String teamFireID) =>
-//                                _navigateToTeamsPageViewByTeamFireID(
-//                                  context,
-//                                  teamFireID,
-//                                ),
-//                          )
-                        : Center(
-                            child: CircularProgressIndicator(),
+                    child: PlayersStatsTable(
+                      isLeague: true,
+                      statKeeperStore: statKeeperStore,
+                      onTeamLinkClicked: (String teamFireID) =>
+                          _navigateToTeamsPageViewByID(
+                            context,
+                            teamFireID,
                           ),
+                    ),
                   ),
                   Padding(
                     padding: EdgeInsets.only(left: 32.0),
-                    child: (players != null && teams != null)
-                        ? Center(
-                            child: FlatButton(
-                              onPressed: _goToGame,
-                              child: Text(
-                                "Start Game",
-                              ),
-                            ),
-                          )
-                        : Center(
-                            child: CircularProgressIndicator(),
-                          ),
+                    child: Center(
+                      child: FlatButton(
+                        onPressed: () => _goToGame(context),
+                        child: Text("Start Game"),
+                      ),
+                    ),
                   ),
                 ],
               ),
@@ -130,7 +74,7 @@ class _LeagueScreenState extends State<LeagueScreen> {
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: TeamControls(
-              onAddButtonTapped: () => _showAddChoiceDialog(),
+              onAddButtonTapped: () => _showAddChoiceDialog(context),
               onScoresButtonTapped: () => _showScores(),
             ),
           ),
@@ -139,32 +83,41 @@ class _LeagueScreenState extends State<LeagueScreen> {
     );
   }
 
-  _showAddChoiceDialog() {
+  _showAddChoiceDialog(BuildContext context) {
+    //todo
+    StatKeeperStore statKeeperStore = Provider.of<StatKeeperStore>(context);
+
     return showDialog<void>(
       context: context,
       builder: (BuildContext context) {
         return AddChoiceDialog(
-          teams: teams,
+          teams: statKeeperStore.teams,
           onAddPlayersChoice: (Team team) => _showAddPlayersDialog(
+                context: context,
                 teamFireID: team.fireID,
                 teamName: team.name,
-                statkeeperFireID: widget.fireID,
+                statkeeperFireID: leagueFireID,
               ),
-          onAddTeamsChoice: () =>
-              _showAddTeamsDialog(statkeeperFireID: widget.fireID),
+          onAddTeamsChoice: () => _showAddTeamsDialog(
+                context: context,
+                statkeeperFireID: leagueFireID,
+              ),
         );
       },
     );
   }
 
-  Future<void> _showAddTeamsDialog({String statkeeperFireID}) async {
+  Future<void> _showAddTeamsDialog({
+    BuildContext context,
+    String statkeeperFireID,
+  }) async {
     return showDialog<void>(
       context: context,
       builder: (BuildContext context) {
         return AddTeamsDialog(
           sKFireID: statkeeperFireID,
           onNewTeamsSubmitted: () {
-            _retrieveTeams();
+//            _retrieveTeams();
           },
         );
       },
@@ -172,18 +125,24 @@ class _LeagueScreenState extends State<LeagueScreen> {
   }
 
   Future<void> _showAddPlayersDialog({
+    BuildContext context,
     String teamFireID,
     String statkeeperFireID,
     String teamName,
   }) async {
     //todo fix
-    TeamStore teamStore = Provider.of<TeamStore>(context);
+    StatKeeperStore statKeeperStore = Provider.of<StatKeeperStore>(context);
+    int teamIndex =
+        statKeeperStore.teams.indexWhere((t) => t.fireID == teamFireID);
+
     return showDialog<void>(
       context: context,
       builder: (BuildContext context) {
-        return AddPlayersDialog(teamStore: teamStore
+        return AddPlayersDialog(
+          statKeeperStore: statKeeperStore,
+          teamIndex: teamIndex,
 //          onNewPlayersSubmitted: () => _retrievePlayers(),
-            );
+        );
       },
     );
   }
@@ -191,40 +150,38 @@ class _LeagueScreenState extends State<LeagueScreen> {
   _showScores() {}
 
   /// Navigates to the PageView of teams.
-  void _navigateToTeamsPageViewByTeamFireID(
-      BuildContext context, String teamFireID) {
-    if (teams == null) {
-      return;
-    }
-    int index = teams.indexWhere((team) => team.fireID == teamFireID);
-    if (index < 0) {
+  void _navigateToTeamsPageViewByID(BuildContext context, String teamFireID) {
+    StatKeeperStore statKeeperStore = Provider.of<StatKeeperStore>(context);
+
+    int i =
+        statKeeperStore.teams.indexWhere((team) => team.fireID == teamFireID);
+    if (i < 0) {
       return;
     }
 
     Navigator.of(context).push(
       MaterialPageRoute<Null>(
-        builder: (BuildContext context) {
-          return TeamsPageView(
-            teams: teams,
-            startingIndex: index,
-          );
-        },
+        builder: (BuildContext context) => TeamsPageView(
+              statKeeperStore: statKeeperStore,
+              startingIndex: i,
+            ),
       ),
     );
   }
 
-  _goToGame() {
-    Navigator.of(context)
-        .push(
-          MaterialPageRoute<Null>(
-            builder: (BuildContext context) => GameScreen(
-                  statkeeperFireID: widget.fireID,
-                  awayTeamFireID: teams[0].fireID,
-                  homeTeamFireID: teams[0].fireID,
-                ),
-          ),
-        )
-        .whenComplete(_retrieveLeagueData);
+  _goToGame(BuildContext context) {
+    //TODO
+    StatKeeperStore statKeeperStore = Provider.of<StatKeeperStore>(context);
+    Navigator.of(context).push(
+      MaterialPageRoute<Null>(
+        builder: (BuildContext context) => GameScreen(
+              statkeeperFireID: leagueFireID,
+              awayTeamFireID: statKeeperStore.teams[0].fireID,
+              homeTeamFireID: statKeeperStore.teams[0].fireID,
+            ),
+      ),
+    );
+//        .whenComplete(_retrieveLeagueData);
   }
 }
 

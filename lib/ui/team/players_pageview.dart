@@ -1,21 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:sleekstats_flutter_statkeeper/model/player.dart';
-import 'package:sleekstats_flutter_statkeeper/store/player_store.dart';
-import 'package:sleekstats_flutter_statkeeper/store/players_group_store.dart';
+import 'package:sleekstats_flutter_statkeeper/store/statkeeper_store.dart';
 import 'package:sleekstats_flutter_statkeeper/ui/player/player_stats_page.dart';
 import 'package:sleekstats_flutter_statkeeper/utils/stat_formatter.dart';
 
 class PlayersPageView extends StatefulWidget {
-  final PlayerStore playerStore;
-  final PlayersGroupStore playersGroupStore;
+  final StatKeeperStore statKeeperStore;
   final int startingIndex;
 
   PlayersPageView({
     Key key,
-    this.playerStore,
-    this.playersGroupStore,
+    this.statKeeperStore,
     this.startingIndex = 0,
-  })  : assert(playersGroupStore != null),
+  })  : assert(statKeeperStore != null),
         super(key: key);
 
   @override
@@ -29,10 +26,7 @@ class PlayersPageViewState extends State<PlayersPageView> {
   void initState() {
     super.initState();
     _pageController = PageController(initialPage: widget.startingIndex);
-    widget.playerStore
-        .setPlayer(widget.playersGroupStore.players[widget.startingIndex]);
   }
-
 
   @override
   void dispose() {
@@ -56,7 +50,7 @@ class PlayersPageViewState extends State<PlayersPageView> {
             onPressed: () => showSearch(
                   context: context,
                   delegate: PlayerSearch(
-                    players: widget.playersGroupStore.players,
+                    players: widget.statKeeperStore.players,
                     onPlayerSelected: (index) => _moveToPlayerPage(index),
                   ),
                 ),
@@ -64,16 +58,16 @@ class PlayersPageViewState extends State<PlayersPageView> {
         ],
       ),
       body: PageView.builder(
-        itemBuilder: (BuildContext context, int index) => PlayerPage(),
-        itemCount: widget.playersGroupStore.players.length,
-        onPageChanged: (index) => widget.playerStore.setPlayer(widget.playersGroupStore.players[index]),
+        itemBuilder: (BuildContext context, int index) => PlayerPage(
+              playerIndex: index,
+            ),
+        itemCount: widget.statKeeperStore.players.length,
         controller: _pageController,
       ),
     );
   }
 
   void _moveToPlayerPage(int index) {
-    widget.playerStore.setPlayer(widget.playersGroupStore.players[index]);
     _pageController.jumpToPage(index);
   }
 }

@@ -57,7 +57,7 @@ class RepositoryServicePlayers {
     return await db.rawQuery(sql, params);
   }
 
-  static Future<void> insertPlayer(Player player) async {
+  static Future<int> insertPlayer(Player player) async {
     final sql = '''INSERT INTO ${DBContract.TABLE_PLAYERS}
     ( 
     ${DBContract.ID},
@@ -108,9 +108,8 @@ class RepositoryServicePlayers {
       player.stolenBases,
       player.hbp
     ];
-
-    final result = await db.rawInsert(sql, params);
-    DBCreator.databaseLog("Add Player", sql, null, result);
+    return await db.rawInsert(sql, params);
+//    DBCreator.databaseLog("Add Player", sql, null, result);
   }
 
   static Future<void> deletePlayer(Player player) async {
@@ -121,7 +120,7 @@ class RepositoryServicePlayers {
     DBCreator.databaseLog("Delete Player", sql, null, result);
   }
 
-  static Future<void> updatePlayer(Player player) async {
+  static Future<int> updatePlayer(Player player) async {
     final sql = '''UPDATE ${DBContract.TABLE_PLAYERS} 
     SET ${DBContract.GAMES} = ${player.games},
     ${DBContract.RUNS} = ${player.runs},
@@ -140,9 +139,11 @@ class RepositoryServicePlayers {
     WHERE ${DBContract.ID} =?
     ''';
 
+    print("pid = ${player.id}");
     List<String> params = [player.id.toString()];
-    final result = await db.rawUpdate(sql, params);
+    final int result = await db.rawUpdate(sql, params);
     DBCreator.databaseLog("Update Player", sql, null, result);
+    return result;
   }
 
   static Future<int> playerCount() async {

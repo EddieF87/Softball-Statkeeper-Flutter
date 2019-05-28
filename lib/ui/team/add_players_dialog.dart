@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:sleekstats_flutter_statkeeper/store/team_store.dart';
+import 'package:sleekstats_flutter_statkeeper/store/statkeeper_store.dart';
 
 class AddPlayersDialog extends StatefulWidget {
-  final TeamStore teamStore;
+  final StatKeeperStore statKeeperStore;
+  final int teamIndex;
 
   AddPlayersDialog({
-    this.teamStore,
-  }) : assert(teamStore != null);
+    this.statKeeperStore,
+    this.teamIndex = 0
+  }) : assert(statKeeperStore != null);
 
   @override
   State<StatefulWidget> createState() => AddPlayersDialogState();
@@ -18,7 +20,8 @@ class AddPlayersDialogState extends State<AddPlayersDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text('Create New Players for ${widget.teamStore.team.name}'),
+      //todo
+      title: Text('Create New Players for ${widget.statKeeperStore.teams[widget.teamIndex].name}'),
       content: Container(
         width: double.maxFinite,
         height: double.maxFinite,
@@ -72,6 +75,6 @@ class AddPlayersDialogState extends State<AddPlayersDialog> {
   }
 
   _submitNewPlayers() {
-    widget.teamStore.addPlayers(playerNames);
+    widget.statKeeperStore.addPlayers(widget.teamIndex, playerNames);
   }
 }

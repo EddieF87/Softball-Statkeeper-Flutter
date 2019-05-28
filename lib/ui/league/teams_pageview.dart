@@ -1,20 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:sleekstats_flutter_statkeeper/model/team.dart';
-import 'package:sleekstats_flutter_statkeeper/store/team_store.dart';
+import 'package:sleekstats_flutter_statkeeper/store/statkeeper_store.dart';
 import 'package:sleekstats_flutter_statkeeper/ui/team/team_stats_page.dart';
 
 class TeamsPageView extends StatefulWidget {
-  final List<Team> teams;
   final int startingIndex;
-  final TeamStore teamStore;
+  final StatKeeperStore statKeeperStore;
 
   TeamsPageView({
     Key key,
-    this.teams,
-    this.teamStore,
+    this.statKeeperStore,
     this.startingIndex = 0,
-  })  : assert(teams != null),
-        super(key: key);
+  }) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => TeamsPageViewState();
@@ -27,7 +23,6 @@ class TeamsPageViewState extends State<TeamsPageView> {
   void initState() {
     super.initState();
     _pageController = PageController(initialPage: widget.startingIndex);
-    widget.teamStore.setTeam(widget.teams[widget.startingIndex]);
   }
 
   @override
@@ -48,11 +43,13 @@ class TeamsPageViewState extends State<TeamsPageView> {
         centerTitle: true,
       ),
       body: PageView.builder(
-        itemBuilder: (BuildContext context, int index) => TeamStatsPage(
-            teamStore: widget.teamStore,
-          ),
-        onPageChanged: (index) => widget.teamStore.setTeam(widget.teams[index]),
-        itemCount: widget.teams.length,
+        itemBuilder: (BuildContext context, int index) {
+          return TeamStatsPage(
+            teamIndex: index,
+            statKeeperStore: widget.statKeeperStore,
+          );
+        },
+        itemCount: widget.statKeeperStore.teams.length,
         controller: _pageController,
       ),
     );

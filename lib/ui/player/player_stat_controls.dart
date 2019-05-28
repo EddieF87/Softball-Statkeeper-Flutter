@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:sleekstats_flutter_statkeeper/store/player_store.dart';
+import 'package:sleekstats_flutter_statkeeper/store/statkeeper_store.dart';
 import 'package:sleekstats_flutter_statkeeper/ui/team/player_stat_label.dart';
 
 class PlayerStatControls extends StatefulWidget {
-  final PlayerStore playerStore;
+  final StatKeeperStore statKeeperStore;
+  final int playerIndex;
 
-  PlayerStatControls({this.playerStore});
+  PlayerStatControls({this.statKeeperStore, this.playerIndex = 0});
 
   @override
   State<StatefulWidget> createState() => _PlayerStatControlsState();
@@ -40,7 +41,7 @@ class _PlayerStatControlsState extends State<PlayerStatControls> {
           Expanded(
             child: Observer(
               builder: (_) => PlayerStatLabel(
-                    stat: widget.playerStore.statToUpdate,
+                    stat: widget.statKeeperStore.playerStatToUpdate,
                     amount: this.amount,
                   ),
             ),
@@ -50,7 +51,9 @@ class _PlayerStatControlsState extends State<PlayerStatControls> {
           ),
           Expanded(
             child: RaisedButton(
-              onPressed: () => widget.playerStore.updateCountingStat(amount),
+              //todo
+              onPressed: () => widget.statKeeperStore
+                  .updatePlayerCountingStat(widget.playerIndex, amount),
               child: Text("Update"),
             ),
           ),

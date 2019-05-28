@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:sleekstats_flutter_statkeeper/database/repository_service_teams.dart';
-import 'package:sleekstats_flutter_statkeeper/model/team.dart';
-import 'package:uuid/uuid.dart';
+import 'package:provider/provider.dart';
+import 'package:sleekstats_flutter_statkeeper/store/statkeeper_store.dart';
 
 class AddTeamsDialog extends StatefulWidget {
   final String sKFireID;
@@ -21,6 +20,8 @@ class AddTeamsDialogState extends State<AddTeamsDialog> {
 
   @override
   Widget build(BuildContext context) {
+    StatKeeperStore statKeeperStore = Provider.of<StatKeeperStore>(context);
+
     return AlertDialog(
       title: Text('Create New Teams'),
       content: Container(
@@ -46,7 +47,7 @@ class AddTeamsDialogState extends State<AddTeamsDialog> {
         _createDialogButton(context, "Cancel",
             onPressed: () => Navigator.of(context).pop()),
         _createDialogButton(context, "Submit", onPressed: () {
-          _submitNewTeams();
+          statKeeperStore.addTeams(teamNames);
           Navigator.of(context).pop();
         }),
       ],
@@ -76,17 +77,7 @@ class AddTeamsDialogState extends State<AddTeamsDialog> {
   }
 
   _submitNewTeams() {
-    var uuid = new Uuid();
-    teamNames.forEach((key, name) {
-      debugPrint("$key, $name");
-      RepositoryServiceTeams.insertTeam(
-        Team(
-          fireID: uuid.v1(),
-          statkeeperFireID: widget.sKFireID,
-          name: name,
-        ),
-      );
-    });
+
     widget.onNewTeamsSubmitted();
   }
 }

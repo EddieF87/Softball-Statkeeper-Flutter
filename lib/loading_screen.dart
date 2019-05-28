@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:sleekstats_flutter_statkeeper/store/league_store.dart';
-import 'package:sleekstats_flutter_statkeeper/store/player_store.dart';
-import 'package:sleekstats_flutter_statkeeper/store/team_store.dart';
+import 'package:sleekstats_flutter_statkeeper/store/statkeeper_store.dart';
 import 'package:sleekstats_flutter_statkeeper/ui/league/league_screen.dart';
 import 'package:sleekstats_flutter_statkeeper/ui/player/player_screen.dart';
 import 'package:sleekstats_flutter_statkeeper/ui/team/team_screen.dart';
@@ -21,11 +19,6 @@ class LoadingScreen extends StatefulWidget {
 }
 
 class _LoadingScreenState extends State<LoadingScreen> {
-  @override
-  void initState() {
-    super.initState();
-//    _navigateToRoute(context, widget.statKeeper);
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -70,36 +63,32 @@ class _LoadingScreenState extends State<LoadingScreen> {
 
   /// Get statKeeperScreen based on chosen statKeeper type
   Future<Widget> _updateStatKeeper(BuildContext context, StatKeeper sK) async {
+
     String fireID = sK.fireID;
     String name = sK.name;
 
-    PlayerStore playerStore = Provider.of<PlayerStore>(context);
-    TeamStore teamStore = Provider.of<TeamStore>(context);
-    LeagueStore leagueStore = Provider.of<LeagueStore>(context);
-    playerStore.clearPlayer();
-    teamStore.clearTeam();
-    leagueStore.clearLeague();
+    StatKeeperStore statKeeperStore = Provider.of<StatKeeperStore>(context);
+    statKeeperStore.clearStatKeeper();
+    statKeeperStore.statkeeperFireID = fireID;
+    await statKeeperStore.populateStatKeeper(fireID);
 
     switch (sK.type) {
       case StatKeeper.TYPE_PLAYER:
-        await playerStore.setPlayerFromDB(fireID, fireID);
         return PlayerScreen(
           title: name,
           fireID: fireID,
         );
         break;
       case StatKeeper.TYPE_TEAM:
-        await teamStore.getTeamFromDB(fireID, fireID);
         return TeamScreen(
           title: name,
           fireID: fireID,
         );
         break;
       case StatKeeper.TYPE_LEAGUE:
-        await leagueStore.populateLeague(fireID);
         return LeagueScreen(
           title: name,
-          fireID: fireID,
+          leagueFireID: fireID,
         );
         break;
       default:

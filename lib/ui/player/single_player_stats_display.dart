@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:sleekstats_flutter_statkeeper/store/player_store.dart';
+import 'package:sleekstats_flutter_statkeeper/store/statkeeper_store.dart';
 import 'package:sleekstats_flutter_statkeeper/ui/team/player_stat_label.dart';
 
 class SinglePlayerStatsDisplay extends StatelessWidget {
-  final PlayerStore playerStore;
+  final StatKeeperStore statKeeperStore;
+  final int playerIndex;
 
-  const SinglePlayerStatsDisplay({Key key, this.playerStore})
-      : assert(playerStore != null),
-        super(key: key);
+  const SinglePlayerStatsDisplay({Key key, this.statKeeperStore, this.playerIndex = 0})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +16,7 @@ class SinglePlayerStatsDisplay extends StatelessWidget {
       builder: (_) => Expanded(
             child: Column(children: <Widget>[
               Text(
-                playerStore.player.name,
+                statKeeperStore.players[playerIndex].name,
                 style: TextStyle(fontSize: 48.0, fontWeight: FontWeight.bold),
                 maxLines: 1,
               ),
@@ -32,13 +32,13 @@ class SinglePlayerStatsDisplay extends StatelessWidget {
   }
 
   List<PlayerStatLabel> _buildGrid() {
-    Map<String, num> statsMap = playerStore.player.toStatsMap();
+    Map<String, num> statsMap = statKeeperStore.players[playerIndex].toStatsMap();
     List<PlayerStatLabel> list = [];
     statsMap.forEach((stat, value) {
       list.add(PlayerStatLabel(
         stat: stat,
         amount: value,
-        onTap: () => playerStore.setStatToUpdate(stat),
+        onTap: () => statKeeperStore.setPlayerStatToUpdate(stat),
       ));
     });
     return list;
