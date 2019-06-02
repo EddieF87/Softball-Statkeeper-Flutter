@@ -7,10 +7,16 @@ import 'package:sleekstats_flutter_statkeeper/ui/home/statkeeper_creator_dialog.
 
 import '../../loading_screen.dart';
 
-class HomeScreen extends StatelessWidget {
-  final String title;
+class HomeScreen extends StatefulWidget {
 
-  const HomeScreen({Key key, this.title}) : super(key: key);
+  const HomeScreen({Key key}) : super(key: key);
+
+  @override
+  _HomeScreenState createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  bool signedIn;
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +24,33 @@ class HomeScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(title),
+        title: Text("Sleek Stats Softball"),
+        actions: <Widget>[
+          Builder(builder: (BuildContext context) {
+            print("FUtuuuuuuuure");
+            return FutureBuilder(
+              builder: (BuildContext context, AsyncSnapshot snapshot) {
+                if (snapshot.connectionState != ConnectionState.done) {
+                  return Container();
+                }
+                if (snapshot.hasData) {
+                  signedIn = true;
+                } else {
+                  signedIn = false;
+                }
+                String buttonText = signedIn ? 'Sign Out' : 'Sign In';
+                return FlatButton(
+                  child: Text(buttonText),
+                  textColor: Theme.of(context).buttonColor,
+                  onPressed: () async {
+                    signedIn ? _signOut(userStore) : _signIn(userStore);
+                  },
+                );
+              },
+              future: userStore.retrieveCurrentUser(),
+            );
+          })
+        ],
       ),
       body: Container(
         child: Column(
@@ -64,6 +96,21 @@ class HomeScreen extends StatelessWidget {
       },
     );
   }
+
+  void _signIn(UserStore userStore) async {
+    bool nowSignedIn = await userStore.signIn();
+    setState(() {
+      signedIn = nowSignedIn;
+    });
+  }
+
+  void _signOut(UserStore userStore) async {
+    bool nowSignedOut = await userStore.signOut();
+    print("signout = $nowSignedOut");
+    setState(() {
+      signedIn = !nowSignedOut;
+    });
+  }
 }
 
 class StatKeeperList extends StatelessWidget {
@@ -73,25 +120,12 @@ class StatKeeperList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<List<StatKeeper>>(
-      future: _userStore.getStatKeepers(),
-      builder: (BuildContext context, AsyncSnapshot snapshot) {
-        if (snapshot.connectionState == ConnectionState.done) {
-          if (_userStore.statKeepers.isEmpty) {
-            return Center(child: Text("Create a StatKeeper!"));
-          }
-          return Observer(
-            builder: (_) => ListView.builder(
-                itemBuilder: (BuildContext context, int index) =>
-                    StatKeeperLabel(
-                      statKeeper: _userStore.statKeepers[index],
-                    ),
-                itemCount: _userStore.statKeepers.length),
-          );
-        } else {
-          return Center(child: CircularProgressIndicator());
-        }
-      },
+    return Observer(
+      builder: (_) => ListView.builder(
+          itemBuilder: (BuildContext context, int index) => StatKeeperLabel(
+                statKeeper: _userStore.statKeepers[index],
+              ),
+          itemCount: _userStore.statKeepers.length),
     );
   }
 }
@@ -164,6 +198,7 @@ class StatKeeperLabel extends StatelessWidget {
 
   /// Navigates to the [LoadingScreen].
   _navigateToLoadingScreen(BuildContext context, StatKeeper sK) {
+    debugPrint("STATKEEPR INFO:  $sK");
     Navigator.of(context).push(
       MaterialPageRoute<Null>(
         builder: (BuildContext context) {

@@ -35,6 +35,7 @@ class _LoadingScreenState extends State<LoadingScreen> {
     if (statKeeperScreen == null) {
       return;
     }
+    debugPrint("navvvvv   $sK");
 
     Navigator.of(context).pushReplacement(
       MaterialPageRoute<Null>(

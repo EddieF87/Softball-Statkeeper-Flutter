@@ -82,7 +82,7 @@ class MyApp extends StatelessWidget {
               ),
             ),
             scaffoldBackgroundColor: primaryColorLight),
-        home: const HomeScreen(title: 'Sleek Stats Softball Lite'),
+        home: const HomeScreen(),
       ),
     );
   }

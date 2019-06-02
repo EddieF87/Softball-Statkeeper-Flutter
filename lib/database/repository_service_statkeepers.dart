@@ -10,22 +10,22 @@ class RepositoryServiceStatKeepers {
     final data = await db.rawQuery(sql);
 
     List<StatKeeper> statKeeperList = [];
-    for (final node in data) {
-      final statKeeper = StatKeeper.fromJson(node);
-      statKeeperList.add(statKeeper);
-    }
+//    for (final node in data) {
+//      final statKeeper = StatKeeper.fromJson(node, );
+//      statKeeperList.add(statKeeper);
+//    }
     return statKeeperList;
   }
 
-  static Future<StatKeeper> getStatKeeper(String fireID) async {
-    final sql = '''
-    SELECT * FROM ${DBContract.TABLE_STATKEEPERS} WHERE ${DBContract.FIRESTORE_ID}=?
-    ''';
-    List<String> params = [fireID];
-    final data = await db.rawQuery(sql, params);
-    final statKeeper = StatKeeper.fromJson(data[0]);
-    return statKeeper;
-  }
+//  static Future<StatKeeper> getStatKeeper(String fireID) async {
+//    final sql = '''
+//    SELECT * FROM ${DBContract.TABLE_STATKEEPERS} WHERE ${DBContract.FIRESTORE_ID}=?
+//    ''';
+//    List<String> params = [fireID];
+//    final data = await db.rawQuery(sql, params);
+//    final statKeeper = StatKeeper.fromJson(data[0]);
+//    return statKeeper;
+//  }
 
   static Future<int> insertStatKeeper(StatKeeper statKeeper) async {
     final sql = '''INSERT INTO ${DBContract.TABLE_STATKEEPERS}

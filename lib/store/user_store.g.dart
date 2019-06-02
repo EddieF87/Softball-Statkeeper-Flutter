@@ -9,22 +9,6 @@ part of 'user_store.dart';
 // ignore_for_file: non_constant_identifier_names, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars
 
 mixin _$UserStore on _UserStore, Store {
-  final _$userEmailAtom = Atom(name: '_UserStore.userEmail');
-
-  @override
-  String get userEmail {
-    _$userEmailAtom.reportObserved();
-    return super.userEmail;
-  }
-
-  @override
-  set userEmail(String value) {
-    _$userEmailAtom.context
-        .checkIfStateModificationsAreAllowed(_$userEmailAtom);
-    super.userEmail = value;
-    _$userEmailAtom.reportChanged();
-  }
-
   final _$statKeepersAtom = Atom(name: '_UserStore.statKeepers');
 
   @override
@@ -41,18 +25,26 @@ mixin _$UserStore on _UserStore, Store {
     _$statKeepersAtom.reportChanged();
   }
 
+  final _$updateStatKeepersAsyncAction = AsyncAction('updateStatKeepers');
+
+  @override
+  Future<dynamic> updateStatKeepers(FirebaseUser user) {
+    return _$updateStatKeepersAsyncAction
+        .run(() => super.updateStatKeepers(user));
+  }
+
+  final _$signOutAsyncAction = AsyncAction('signOut');
+
+  @override
+  Future<bool> signOut() {
+    return _$signOutAsyncAction.run(() => super.signOut());
+  }
+
   final _$getStatKeepersAsyncAction = AsyncAction('getStatKeepers');
 
   @override
   Future<ObservableList<StatKeeper>> getStatKeepers() {
     return _$getStatKeepersAsyncAction.run(() => super.getStatKeepers());
-  }
-
-  final _$updateStatKeepersAsyncAction = AsyncAction('updateStatKeepers');
-
-  @override
-  Future<dynamic> updateStatKeepers() {
-    return _$updateStatKeepersAsyncAction.run(() => super.updateStatKeepers());
   }
 
   final _$addStatKeeperAsyncAction = AsyncAction('addStatKeeper');

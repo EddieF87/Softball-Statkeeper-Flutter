@@ -10,7 +10,7 @@ part 'statkeeper_store.g.dart';
 class StatKeeperStore = _StatKeeperStore with _$StatKeeperStore;
 
 // The store-class
-abstract class _StatKeeperStore implements Store {
+abstract class _StatKeeperStore with Store {
   String statkeeperFireID;
 
   @observable

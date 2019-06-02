@@ -15,9 +15,9 @@ class StatKeeper {
   static const LEVEL_ADMIN = 3;
   static const LEVEL_CREATOR = 4;
 
-  static const TYPE_PLAYER = 0;
+  static const TYPE_LEAGUE = 0;
   static const TYPE_TEAM = 1;
-  static const TYPE_LEAGUE = 2;
+  static const TYPE_PLAYER = 2;
 
   StatKeeper({
     @required this.fireID,
@@ -29,10 +29,15 @@ class StatKeeper {
         assert(type != null),
         assert(level != null);
 
-  StatKeeper.fromJson(Map<String, dynamic> json) {
-    this.fireID = json[DBContract.FIRESTORE_ID];
-    this.name = json[DBContract.NAME];
-    this.type = json[DBContract.TYPE];
-    this.level = json[DBContract.LEVEL];
+  StatKeeper.fromJson(Map<String, dynamic> data, String fireID, String userID) {
+    this.fireID = fireID;
+    this.name = data[DBContract.NAME];
+    this.type = data[DBContract.TYPE];
+    this.level = data[userID];
+  }
+
+  @override
+  String toString() {
+    return "$name  fireID $fireID  type $type  level $level";
   }
 }
