@@ -48,6 +48,17 @@ class Team {
     this.runsAllowed = json[DBContract.RUNS_ALLOWED];
   }
 
+  Team.fromFirestore(Map<String, dynamic> json, String sKFireID, String fireID) {
+    this.fireID = fireID;
+    this.statkeeperFireID = sKFireID;
+    this.name = json[DBContract.NAME];
+    this.wins = json[DBContract.WINS] ?? 0;
+    this.losses = json[DBContract.LOSSES] ?? 0;
+    this.ties = json[DBContract.TIES] ?? 0;
+    this.runsScored = json[DBContract.RUNS_SCORED] ?? 0;
+    this.runsAllowed = json[DBContract.RUNS_ALLOWED] ?? 0;
+  }
+
   double getWinPct() {
     int games = this.wins + this.losses + this.ties;
     if (games == 0) {

@@ -27,7 +27,7 @@ class RepositoryServiceTeams {
   }
 
   static Future<int> insertTeam(Team team) async {
-    final sql = '''INSERT INTO ${DBContract.TABLE_TEAMS}
+    final sql = '''INSERT OR REPLACE INTO ${DBContract.TABLE_TEAMS}
     ( 
     ${DBContract.FIRESTORE_ID},
     ${DBContract.STATKEEPER_FIRESTORE_ID},

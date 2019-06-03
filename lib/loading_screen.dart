@@ -71,7 +71,9 @@ class _LoadingScreenState extends State<LoadingScreen> {
     StatKeeperStore statKeeperStore = Provider.of<StatKeeperStore>(context);
     statKeeperStore.clearStatKeeper();
     statKeeperStore.statkeeperFireID = fireID;
+    print("START POPULATIN");
     await statKeeperStore.populateStatKeeper(fireID);
+    print("ALL POPULATED");
 
     switch (sK.type) {
       case StatKeeper.TYPE_PLAYER:
@@ -81,6 +83,7 @@ class _LoadingScreenState extends State<LoadingScreen> {
         );
         break;
       case StatKeeper.TYPE_TEAM:
+        print("TeamScreen");
         return TeamScreen(
           title: name,
           fireID: fireID,

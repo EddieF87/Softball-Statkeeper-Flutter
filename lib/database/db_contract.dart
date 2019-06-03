@@ -9,7 +9,7 @@ class DBContract{
   //ID Columns
   static const ID = "id";
   static const FIRESTORE_ID = "firestoreID";
-  static const TEAM_FIRESTORE_ID = "teamFirestoreID";
+  static const TEAM_FIRESTORE_ID = "teamfirestoreid";
   static const STATKEEPER_FIRESTORE_ID = "statkeeperFirestoreID";
 
   //Player Table Columns
@@ -24,10 +24,10 @@ class DBContract{
   static const TRIPLES = "triples";
   static const HRS = "hrs";
   static const WALKS = "walks";
-  static const OUTS = "out";
-  static const SAC_FLIES = "sf";
+  static const OUTS = "outs";
+  static const SAC_FLIES = "sacFlies";
   static const REACHED_ON_ERRORS = "reachedOnErrors";
-  static const STRIKEOUTS = "strikeOuts";
+  static const STRIKEOUTS = "strikeouts";
   static const STOLEN_BASES = "stolenBases";
   static const HBP = "hbp";
 
@@ -35,12 +35,13 @@ class DBContract{
   static const WINS = "wins";
   static const LOSSES = "losses";
   static const TIES = "ties";
-  static const RUNS_SCORED = "runs_scored";
-  static const RUNS_ALLOWED = "runs_allowed";
+  static const RUNS_SCORED = "totalRunsScored";
+  static const RUNS_ALLOWED = "totalRunsAllowed";
 
 
 
   //StatKeeper Table Columns
+  static const UPDATE = "update";
   static const TYPE = "type";
   static const LEVEL = "level";
 

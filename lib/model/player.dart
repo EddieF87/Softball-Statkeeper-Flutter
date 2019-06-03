@@ -169,6 +169,29 @@ class Player {
     this.hbp = json[DBContract.HBP];
   }
 
+  Player.fromFirestore(Map<String, dynamic> data, String sKID, String fireID) {
+    this.fireID = fireID;
+    this.teamFireID = data[DBContract.TEAM_FIRESTORE_ID];
+    this.statkeeperFireID = sKID;
+    this.name = data[DBContract.NAME];
+    this.team = data[DBContract.TEAM];
+    this.gender = data[DBContract.GENDER] ?? 0;
+    this.games = data[DBContract.GAMES] ?? 0;
+    this.singles = data[DBContract.SINGLES] ?? 0;
+    this.doubles = data[DBContract.DOUBLES] ?? 0;
+    this.triples = data[DBContract.TRIPLES] ?? 0;
+    this.hrs = data[DBContract.HRS] ?? 0;
+    this.walks = data[DBContract.WALKS] ?? 0;
+    this.outs = data[DBContract.OUTS] ?? 0;
+    this.sacFlies = data[DBContract.SAC_FLIES] ?? 0;
+    this.reachedOnErrors = data[DBContract.REACHED_ON_ERRORS] ?? 0;
+    this.strikeOuts = data[DBContract.STRIKEOUTS] ?? 0;
+    this.stolenBases = data[DBContract.STOLEN_BASES] ?? 0;
+    this.runs = data[DBContract.RUNS] ?? 0;
+    this.rbi = data[DBContract.RBI] ?? 0;
+    this.hbp = data[DBContract.HBP] ?? 0;
+  }
+
   int getHits() => singles + doubles + triples + hrs;
 
   int getTotalBases() => singles + doubles * 2 + triples * 3 + hrs * 4;

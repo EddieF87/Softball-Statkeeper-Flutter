@@ -58,7 +58,7 @@ class RepositoryServicePlayers {
   }
 
   static Future<int> insertPlayer(Player player) async {
-    final sql = '''INSERT INTO ${DBContract.TABLE_PLAYERS}
+    final sql = '''INSERT OR REPLACE INTO ${DBContract.TABLE_PLAYERS}
     ( 
     ${DBContract.ID},
     ${DBContract.FIRESTORE_ID},

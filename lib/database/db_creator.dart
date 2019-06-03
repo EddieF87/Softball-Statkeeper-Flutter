@@ -23,7 +23,7 @@ class DBCreator {
     final statkeeperSql = '''CREATE TABLE ${DBContract.TABLE_STATKEEPERS}
     (
    ${DBContract.ID} INTEGER PRIMARY KEY,
-   ${DBContract.FIRESTORE_ID} TEXT NOT NULL,
+   ${DBContract.FIRESTORE_ID} TEXT NOT NULL UNIQUE,
    ${DBContract.NAME} TEXT NOT NULL,
    ${DBContract.TYPE} INTEGER NOT NULL,
    ${DBContract.LEVEL} INTEGER NOT NULL DEFAULT 1
@@ -35,7 +35,7 @@ class DBCreator {
     final statkeeperSql = '''CREATE TABLE ${DBContract.TABLE_TEAMS}
     (
    ${DBContract.ID} INTEGER PRIMARY KEY,
-   ${DBContract.FIRESTORE_ID} TEXT NOT NULL,
+   ${DBContract.FIRESTORE_ID} TEXT NOT NULL UNIQUE,
    ${DBContract.STATKEEPER_FIRESTORE_ID} TEXT NOT NULL,
    ${DBContract.NAME} TEXT NOT NULL,
    ${DBContract.WINS} INTEGER DEFAULT 0,
@@ -51,7 +51,7 @@ class DBCreator {
     final playerSql = '''CREATE TABLE ${DBContract.TABLE_PLAYERS}
     (
    ${DBContract.ID} INTEGER PRIMARY KEY,
-   ${DBContract.FIRESTORE_ID} TEXT NOT NULL,
+   ${DBContract.FIRESTORE_ID} TEXT NOT NULL UNIQUE,
    ${DBContract.TEAM_FIRESTORE_ID} TEXT,
    ${DBContract.STATKEEPER_FIRESTORE_ID} TEXT,
    ${DBContract.NAME} TEXT NOT NULL,

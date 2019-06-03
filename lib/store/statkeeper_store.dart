@@ -1,6 +1,7 @@
 import 'package:mobx/mobx.dart';
 import 'package:sleekstats_flutter_statkeeper/database/repository_service_players.dart';
 import 'package:sleekstats_flutter_statkeeper/database/repository_service_teams.dart';
+import 'package:sleekstats_flutter_statkeeper/firestore/firestore_service.dart';
 import 'package:sleekstats_flutter_statkeeper/model/player.dart';
 import 'package:sleekstats_flutter_statkeeper/model/team.dart';
 import 'package:uuid/uuid.dart';
@@ -24,19 +25,31 @@ abstract class _StatKeeperStore with Store {
 
   String playerStatToSortBy;
   String teamStatToSortBy;
+  bool populated = false;
 
   @action
   Future populateStatKeeper(String fireID) async {
+    print("populateStatKeeper  $fireID");
+
+    if (populated) {
+      return;
+    }
     teams.clear();
     players.clear();
 
-    teams.addAll(await RepositoryServiceTeams.getAllTeams(fireID));
-    players.addAll(await RepositoryServicePlayers.getAllPlayers(fireID));
+    teams.addAll(await FirestoreService.getTeams(fireID));
+    players.addAll(await FirestoreService.getPlayers(fireID));
+
+//    teams.addAll(await RepositoryServiceTeams.getAllTeams(fireID));
+//    players.addAll(await RepositoryServicePlayers.getAllPlayers(fireID));
 
     teams = teams;
     players = players;
 
-    sortPlayers(playerStatToSortBy);
+//    sortPlayers(playerStatToSortBy);
+    populated = true;
+    print(
+        "populateStatKeeper  $fireID  finisehd  ${players.length}  ${teams.length}");
   }
 
   @action
@@ -66,28 +79,26 @@ abstract class _StatKeeperStore with Store {
     Team team = teams[index];
 
     var uuid = new Uuid();
-    playerNames.forEach(
-      (key, name) async {
-        Player player = Player(
-          fireID: uuid.v1(),
-          teamFireID: team.fireID,
-          statkeeperFireID: statkeeperFireID,
-          name: name,
-          team: team.name,
-        );
-        player.id = await RepositoryServicePlayers.insertPlayer(player);
-        if (player.id > 0) {
-          players.add(player);
-        }
-      },
-    );
+    for (var name in playerNames.values) {
+      Player player = Player(
+        fireID: uuid.v1(),
+        teamFireID: team.fireID,
+        statkeeperFireID: statkeeperFireID,
+        name: name,
+        team: team.name,
+      );
+      player.id = await RepositoryServicePlayers.insertPlayer(player);
+      if (player.id > 0) {
+        players.add(player);
+      }
+    }
     players = players;
   }
 
   @action
   Future addTeams(Map<int, String> teamNames) async {
     var uuid = new Uuid();
-    teamNames.forEach((key, name) async {
+    for (var name in teamNames.values) {
       Team team = Team(
         fireID: uuid.v1(),
         statkeeperFireID: statkeeperFireID,
@@ -97,7 +108,7 @@ abstract class _StatKeeperStore with Store {
       if (team.id > 0) {
         teams.add(team);
       }
-    });
+    }
     teams = teams;
   }
 
@@ -109,6 +120,7 @@ abstract class _StatKeeperStore with Store {
     teamStatToSortBy = null;
     teams.clear();
     players.clear();
+    populated = false;
   }
 
   Team getCurrentTeam(int index) {
