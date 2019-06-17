@@ -1,85 +1,98 @@
 import 'package:sleekstats_flutter_statkeeper/database/db_contract.dart';
 
 class Play {
-
   int id;
-  int number;
   String statkeeperFireID;
+  int number;
   String play;
-  String batter;
-  String onDeck;
+  String batterID;
+  String onDeckID;
   int team;
   int outs;
   int awayTeamRuns;
   int homeTeamRuns;
   bool inningChanged;
   int innings;
-  bool inningRuns;
+  int inningRuns;
 
-  var bases;
-  var runsScored;
+  List<String> bases;
+  List<String> runsScored;
 
-  Play({
-    this.id,
-    this.number,
-    this.statkeeperFireID,
-    this.play,
-    this.batter,
-    this.onDeck,
-    this.outs,
-    this.awayTeamRuns,
-    this.homeTeamRuns,
-    this.inningChanged,
-    this.innings,
-    this.inningRuns,
-    this.bases,
-    this.runsScored
-  }) : assert(statkeeperFireID != null, id != null);
+  Play(
+      {this.id,
+      this.statkeeperFireID,
+      this.number,
+      this.play,
+      this.batterID,
+      this.onDeckID,
+      this.outs,
+      this.awayTeamRuns,
+      this.homeTeamRuns,
+      this.inningChanged,
+      this.innings,
+      this.inningRuns,
+      this.bases,
+      this.runsScored})
+      : assert(statkeeperFireID != null, id != null);
 
   Map<String, dynamic> toJson() => {
-    DBContract.ID: this.id,
-    DBContract.PLAY_NUMBER: this.number,
-    DBContract.STATKEEPER_FIRESTORE_ID: this.statkeeperFireID,
-    DBContract.PLAY: this.play,
-    DBContract.BATTER: this.batter,
-    DBContract.ON_DECK: this.onDeck,
-    DBContract.TEAM: this.team,
-    DBContract.BASE1: this.bases[0],
-    DBContract.BASE2: this.bases[1],
-    DBContract.BASE3: this.bases[2],
-    DBContract.OUTS: this.outs,
-    DBContract.AWAY_RUNS: this.awayTeamRuns,
-    DBContract.HOME_RUNS: this.homeTeamRuns,
-    DBContract.RUN1: this.runsScored[0],
-    DBContract.RUN2: this.runsScored[1],
-    DBContract.RUN3: this.runsScored[2],
-    DBContract.RUN4: this.runsScored[3],
-    DBContract.INNING_CHANGED: this.inningChanged,
-    DBContract.INNINGS: this.innings,
-    DBContract.INNING_RUNS: this.inningRuns,
-  };
-
+        DBContract.ID: this.id,
+        DBContract.STATKEEPER_FIRESTORE_ID: this.statkeeperFireID,
+        DBContract.PLAY_NUMBER: this.number,
+        DBContract.PLAY: this.play,
+        DBContract.BATTER: this.batterID,
+        DBContract.ON_DECK: this.onDeckID,
+        DBContract.TEAM: this.team,
+        DBContract.BASE1: this.bases[1],
+        DBContract.BASE2: this.bases[2],
+        DBContract.BASE3: this.bases[3],
+        DBContract.OUTS: this.outs,
+        DBContract.AWAY_RUNS: this.awayTeamRuns,
+        DBContract.HOME_RUNS: this.homeTeamRuns,
+        DBContract.RUN1: this.runsScored[0],
+        DBContract.RUN2: this.runsScored[1],
+        DBContract.RUN3: this.runsScored[2],
+        DBContract.RUN4: this.runsScored[3],
+        DBContract.INNING_CHANGED: this.inningChanged,
+        DBContract.INNINGS: this.innings,
+        DBContract.INNING_RUNS: this.inningRuns,
+      };
 
   Play.fromJson(Map<String, dynamic> json) {
-    this.id= json[DBContract.ID];
-    this.number= json[DBContract.PLAY_NUMBER];
-    this.statkeeperFireID= json[DBContract.STATKEEPER_FIRESTORE_ID];
-    this.play= json[DBContract.PLAY];
-    this.batter= json[DBContract.BATTER];
-    this.onDeck= json[DBContract.ON_DECK];
-    this.team= json[DBContract.TEAM];
-    this.outs= json[DBContract.OUTS];
-    this.awayTeamRuns= json[DBContract.AWAY_RUNS];
-    this.homeTeamRuns= json[DBContract.HOME_RUNS];
-    this.inningChanged= json[DBContract.INNING_CHANGED];
-    this.innings= json[DBContract.INNINGS];
+    this.id = json[DBContract.ID];
+    this.statkeeperFireID = json[DBContract.STATKEEPER_FIRESTORE_ID];
+    this.number = json[DBContract.PLAY_NUMBER];
+    this.play = json[DBContract.PLAY];
+    this.batterID = json[DBContract.BATTER];
+    this.onDeckID = json[DBContract.ON_DECK];
+    this.team = json[DBContract.TEAM];
+    this.outs = json[DBContract.OUTS];
+    this.awayTeamRuns = json[DBContract.AWAY_RUNS];
+    this.homeTeamRuns = json[DBContract.HOME_RUNS];
+    this.inningChanged = json[DBContract.INNING_CHANGED];
+    this.innings = json[DBContract.INNINGS];
     this.inningRuns = json[DBContract.INNING_RUNS];
-    this.bases = {json[DBContract.BASE1], json[DBContract.BASE2], json[DBContract.BASE3]};
-    this.runsScored = {json[DBContract.RUN1], json[DBContract.RUN2], json[DBContract.RUN3], json[DBContract.RUN4]};
+    this.bases = [
+      this.batterID,
+      json[DBContract.BASE1],
+      json[DBContract.BASE2],
+      json[DBContract.BASE3],
+      null
+    ];
+    this.runsScored = [
+      json[DBContract.RUN1],
+      json[DBContract.RUN2],
+      json[DBContract.RUN3],
+      json[DBContract.RUN4]
+    ];
   }
 
   @override
   String toString() {
-    return "Play $play  id:$id  sKID:$statkeeperFireID";
+    return "Play  num:$number  bID: $batterID    play:$play  "
+//        "outs:$outs  inn:$innings  innchanged:$inningChanged  innruns:$inningRuns  "
+        "bases:${bases[0]} ${bases[1]} ${bases[2]} ${bases[3]} ${bases[4]} "
+//        "runsScored:${runsScored[0]} ${runsScored[1]} ${runsScored[2]} ${runsScored[3]}"
+    ;
   }
 }

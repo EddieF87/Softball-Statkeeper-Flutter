@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:sleekstats_flutter_statkeeper/database/repository_service_plays.dart';
+import 'package:sleekstats_flutter_statkeeper/store/game_store.dart';
 import 'package:sleekstats_flutter_statkeeper/store/statkeeper_store.dart';
+import 'package:sleekstats_flutter_statkeeper/ui/game/game_screen.dart';
 import 'package:sleekstats_flutter_statkeeper/ui/team/team_stats_page.dart';
 
 class TeamScreen extends StatelessWidget {
@@ -15,7 +18,7 @@ class TeamScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    debugPrint("buildTEAMSCREEN");
+//    debugPrint("buildTEAMSCREEN");
     StatKeeperStore teamStore = Provider.of<StatKeeperStore>(context);
 
     return DefaultTabController(
@@ -55,13 +58,34 @@ class TeamTabView extends StatelessWidget {
               statKeeperStore: teamStore,
             ),
             Center(
-              child: Text(
-                "GamePage",
+              child: FlatButton(
+                onPressed: () => _goToGame(context),
+                child: Text("Start Game"),
               ),
             )
           ],
         ),
       ),
     );
+  }
+
+  _goToGame(BuildContext context) async {
+    StatKeeperStore statKeeperStore = Provider.of<StatKeeperStore>(context);
+
+    await RepositoryServicePlays.resetPlays(statKeeperStore.statkeeperFireID);
+
+    GameStore gameStore = GameStore(
+        sKFireID: statKeeperStore.statkeeperFireID,
+        awayFireID: statKeeperStore.teams[0].fireID,
+        homeFireID: statKeeperStore.teams[0].fireID);
+
+    Navigator.of(context).push(
+      MaterialPageRoute<Null>(
+        builder: (BuildContext context) => GameScreen(
+          gameStore: gameStore,
+        ),
+      ),
+    );
+//        .whenComplete(_retrieveLeagueData);
   }
 }

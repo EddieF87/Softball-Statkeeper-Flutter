@@ -3,7 +3,6 @@ import 'package:sleekstats_flutter_statkeeper/database/db_creator.dart';
 import 'package:sleekstats_flutter_statkeeper/model/play.dart';
 
 class RepositoryServicePlays {
-
   static Future<List<Play>> getAllPlays(String statkeeperFireID) async {
     final sql = '''SELECT * FROM ${DBContract.TABLE_PLAYS} 
     WHERE ${DBContract.STATKEEPER_FIRESTORE_ID}=?''';
@@ -25,12 +24,12 @@ class RepositoryServicePlays {
     return Play.fromJson(data[0]);
   }
 
-  static Future<void> insertPlay(Play play) async {
+  static Future<int> insertPlay(Play play) async {
     final sql = '''INSERT INTO ${DBContract.TABLE_PLAYS}
     ( 
     ${DBContract.ID},
-    ${DBContract.PLAY_NUMBER},
     ${DBContract.STATKEEPER_FIRESTORE_ID},
+    ${DBContract.PLAY_NUMBER},
     ${DBContract.PLAY},
     ${DBContract.BATTER},
     ${DBContract.ON_DECK},
@@ -47,22 +46,22 @@ class RepositoryServicePlays {
     ${DBContract.RUN4},
     ${DBContract.INNING_CHANGED},
     ${DBContract.INNINGS},
-    ${DBContract.INNING_RUNS},
+    ${DBContract.INNING_RUNS}
     )
     VALUES
     (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     ''';
     List<dynamic> params = [
       play.id,
-      play.number,
       play.statkeeperFireID,
+      play.number,
       play.play,
-      play.batter,
-      play.onDeck,
+      play.batterID,
+      play.onDeckID,
       play.team,
-      play.bases[0],
       play.bases[1],
       play.bases[2],
+      play.bases[3],
       play.outs,
       play.awayTeamRuns,
       play.homeTeamRuns,
@@ -74,15 +73,24 @@ class RepositoryServicePlays {
       play.innings,
       play.inningRuns
     ];
+    DBCreator.databaseLog("Add Play", sql, null, 0);
     final result = await db.rawInsert(sql, params);
-    DBCreator.databaseLog("Add Play", sql, null, result);
+    return result;
   }
 
   static Future<void> deletePlay(Play play) async {
-    final sql = '''DELETE ${DBContract.TABLE_PLAYS} WHERE ${DBContract.ID}=?''';
+    final sql = '''DELETE FROM ${DBContract.TABLE_PLAYS} WHERE ${DBContract.ID}=?''';
     List<String> params = [play.id.toString()];
     final result = await db.rawDelete(sql, params);
     DBCreator.databaseLog("Delete Play", sql, null, result);
+  }
+
+  static Future<void> resetPlays(String statkeeperFireID) async {
+    final sql = '''DELETE FROM ${DBContract.TABLE_PLAYS} 
+        WHERE ${DBContract.STATKEEPER_FIRESTORE_ID}=?''';
+    List<String> params = [statkeeperFireID];
+    final result = await db.rawDelete(sql, params);
+    DBCreator.databaseLog("Delete Plays", sql, null, result);
   }
 
   static Future<int> playCount() async {

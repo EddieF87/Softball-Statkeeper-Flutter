@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sleekstats_flutter_statkeeper/model/team.dart';
+import 'package:sleekstats_flutter_statkeeper/store/game_store.dart';
 import 'package:sleekstats_flutter_statkeeper/store/statkeeper_store.dart';
 import 'package:sleekstats_flutter_statkeeper/ui/game/game_screen.dart';
 import 'package:sleekstats_flutter_statkeeper/ui/league/add_teams_dialog.dart';
@@ -172,12 +173,15 @@ class LeagueScreen extends StatelessWidget {
   _goToGame(BuildContext context) {
     //TODO
     StatKeeperStore statKeeperStore = Provider.of<StatKeeperStore>(context);
+    GameStore gameStore = GameStore(
+        sKFireID: leagueFireID,
+        awayFireID: statKeeperStore.teams[0].fireID,
+        homeFireID: statKeeperStore.teams[0].fireID);
+
     Navigator.of(context).push(
       MaterialPageRoute<Null>(
         builder: (BuildContext context) => GameScreen(
-              statkeeperFireID: leagueFireID,
-              awayTeamFireID: statKeeperStore.teams[0].fireID,
-              homeTeamFireID: statKeeperStore.teams[0].fireID,
+              gameStore: gameStore,
             ),
       ),
     );

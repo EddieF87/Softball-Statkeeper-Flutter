@@ -1,92 +1,102 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:sleekstats_flutter_statkeeper/model/player.dart';
+import 'package:sleekstats_flutter_statkeeper/store/base_store.dart';
+import 'package:sleekstats_flutter_statkeeper/store/game_store.dart';
 
-class Diamond extends StatefulWidget {
-  final List<Player> bases;
-  final ValueSetter<Player> onRunScored;
-  final VoidCallback onBatterMoved;
+class Diamond extends StatelessWidget {
+  final GameStore gameStore;
+  final BaseStore baseStore;
 
-  const Diamond({Key key, this.bases, this.onRunScored, this.onBatterMoved}) : super(key: key);
+  static const BATTER = 0;
+  static const FIRST = 1;
+  static const SECOND = 2;
+  static const THIRD = 3;
+  static const HOME = 4;
 
-  @override
-  State<StatefulWidget> createState() => DiamondState();
-}
-
-class DiamondState extends State<Diamond> {
+  const Diamond({Key key, this.gameStore, this.baseStore}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     Color accentColor = Theme.of(context).accentColor;
 
-    return Padding(
-      padding: const EdgeInsets.all(24.0),
-      child: Stack(
-        children: <Widget>[
-          widget.bases[0] != null
-              ? _createRunner(
-                  base: 0, alignment: Alignment.center, onBase: false)
-              : Container(),
-          _createBase(
-              base: 1,
-              alignment: Alignment.centerRight,
-              isOccupied: widget.bases[1] != null),
-          _createBase(
-            isOccupied: widget.bases[2] != null,
-            base: 2,
-            alignment: Alignment.topCenter,
-          ),
-          _createBase(
-            isOccupied: widget.bases[3] != null,
-            base: 3,
-            alignment: Alignment.centerLeft,
-          ),
-          _createBase(
-            isOccupied: false,
-            base: 4,
-            alignment: Alignment.bottomCenter,
-          ),
-          Align(
-            alignment: Alignment.bottomRight,
-            child: DragTarget(
-              builder: (BuildContext context, List<int> candidateData,
-                  List rejectedData) {
-                return Container(
-                  width: 90,
-                  height: 90,
-                  child: Stack(
-                    children: <Widget>[
-                      Icon(
-                        Icons.highlight_off,
-                        size: 90,
-                        color: accentColor,
-                      ),
-                      _nameBox(name: Player.LABEL_OUT),
-                    ],
+    return Observer(
+      builder: (_) => Padding(
+            padding: const EdgeInsets.all(24.0),
+            child: Stack(
+              children: <Widget>[
+                baseStore.bases[BATTER] != null
+                    ? _createRunner(
+                        baseIndex: BATTER,
+                        alignment: Alignment.center,
+                        onBase: false)
+                    : Container(),
+                _createBase(
+                    base: FIRST,
+                    alignment: Alignment.centerRight,
+                    isOccupied: baseStore.bases[FIRST] != null),
+                _createBase(
+                  isOccupied: baseStore.bases[SECOND] != null,
+                  base: SECOND,
+                  alignment: Alignment.topCenter,
+                ),
+                _createBase(
+                  isOccupied: baseStore.bases[THIRD] != null,
+                  base: THIRD,
+                  alignment: Alignment.centerLeft,
+                ),
+                _createBase(
+                  isOccupied: false,
+                  base: HOME,
+                  alignment: Alignment.bottomCenter,
+                ),
+                Align(
+                  alignment: Alignment.bottomRight,
+                  child: DragTarget(
+                    builder: (BuildContext context, List<int> candidateData,
+                        List rejectedData) {
+                      return Container(
+                        width: 90,
+                        height: 90,
+                        child: Stack(
+                          children: <Widget>[
+                            Icon(
+                              Icons.highlight_off,
+                              size: 90,
+                              color: accentColor,
+                            ),
+                            _nameBox(name: Player.LABEL_OUT),
+                          ],
+                        ),
+                      );
+                    },
+                    onLeave: (data) {
+                      print("onLeave");
+                    },
+                    onWillAccept: (data) {
+                      return true;
+                    },
+                    onAccept: (data) {
+                      print("onAccept");
+//                      setState(() {});
+                    },
                   ),
-                );
-              },
-              onLeave: (data) {
-                print("onLeave");
-              },
-              onWillAccept: (data) {
-                return true;
-              },
-              onAccept: (data) {
-                print("onAccept");
-                setState(() {});
-              },
+                ),
+                Align(
+                  alignment: Alignment.topLeft,
+                  child: IconButton(
+                      icon: Icon(Icons.fast_rewind),
+                      onPressed: gameStore.goBackward),
+                ),
+                Align(
+                  alignment: Alignment.topRight,
+                  child: IconButton(
+                      icon: Icon(Icons.fast_forward),
+                      onPressed: gameStore.goForward),
+                ),
+              ],
             ),
           ),
-          Align(
-            alignment: Alignment.topLeft,
-            child: IconButton(icon: Icon(Icons.fast_rewind), onPressed: null),
-          ),
-          Align(
-            alignment: Alignment.topRight,
-            child: IconButton(icon: Icon(Icons.fast_forward), onPressed: null),
-          ),
-        ],
-      ),
     );
   }
 
@@ -112,10 +122,10 @@ class DiamondState extends State<Diamond> {
   Widget _createBaseOrRunner(
           {bool isOccupied, int base, Alignment alignment}) =>
       isOccupied
-          ? _createRunner(base: base, alignment: alignment, onBase: true)
-          : _createBaseTarget(base: base, alignment: alignment);
+          ? _createRunner(baseIndex: base, alignment: alignment, onBase: true)
+          : _createBaseTarget(newBase: base, alignment: alignment);
 
-  Widget _createBaseTarget({int base, Alignment alignment}) {
+  Widget _createBaseTarget({int newBase, Alignment alignment}) {
     return DragTarget(
       builder:
           (BuildContext context, List<int> candidateData, List rejectedData) {},
@@ -123,48 +133,53 @@ class DiamondState extends State<Diamond> {
         print("onLeave");
       },
       onWillAccept: (data) {
-        if (data >= base) {
-          print("$data >= $base can't go backwards");
+        if (data >= newBase) {
+          print("$data >= $newBase can't go backwards");
           return false;
         }
-        for (var i = data + 1; i < base; i++) {
-          if (widget.bases[i] != null) {
+        for (var i = data + 1; i < newBase; i++) {
+          if (baseStore.bases[i] != null) {
             print("base $i occupied");
             return false;
           }
         }
-        return widget.bases[base] == null;
+        return baseStore.bases[newBase] == null;
       },
-      onAccept: (data) {
+      onAccept: (currentBase) {
         print("onAccept");
-        if(base == 4) {
-          widget.onRunScored(widget.bases[data]);
+        if (newBase == HOME) {
+          gameStore.addRunAndRBI((baseStore.bases[currentBase]));
         }
-        setState(() {
-          widget.bases[base] = widget.bases[data];
-          widget.bases[data] = null;
-          widget.bases[4] = null;
-          if(data == 0) {
-            widget.onBatterMoved();
-          }
-        });
+//        setState(() {
+//          baseStore.bases[base] = baseStore.bases[data];
+//          baseStore.bases[data] = null;
+//          baseStore.bases[HOME] = null;
+//          if (data == 0) {
+//            baseStore.onBatterMoved();
+//          }
+//        }
+//        );
+        baseStore.updateBase(newBase, currentBase);
       },
     );
   }
 
-  Widget _createRunner({int base, Alignment alignment, bool onBase}) {
+  Widget _createRunner({int baseIndex, Alignment alignment, bool onBase}) {
     return Align(
       alignment: alignment,
       child: Draggable(
-        data: base,
-        child: onBase ? _onBaseIcon(name: widget.bases[base].name) : _batterIcon(name: widget.bases[base].name),
+        data: baseIndex,
+        child: onBase
+            ? _onBaseIcon(name: baseStore.bases[baseIndex].name)
+            : _batterIcon(name: baseStore.bases[baseIndex].name),
         feedback: Icon(
           Icons.directions_run,
           size: 90,
         ),
         childWhenDragging: Container(),
         onDragCompleted: () =>
-            setState(() => widget.bases[base] = null),
+//            setState(() => baseStore.bases[base] = null)
+            baseStore.onRunnerMoved(baseIndex),
       ),
     );
   }

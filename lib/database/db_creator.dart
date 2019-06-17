@@ -9,13 +9,13 @@ Database db;
 class DBCreator {
   static void databaseLog(String functionName, String sql,
       [List<Map<String, dynamic>> selectQueryResult,
-        int insertAndUpdateQueryResult]) {
-    print(functionName);
-    print(sql);
+      int insertAndUpdateQueryResult]) {
+//    print(functionName);
+//    print(sql);
     if (selectQueryResult != null) {
-      print(selectQueryResult);
+//      print(selectQueryResult);
     } else if (insertAndUpdateQueryResult != null) {
-      print(insertAndUpdateQueryResult);
+//      print(insertAndUpdateQueryResult);
     }
   }
 
@@ -76,9 +76,11 @@ class DBCreator {
   }
 
   Future<void> createGameStatsTable(Database db) async {
-    final gameStatsSql = """CREATE TABLE IF NOT EXISTS ${DBContract.TABLE_PLAYS} ( 
+    final gameStatsSql =
+        '''CREATE TABLE IF NOT EXISTS ${DBContract.TABLE_PLAYS} ( 
     ${DBContract.ID} INTEGER PRIMARY KEY AUTOINCREMENT,
     ${DBContract.STATKEEPER_FIRESTORE_ID} TEXT NOT NULL,
+    ${DBContract.PLAY_NUMBER} INTEGER,
     ${DBContract.PLAY} TEXT,
     ${DBContract.BATTER} TEXT,
     ${DBContract.ON_DECK} TEXT,
@@ -99,7 +101,7 @@ class DBCreator {
     ${DBContract.INNING_CHANGED} INTEGER,
     ${DBContract.INNINGS} INTEGER,
     ${DBContract.INNING_RUNS} INTEGER DEFAULT 0
-    )""";
+    )''';
     await db.execute(gameStatsSql);
   }
 
@@ -107,7 +109,8 @@ class DBCreator {
     final databasePath = await getDatabasesPath();
     final path = join(databasePath, dbName);
 
-    if (await Directory(dirname(path)).exists()) {} else {
+    if (await Directory(dirname(path)).exists()) {
+    } else {
       await Directory(dirname(path)).create(recursive: true);
     }
     return path;
