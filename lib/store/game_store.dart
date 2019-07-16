@@ -18,7 +18,6 @@ abstract class _GameStore with Store {
   final BaseStore baseStore = BaseStore();
 
   _GameStore({this.sKFireID, this.awayFireID, this.homeFireID}) {
-    print("GAMESTORE CONSTRUCTED: $sKFireID");
     startGame();
   }
 
@@ -208,7 +207,6 @@ abstract class _GameStore with Store {
   }
 
   Future _addPlay({String playBatterID, String playOnDeckID}) async {
-    print("addPlay  $playNumber  $batterID");
     Play play = Play(
       play: playResult,
       number: playNumber,
@@ -218,7 +216,7 @@ abstract class _GameStore with Store {
       awayTeamRuns: awayTeamRuns,
       homeTeamRuns: homeTeamRuns,
       batterID: playBatterID,
-      bases: baseStore.prevBases.map((player) => player?.fireID).toList(),
+      bases: baseStore.bases.map((player) => player?.fireID).toList(),
       innings: innings,
       onDeckID: playOnDeckID,
       outs: outs,
@@ -230,7 +228,6 @@ abstract class _GameStore with Store {
 
   @action
   Future retrievePlay() async {
-    print("retrievePlay  $playNumber " );
     Play play = await RepositoryServicePlays.getPlay(sKFireID, playNumber);
 
     playNumber = play.number;
@@ -254,7 +251,7 @@ abstract class _GameStore with Store {
     if(playNumber == 0) {
       return;
     }
-    playNumber--;
+    decreaseLineup(awayLineup);
     retrievePlay();
   }
 
@@ -262,7 +259,7 @@ abstract class _GameStore with Store {
     if(playNumber >= plays.length - 1) {
       return;
     }
-    playNumber++;
+    increaseLineup(awayLineup);
     retrievePlay();
   }
 }
