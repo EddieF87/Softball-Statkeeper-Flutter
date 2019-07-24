@@ -36,10 +36,13 @@ abstract class _GameStore with Store {
   String playResult;
 
   @observable
-  int awayTeamRuns;
+  int awayTeamRuns = 0;
 
   @observable
-  int homeTeamRuns;
+  int homeTeamRuns = 0;
+
+  int tempRuns = 0;
+  int tempOuts = 0;
 
   bool inningChanged;
 
@@ -123,6 +126,8 @@ abstract class _GameStore with Store {
   @action
   void onReset() {
     baseStore.resetBases();
+    awayTeamRuns -= tempRuns;
+    tempRuns = 0;
     playResult = null;
   }
 
@@ -140,6 +145,7 @@ abstract class _GameStore with Store {
       //TODO   TOAST!!
       return;
     }
+    tempRuns = 0;  //todo for undoredo
 
     _onResultEntered(playResult);
     String oldBatterID = batterID;
@@ -202,6 +208,8 @@ abstract class _GameStore with Store {
 
   @action
   addRunAndRBI(Player p) {
+    tempRuns++;
+    awayTeamRuns++;
     p.runs++;
     batter.rbi++;
   }

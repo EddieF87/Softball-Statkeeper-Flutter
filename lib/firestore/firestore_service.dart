@@ -18,13 +18,9 @@ class FirestoreService {
     for (DocumentSnapshot documentSnapshot in documentSnapshots) {
       String id = documentSnapshot.documentID;
       Player player = Player.fromFirestore(documentSnapshot.data, sKID, id);
-      print("insert plater  ${player.name}");
       player.id = await RepositoryServicePlayers.insertPlayer(player);
-      print("addPlayer attempt ${players.length}");
       players.add(player);
-      print("addPlayer added ${players.length}");
     }
-    print("players = ${players.length}");
     return players;
   }
 

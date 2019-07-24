@@ -1,43 +1,32 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:sleekstats_flutter_statkeeper/store/game_store.dart';
 import 'package:sleekstats_flutter_statkeeper/utils/stat_formatter.dart';
 
 class ScoreBoard extends StatelessWidget {
-  final String batterName;
+//  final String batterName;
   final String awayTeamName;
   final String homeTeamName;
-  final int awayTeamRuns;
-  final int homeTeamRuns;
-  final int outs;
-  final int inning;
-  final double avg;
-  final int hr;
-  final int rbi;
-  final int runs;
+
+//  final int awayTeamRuns;
+//  final int homeTeamRuns;
+//  final int outs;
+//  final int inning;
+//  final double avg;
+//  final int hr;
+//  final int rbi;
+//  final int runs;
+
+  final GameStore gameStore;
 
   const ScoreBoard({
     Key key,
-    @required this.batterName,
+    @required this.gameStore,
     @required this.awayTeamName,
     @required this.homeTeamName,
-    @required this.awayTeamRuns,
-    @required this.homeTeamRuns,
-    @required this.outs,
-    @required this.inning,
-    @required this.avg,
-    @required this.hr,
-    @required this.rbi,
-    @required this.runs,
-  })  : assert(batterName != null),
+  })  : assert(gameStore != null),
         assert(awayTeamName != null),
         assert(homeTeamName != null),
-        assert(awayTeamRuns != null),
-        assert(homeTeamRuns != null),
-        assert(outs != null),
-        assert(inning != null),
-        assert(avg != null),
-        assert(hr != null),
-        assert(rbi != null),
-        assert(runs != null),
         super(key: key);
 
   @override
@@ -54,24 +43,36 @@ class ScoreBoard extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: <Widget>[
-                    Text("$awayTeamName $awayTeamRuns"),
-                    Text("$homeTeamName $homeTeamRuns"),
+                    Observer(
+                      builder: (_) =>
+                          Text("$awayTeamName ${gameStore.awayTeamRuns}"),
+                    ),
+                    Observer(
+                      builder: (_) =>
+                          Text("$homeTeamName ${gameStore.homeTeamRuns}"),
+                    ),
                   ],
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: <Widget>[
-                    Text("At Bat: $batterName"),
+                    Observer(
+                      builder: (_) =>
+                          Text("At Bat: ${gameStore.batter?.name ?? ""}"),
+                    ),
                   ],
                 ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: <Widget>[
-                    Text(" AVG: ${StatFormatter.displayAmount(avg)} "),
-                    Text(" HR: $hr "),
-                    Text(" RBI: $rbi "),
-                    Text(" R: $runs "),
-                  ],
+                Observer(
+                  builder: (_) => Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: <Widget>[
+                          Text(
+                              " AVG: ${StatFormatter.displayAmount(gameStore.batter?.getAVG() ?? 0.0)} "),
+                          Text(" HR: ${gameStore.batter?.hrs ?? 0} "),
+                          Text(" RBI: ${gameStore.batter?.rbi ?? 0} "),
+                          Text(" R: ${gameStore.batter?.runs ?? 0} "),
+                        ],
+                      ),
                 ),
               ],
             ),

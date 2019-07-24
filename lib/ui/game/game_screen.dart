@@ -12,11 +12,6 @@ class GameScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-//    Observer(builder: (_) {
-//      if (gameStore.batter == null) {
-//        return Text("F");
-//      }
-//    });
     Color accentColor = Theme.of(context).accentColor;
     Color primaryColor = Theme.of(context).primaryColor;
     return Scaffold(
@@ -34,31 +29,17 @@ class GameScreen extends StatelessWidget {
           Flexible(
             child: Container(
               color: Colors.white,
-              child: Observer(
-                builder: (_) {
-                  return ScoreBoard(
-                    awayTeamName: "AWA",
-                    homeTeamName: "HOM",
-                    awayTeamRuns: 4,
-                    homeTeamRuns: 2,
-                    inning: 1,
-                    outs: 0,
-                    batterName: gameStore.batter?.name ?? "",
-                    rbi: gameStore.batter?.rbi ?? 0,
-                    runs: gameStore.batter?.runs ?? 0,
-                    hr: gameStore.batter?.hrs ?? 0,
-                    avg: gameStore.batter?.getAVG() ?? 0.0,
-                  );
-                },
+              child: ScoreBoard(
+                gameStore: gameStore,
+                awayTeamName: "AWA",
+                homeTeamName: "HOM",
               ),
             ),
           ),
           Flexible(
             flex: 4,
-            child: Observer(
-              builder: (_) =>
-                  Diamond(gameStore: gameStore, baseStore: gameStore.baseStore),
-            ),
+            child:
+                Diamond(gameStore: gameStore, baseStore: gameStore.baseStore),
           ),
           Flexible(
             flex: 2,
