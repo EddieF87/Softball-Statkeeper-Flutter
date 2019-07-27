@@ -61,8 +61,9 @@ class GameScreen extends StatelessWidget {
                       ),
                       Expanded(
                         child: Observer(builder: (_) {
-                          return (gameStore.playResult != null &&
-                                  gameStore.baseStore.bases[0] == null)
+                          return (gameStore.playResult == Player.LABEL_SB ||
+                                  (gameStore.playResult != null &&
+                                      gameStore.baseStore.bases[0] == null))
                               ? FlatButton(
                                   onPressed: gameStore.onSubmitPlay,
                                   child: Text("Submit Play"),

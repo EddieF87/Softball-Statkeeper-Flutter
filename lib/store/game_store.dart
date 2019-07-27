@@ -126,6 +126,7 @@ abstract class _GameStore with Store {
   @action
   void onReset() {
     baseStore.resetBases();
+    runsScored = [null, null, null, null];
     awayTeamRuns -= tempRuns;
     tempRuns = 0;
     playResult = null;
@@ -139,13 +140,14 @@ abstract class _GameStore with Store {
       currentRunsLog.clear();
       currentRunsLog.addAll(tempRunsLog);
       */
+      deletePlays();
     }
 
     if (playResult == null) {
-      //TODO   TOAST!!
       return;
     }
-    tempRuns = 0;  //todo for undoredo
+
+    tempRuns = 0; //todo for undoredo
 
     _onResultEntered(playResult);
     String oldBatterID = batterID;
@@ -153,6 +155,7 @@ abstract class _GameStore with Store {
     await _addPlay(playBatterID: oldBatterID, playOnDeckID: batterID);
     _updatePlayerStats();
 
+    runsScored = [null, null, null, null];
     nextBatter();
   }
 
@@ -195,6 +198,9 @@ abstract class _GameStore with Store {
       case Player.LABEL_SF:
         batter.sacFlies++;
         break;
+      case Player.LABEL_SB:
+        updateStolenBases();
+        break;
     }
   }
 
@@ -211,6 +217,7 @@ abstract class _GameStore with Store {
     tempRuns++;
     awayTeamRuns++;
     p.runs++;
+    runsScored.add(p);
     batter.rbi++;
   }
 
@@ -232,6 +239,10 @@ abstract class _GameStore with Store {
     );
     play.id = await RepositoryServicePlays.insertPlay(play);
     plays.add(play);
+  }
+
+  Future deletePlays() async {
+    plays.removeRange(playNumber, plays.length);
   }
 
   @action
@@ -256,7 +267,8 @@ abstract class _GameStore with Store {
   }
 
   void goBackward() {
-    if(playNumber == 0) {
+    undoRedo = true;
+    if (playNumber == 0) {
       return;
     }
     decreaseLineup(awayLineup);
@@ -264,10 +276,31 @@ abstract class _GameStore with Store {
   }
 
   void goForward() {
-    if(playNumber >= plays.length - 1) {
+    if (playNumber >= plays.length - 1) {
+      undoRedo = false;
       return;
     }
     increaseLineup(awayLineup);
     retrievePlay();
+    if (playNumber >= plays.length - 1) {
+      undoRedo = false;
+    }
+  }
+
+  void updateStolenBases() {
+    for (int baseIndex = 1; baseIndex < 5; baseIndex++) {
+      Player player = baseStore.bases[baseIndex];
+      int oldBaseIndex = baseStore.prevBases.indexOf(player);
+      if (player != null) {
+        print("${player.name} stole ${baseIndex - oldBaseIndex} bases");
+      }
+    }
+    runsScored.forEach((player) {
+      print("runscored = ${player?.name}");
+      if (player != null) {
+        int oldBaseIndex = baseStore.prevBases.indexOf(player);
+        print("${player.name} stole ${4 - oldBaseIndex} bases");
+      }
+    });
   }
 }
