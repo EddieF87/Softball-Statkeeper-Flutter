@@ -1,3 +1,5 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sleekstats_flutter_statkeeper/model/statkeeper.dart';
@@ -8,7 +10,6 @@ import 'package:sleekstats_flutter_statkeeper/ui/home/statkeeper_creator_dialog.
 import '../../loading_screen.dart';
 
 class HomeScreen extends StatefulWidget {
-
   const HomeScreen({Key key}) : super(key: key);
 
   @override
@@ -16,70 +17,143 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  bool signedIn;
+  bool signedIn = false;
+  bool signingIn = true;
+
+  @override
+  void initState() {
+    super.initState();
+    UserStore userStore = Provider.of<UserStore>(context, listen: false);
+
+    userStore.retrieveCurrentUser().then((user) {
+      setState(() {
+        signingIn = false;
+        signedIn = (user != null);
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     UserStore userStore = Provider.of<UserStore>(context);
+    Color accentColor = Theme.of(context).accentColor;
+    Color primaryColor = Theme.of(context).primaryColor;
+    Color primaryDark = Theme.of(context).primaryColorDark;
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("Sleek Stats Softball"),
-        actions: <Widget>[
-          Builder(builder: (BuildContext context) {
-            print("FUtuuuuuuuure");
-            return FutureBuilder(
-              builder: (BuildContext context, AsyncSnapshot snapshot) {
-                if (snapshot.connectionState != ConnectionState.done) {
-                  return Container();
-                }
-                if (snapshot.hasData) {
-                  signedIn = true;
-                } else {
-                  signedIn = false;
-                }
-                String buttonText = signedIn ? 'Sign Out' : 'Sign In';
-                return FlatButton(
-                  child: Text(buttonText),
-                  textColor: Theme.of(context).buttonColor,
-                  onPressed: () async {
-                    signedIn ? _signOut(userStore) : _signIn(userStore);
-                  },
-                );
-              },
-              future: userStore.retrieveCurrentUser(),
-            );
-          })
-        ],
-      ),
-      body: Container(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[
-            Container(
-              padding: EdgeInsets.all(8.0),
-              color: Theme.of(context).primaryColorDark,
-              child: Text(
-                "My StatKeepers",
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 48.0,
-                    fontStyle: FontStyle.italic),
+    if (signingIn) {
+      return Scaffold(
+        body: Center(
+          child: FractionallySizedBox(
+            widthFactor: .5,
+            child: AspectRatio(
+              aspectRatio: 1,
+              child: CircularProgressIndicator(
+                strokeWidth: 14,
+                backgroundColor: primaryColor,
               ),
             ),
-            Expanded(
-              child: Padding(
-                padding: EdgeInsets.all(16.0),
-                child: StatKeeperList(userStore),
-              ),
+          ),
+        ),
+      );
+    } else if (signedIn) {
+      return Scaffold(
+        appBar: AppBar(
+          title: Text("Sleek Stats Softball"),
+          actions: <Widget>[
+            FlatButton(
+              child: Text("Sign Out"),
+              textColor: Theme.of(context).buttonColor,
+              onPressed: () async {
+                _signOut(userStore);
+              },
             ),
           ],
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => _showCreateSKDialog(context),
-        child: Icon(Icons.add),
+        body: makeBody(),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () => _showCreateSKDialog(context),
+          child: Icon(Icons.add),
+        ),
+      );
+    } else {
+      return Scaffold(
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: <Widget>[
+              Text(
+                "SleekStats\nSoftball Statkeeper",
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                    fontSize: 48,
+                    fontStyle: FontStyle.italic,
+                    fontWeight: FontWeight.bold,
+                    color: primaryDark),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                  "Welcome to SleekStats Softball.\nKeep scores & stats\nfor a player, team, or entire league!",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: primaryDark),
+                ),
+              ),
+              FlatButton(
+                onPressed: () async {
+                  _signIn(userStore);
+                },
+                padding: EdgeInsets.only(
+                    left: 90.0, right: 90.0, top: 36.0, bottom: 36.0),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(23.0)),
+                    side: BorderSide(
+                      color: primaryColor,
+                      width: 2.0,
+                    )),
+                child: Text(
+                  "Sign In",
+                  style: TextStyle(fontSize: 28, color: Colors.white),
+                ),
+                color: accentColor,
+                highlightColor: primaryColor,
+                splashColor: Colors.white,
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+  }
+
+  Widget makeBody() {
+    UserStore userStore = Provider.of<UserStore>(context);
+
+    return Container(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+          Container(
+            padding: EdgeInsets.all(8.0),
+            color: Theme.of(context).primaryColorDark,
+            child: Text(
+              "My StatKeepers",
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 48.0,
+                  fontStyle: FontStyle.italic),
+            ),
+          ),
+          Expanded(
+            child: Padding(
+              padding: EdgeInsets.all(16.0),
+              child: StatKeeperList(userStore),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -98,16 +172,23 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _signIn(UserStore userStore) async {
+    setState(() {
+      signingIn = true;
+    });
     bool nowSignedIn = await userStore.signIn();
     setState(() {
+      signingIn = false;
       signedIn = nowSignedIn;
     });
   }
 
   void _signOut(UserStore userStore) async {
-    bool nowSignedOut = await userStore.signOut();
-    print("signout = $nowSignedOut");
     setState(() {
+      signingIn = true;
+    });
+    bool nowSignedOut = await userStore.signOut();
+    setState(() {
+      signingIn = false;
       signedIn = !nowSignedOut;
     });
   }

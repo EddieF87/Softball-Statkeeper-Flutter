@@ -37,7 +37,6 @@ abstract class _UserStore with Store {
 
   @action
   Future updateStatKeepers(FirebaseUser user) async {
-    print("updateStatKeepers");
     Query query = Firestore.instance
         .collection("leagues")
         .where(user.uid, isLessThan: 99);
@@ -54,28 +53,30 @@ abstract class _UserStore with Store {
   }
 
   Future<FirebaseUser> retrieveCurrentUser() async {
-    print("retrieveCurrentUser");
     FirebaseUser user = await _auth.currentUser();
     if(user != null && user.uid != userID) {
       userID = user.uid;
-      updateStatKeepers(user);
+      await updateStatKeepers(user);
     }
     return user;
   }
 
   Future<bool> signIn() async {
     await _authenticateWithGoogle();
-    return await _auth.currentUser() != null;
+    FirebaseUser user = await _auth.currentUser();
+    if(user != null && user.uid != userID) {
+      userID = user.uid;
+      await updateStatKeepers(user);
+    }
+    return user != null;
   }
 
   @action
   Future<bool> signOut() async {
     await _auth.signOut();
     FirebaseUser user = await _auth.currentUser();
-    print("currentuser =  ${user.toString()}");
     bool signedOut = user == null;
     if(signedOut) {
-      print("SIGNNEEDD O/uttttTT");
       userID = null;
       statKeepers.clear();
       statKeepers = statKeepers;

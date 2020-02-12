@@ -50,7 +50,7 @@ class StandingsRow extends StatelessWidget {
   Widget _buildStandingsCell({dynamic data, int flexAmount = 1}) {
     return Expanded(
       flex: flexAmount,
-      child: StandingsCell(data: team.runsScored),
+      child: StandingsCell(data: data),
     );
   }
 }
