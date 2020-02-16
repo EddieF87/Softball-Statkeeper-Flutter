@@ -44,12 +44,10 @@ class LeagueStandingsPage extends StatelessWidget {
 
   /// Navigates to the PageView of teams.
   void _navigateToTeamsPageView(BuildContext context, int index) {
-    StatKeeperStore statKeeperStore = Provider.of<StatKeeperStore>(context);
-
     Navigator.of(context).push(
       MaterialPageRoute<Null>(
         builder: (BuildContext context) =>
-            TeamsPageView(statKeeperStore: statKeeperStore, startingIndex: index),
+            TeamsPageView(startingIndex: index),
       ),
     );
   }

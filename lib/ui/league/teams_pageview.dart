@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:sleekstats_flutter_statkeeper/store/statkeeper_store.dart';
 import 'package:sleekstats_flutter_statkeeper/ui/team/team_stats_page.dart';
 
 class TeamsPageView extends StatefulWidget {
   final int startingIndex;
-  final StatKeeperStore statKeeperStore;
 
   TeamsPageView({
     Key key,
-    this.statKeeperStore,
     this.startingIndex = 0,
   }) : super(key: key);
 
@@ -33,6 +32,8 @@ class TeamsPageViewState extends State<TeamsPageView> {
 
   @override
   Widget build(BuildContext context) {
+    StatKeeperStore statKeeperStore = Provider.of<StatKeeperStore>(context);
+
     return Scaffold(
       appBar: AppBar(
         elevation: 1.0,
@@ -46,10 +47,10 @@ class TeamsPageViewState extends State<TeamsPageView> {
         itemBuilder: (BuildContext context, int index) {
           return TeamStatsPage(
             teamIndex: index,
-            statKeeperStore: widget.statKeeperStore,
+            statKeeperStore: statKeeperStore,
           );
         },
-        itemCount: widget.statKeeperStore.teams.length,
+        itemCount: statKeeperStore.teams.length,
         controller: _pageController,
       ),
     );

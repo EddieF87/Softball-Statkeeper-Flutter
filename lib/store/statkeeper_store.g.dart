@@ -6,37 +6,41 @@ part of 'statkeeper_store.dart';
 // StoreGenerator
 // **************************************************************************
 
-// ignore_for_file: non_constant_identifier_names, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars
+// ignore_for_file: non_constant_identifier_names, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
 
 mixin _$StatKeeperStore on _StatKeeperStore, Store {
   final _$teamsAtom = Atom(name: '_StatKeeperStore.teams');
 
   @override
   ObservableList<Team> get teams {
+    _$teamsAtom.context.enforceReadPolicy(_$teamsAtom);
     _$teamsAtom.reportObserved();
     return super.teams;
   }
 
   @override
   set teams(ObservableList<Team> value) {
-    _$teamsAtom.context.checkIfStateModificationsAreAllowed(_$teamsAtom);
-    super.teams = value;
-    _$teamsAtom.reportChanged();
+    _$teamsAtom.context.conditionallyRunInAction(() {
+      super.teams = value;
+      _$teamsAtom.reportChanged();
+    }, _$teamsAtom, name: '${_$teamsAtom.name}_set');
   }
 
   final _$playersAtom = Atom(name: '_StatKeeperStore.players');
 
   @override
   ObservableList<Player> get players {
+    _$playersAtom.context.enforceReadPolicy(_$playersAtom);
     _$playersAtom.reportObserved();
     return super.players;
   }
 
   @override
   set players(ObservableList<Player> value) {
-    _$playersAtom.context.checkIfStateModificationsAreAllowed(_$playersAtom);
-    super.players = value;
-    _$playersAtom.reportChanged();
+    _$playersAtom.context.conditionallyRunInAction(() {
+      super.players = value;
+      _$playersAtom.reportChanged();
+    }, _$playersAtom, name: '${_$playersAtom.name}_set');
   }
 
   final _$playerStatToUpdateAtom =
@@ -44,16 +48,18 @@ mixin _$StatKeeperStore on _StatKeeperStore, Store {
 
   @override
   String get playerStatToUpdate {
+    _$playerStatToUpdateAtom.context
+        .enforceReadPolicy(_$playerStatToUpdateAtom);
     _$playerStatToUpdateAtom.reportObserved();
     return super.playerStatToUpdate;
   }
 
   @override
   set playerStatToUpdate(String value) {
-    _$playerStatToUpdateAtom.context
-        .checkIfStateModificationsAreAllowed(_$playerStatToUpdateAtom);
-    super.playerStatToUpdate = value;
-    _$playerStatToUpdateAtom.reportChanged();
+    _$playerStatToUpdateAtom.context.conditionallyRunInAction(() {
+      super.playerStatToUpdate = value;
+      _$playerStatToUpdateAtom.reportChanged();
+    }, _$playerStatToUpdateAtom, name: '${_$playerStatToUpdateAtom.name}_set');
   }
 
   final _$populateStatKeeperAsyncAction = AsyncAction('populateStatKeeper');
@@ -129,5 +135,12 @@ mixin _$StatKeeperStore on _StatKeeperStore, Store {
     } finally {
       _$_StatKeeperStoreActionController.endAction(_$actionInfo);
     }
+  }
+
+  @override
+  String toString() {
+    final string =
+        'teams: ${teams.toString()},players: ${players.toString()},playerStatToUpdate: ${playerStatToUpdate.toString()}';
+    return '{$string}';
   }
 }

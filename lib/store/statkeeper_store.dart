@@ -20,6 +20,8 @@ abstract class _StatKeeperStore with Store {
   @observable
   ObservableList<Player> players = ObservableList();
 
+  num currentPlayerIndex;
+
   @observable
   String playerStatToUpdate;
 
@@ -139,7 +141,7 @@ abstract class _StatKeeperStore with Store {
   @action
   Future updatePlayerCountingStat(int index, int amount) async {
     Player player = players[index];
-    print("updatePlayerCountingStat  ${player.name}");
+    print("updatePlayerCountingStat  ${player.name}  $index   $playerStatToUpdate   $amount");
     if (playerStatToUpdate != null &&
         Player.CHANGEABLE_LABELS.contains(playerStatToUpdate)) {
       switch (playerStatToUpdate) {
@@ -200,8 +202,12 @@ abstract class _StatKeeperStore with Store {
           if (player.strikeOuts < 0) player.strikeOuts = 0;
           break;
         default:
+          print("updatePlayerCountingStat  defaultdefaultdefaultdefault");
           return;
       }
+    } else {
+      print("updatePlayerCountingStat  elseelseelseelseelseelse");
+
     }
     int result = await RepositoryServicePlayers.updatePlayer(player);
     if (result > 0) {

@@ -127,8 +127,7 @@ class Diamond extends StatelessWidget {
 
   Widget _createBaseTarget({int newBase, Alignment alignment}) {
     return DragTarget(
-      builder:
-          (BuildContext context, List<int> candidateData, List rejectedData) {},
+      builder: (BuildContext context, List<int> candidateData, List rejectedData) { return null;},
       onLeave: (data) {
         print("onLeave");
       },

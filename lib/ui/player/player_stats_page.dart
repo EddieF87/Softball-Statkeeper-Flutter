@@ -8,22 +8,20 @@ class PlayerPage extends StatelessWidget {
   final int playerIndex;
 
   const PlayerPage({
-    Key key, this.playerIndex = 0,
+    Key key,
+    this.playerIndex = 0,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     StatKeeperStore statKeeperStore = Provider.of<StatKeeperStore>(context);
+    statKeeperStore.currentPlayerIndex = playerIndex;
 
     return Column(
       children: <Widget>[
-        SinglePlayerStatsDisplay(
-          statKeeperStore: statKeeperStore,
-          playerIndex: playerIndex,
-        ),
+        SinglePlayerStatsDisplay(),
         PlayerStatControls(
-          statKeeperStore: statKeeperStore,
-          playerIndex: playerIndex,
+//          playerIndex: playerIndex,
         ),
       ],
     );

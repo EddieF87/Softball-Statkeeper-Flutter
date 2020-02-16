@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:provider/provider.dart';
 import 'package:sleekstats_flutter_statkeeper/store/statkeeper_store.dart';
-import 'package:sleekstats_flutter_statkeeper/ui/team/player_stat_label.dart';
+import 'package:sleekstats_flutter_statkeeper/utils/stat_formatter.dart';
 
 class PlayerStatControls extends StatefulWidget {
-  final StatKeeperStore statKeeperStore;
-  final int playerIndex;
 
-  PlayerStatControls({this.statKeeperStore, this.playerIndex = 0});
+  PlayerStatControls();
 
   @override
   State<StatefulWidget> createState() => _PlayerStatControlsState();
@@ -30,6 +29,8 @@ class _PlayerStatControlsState extends State<PlayerStatControls> {
 
   @override
   Widget build(BuildContext context) {
+    StatKeeperStore statKeeperStore = Provider.of<StatKeeperStore>(context);
+
     return Padding(
       padding: EdgeInsets.only(bottom: 16.0, top: 16.0, right: 16.0),
       child: Row(
@@ -40,10 +41,24 @@ class _PlayerStatControlsState extends State<PlayerStatControls> {
           ),
           Expanded(
             child: Observer(
-              builder: (_) => PlayerStatLabel(
-                    stat: widget.statKeeperStore.playerStatToUpdate,
-                    amount: this.amount,
+              builder: (_) => Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Text(
+                    statKeeperStore.playerStatToUpdate ?? "- - -",
+                    style: TextStyle(
+                      fontSize: 18,
+                    ),
                   ),
+                  Text(
+                    StatFormatter.displayAmount(amount),
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 24,
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
           Expanded(
@@ -52,8 +67,8 @@ class _PlayerStatControlsState extends State<PlayerStatControls> {
           Expanded(
             child: RaisedButton(
               //todo
-              onPressed: () => widget.statKeeperStore
-                  .updatePlayerCountingStat(widget.playerIndex, amount),
+              onPressed: () => statKeeperStore
+                  .updatePlayerCountingStat(statKeeperStore.currentPlayerIndex, amount),
               child: Text("Update"),
             ),
           ),

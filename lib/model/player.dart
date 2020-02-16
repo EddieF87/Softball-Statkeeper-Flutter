@@ -14,7 +14,7 @@ class Player {
   static const String LABEL_HR = "HR";
   static const String LABEL_BB = "BB";
   static const String LABEL_HBP = "HBP";
-  static const String LABEL_ROE = "ROE";
+  static const String LABEL_ROE = "RoE";
   static const String LABEL_OUT = "OUT";
   static const String LABEL_K = "K";
   static const String LABEL_SF = "SF";
@@ -47,7 +47,7 @@ class Player {
   static const String LABEL_OBP = "OBP";
   static const String LABEL_SLG = "SLG";
   static const String LABEL_OPS = "OPS";
-  static const String LABEL_OBPROE = "OBP+E";
+  static const String LABEL_OBPROE = "OBP+RoE";
 
   int id;
   String fireID;
@@ -120,6 +120,57 @@ class Player {
         DBContract.REACHED_ON_ERRORS: this.reachedOnErrors,
       };
 
+  num getStat(String stat) {
+    switch (stat) {
+      case LABEL_G:
+        return this.games;
+      case LABEL_RBI:
+        return this.rbi;
+      case LABEL_R:
+        return this.runs;
+      case LABEL_1B:
+        return this.singles;
+      case LABEL_2B:
+        return this.doubles;
+      case LABEL_3B:
+        return this.triples;
+      case LABEL_HR:
+        return this.hrs;
+      case LABEL_OUT:
+        return this.outs;
+      case LABEL_BB:
+        return this.walks;
+      case LABEL_SF:
+        return this.sacFlies;
+      case LABEL_SB:
+        return this.stolenBases;
+      case LABEL_K:
+        return this.strikeOuts;
+      case LABEL_HBP:
+        return this.hbp;
+      case LABEL_ROE:
+        return this.reachedOnErrors;
+      case LABEL_H:
+        return this.getHits();
+      case LABEL_AB:
+        return this.getAB();
+      case LABEL_PA:
+        return this.getPA();
+      case LABEL_AVG:
+        return this.getAVG();
+      case LABEL_OBP:
+        return this.getOBP();
+      case LABEL_SLG:
+        return this.getSLG();
+      case LABEL_OPS:
+        return this.getOPS();
+      case LABEL_OBPROE:
+        return this.getOBPwithROE();
+      default:
+        return 0;
+    }
+  }
+
   Map<String, num> toStatsMap() => {
         LABEL_G: this.games,
         LABEL_RBI: this.rbi,
@@ -135,14 +186,14 @@ class Player {
         LABEL_K: this.strikeOuts,
         LABEL_HBP: this.hbp,
         LABEL_ROE: this.reachedOnErrors,
-        LABEL_H: getHits(),
-        LABEL_AB: getAB(),
-        LABEL_PA: getPA(),
-        LABEL_AVG: getAVG(),
-        LABEL_OBP: getOBP(),
-        LABEL_SLG: getSLG(),
-        LABEL_OPS: getOPS(),
-        LABEL_OBPROE: getOBPwithROE(),
+        LABEL_H: this.getHits(),
+        LABEL_AB: this.getAB(),
+        LABEL_PA: this.getPA(),
+        LABEL_AVG: this.getAVG(),
+        LABEL_OBP: this.getOBP(),
+        LABEL_SLG: this.getSLG(),
+        LABEL_OPS: this.getOPS(),
+        LABEL_OBPROE: this.getOBPwithROE(),
       };
 
   Player.fromJson(Map<String, dynamic> json) {

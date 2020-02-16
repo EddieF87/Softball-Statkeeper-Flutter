@@ -163,7 +163,6 @@ class LeagueScreen extends StatelessWidget {
     Navigator.of(context).push(
       MaterialPageRoute<Null>(
         builder: (BuildContext context) => TeamsPageView(
-              statKeeperStore: statKeeperStore,
               startingIndex: i,
             ),
       ),

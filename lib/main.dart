@@ -6,11 +6,17 @@ import 'package:sleekstats_flutter_statkeeper/store/user_store.dart';
 import 'package:sleekstats_flutter_statkeeper/ui/home/home_screen.dart';
 
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   await DBCreator().initDatabase();
   runApp(MyApp());
 }
 
+void onStart() async {
+
+}
+
 class MyApp extends StatelessWidget {
+
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
@@ -31,11 +37,11 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         Provider(
-          builder: (_) => UserStore(),
+          create: (BuildContext context) => UserStore(),
           dispose: (context, value) => value.dispose(),
         ),
         Provider(
-          builder: (_) => StatKeeperStore(),
+          create: (BuildContext context) => StatKeeperStore(),
           dispose: (context, value) => value.dispose(),
         ),
       ],
