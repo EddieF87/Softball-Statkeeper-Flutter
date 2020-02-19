@@ -11,12 +11,9 @@ void main() async {
   runApp(MyApp());
 }
 
-void onStart() async {
-
-}
+void onStart() async {}
 
 class MyApp extends StatelessWidget {
-
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
@@ -53,6 +50,19 @@ class MyApp extends StatelessWidget {
             primaryColorLight: primaryColorLight,
             primaryColorDark: primaryColorDark,
             accentColor: accentColor,
+            buttonTheme: ButtonThemeData(
+              buttonColor: accentColor,
+              highlightColor: primaryColor,
+//              splashColor: primaryColor,
+              textTheme: ButtonTextTheme.primary,
+//              shape: RoundedRectangleBorder(
+//                borderRadius: BorderRadius.all(Radius.circular(13.0)),
+//                side: BorderSide(
+//                  color: primaryColor,
+//                  width: 2.0,
+//                ),
+//              ),
+            ),
             textTheme: TextTheme(
 //          title: TextStyle(
 //            color: Colors.white,

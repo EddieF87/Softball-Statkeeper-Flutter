@@ -20,8 +20,6 @@ class LeagueScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    StatKeeperStore statKeeperStore = Provider.of<StatKeeperStore>(context);
-
     return DefaultTabController(
       length: 3,
       child: Column(
@@ -51,18 +49,17 @@ class LeagueScreen extends StatelessWidget {
                     padding: EdgeInsets.only(right: 32.0, left: 32.0),
                     child: PlayersStatsTable(
                       isLeague: true,
-                      statKeeperStore: statKeeperStore,
                       onTeamLinkClicked: (String teamFireID) =>
                           _navigateToTeamsPageViewByID(
-                            context,
-                            teamFireID,
-                          ),
+                        context,
+                        teamFireID,
+                      ),
                     ),
                   ),
                   Padding(
                     padding: EdgeInsets.only(left: 32.0),
                     child: Center(
-                      child: FlatButton(
+                      child: RaisedButton(
                         onPressed: () => _goToGame(context),
                         child: Text("Start Game"),
                       ),
@@ -86,23 +83,28 @@ class LeagueScreen extends StatelessWidget {
 
   _showAddChoiceDialog(BuildContext context) {
     //todo
-    StatKeeperStore statKeeperStore = Provider.of<StatKeeperStore>(context);
+    StatKeeperStore statKeeperStore =
+        Provider.of<StatKeeperStore>(context, listen: false);
 
     return showDialog<void>(
       context: context,
       builder: (BuildContext context) {
         return AddChoiceDialog(
           teams: statKeeperStore.teams,
-          onAddPlayersChoice: (Team team) => _showAddPlayersDialog(
-                context: context,
-                teamFireID: team.fireID,
-                teamName: team.name,
-                statkeeperFireID: leagueFireID,
-              ),
+
+          onAddPlayersChoice: (Team team) {
+            int teamIndex = statKeeperStore.teams.indexOf(team);
+
+            return _showAddPlayersDialog(
+              context: context,
+              teamIndex: teamIndex,
+            );
+          },
+
           onAddTeamsChoice: () => _showAddTeamsDialog(
-                context: context,
-                statkeeperFireID: leagueFireID,
-              ),
+            context: context,
+            statkeeperFireID: leagueFireID,
+          ),
         );
       },
     );
@@ -111,40 +113,24 @@ class LeagueScreen extends StatelessWidget {
   Future<void> _showAddTeamsDialog({
     BuildContext context,
     String statkeeperFireID,
-  }) async {
-    return showDialog<void>(
-      context: context,
-      builder: (BuildContext context) {
-        return AddTeamsDialog(
+  }) async =>
+      showDialog<void>(
+        context: context,
+        builder: (BuildContext context) => AddTeamsDialog(
           sKFireID: statkeeperFireID,
           onNewTeamsSubmitted: () {
 //            _retrieveTeams();
           },
-        );
-      },
-    );
-  }
+        ),
+      );
 
   Future<void> _showAddPlayersDialog({
     BuildContext context,
-    String teamFireID,
-    String statkeeperFireID,
-    String teamName,
+    int teamIndex,
   }) async {
-    //todo fix
-    StatKeeperStore statKeeperStore = Provider.of<StatKeeperStore>(context);
-    int teamIndex =
-        statKeeperStore.teams.indexWhere((t) => t.fireID == teamFireID);
-
     return showDialog<void>(
       context: context,
-      builder: (BuildContext context) {
-        return AddPlayersDialog(
-          statKeeperStore: statKeeperStore,
-          teamIndex: teamIndex,
-//          onNewPlayersSubmitted: () => _retrievePlayers(),
-        );
-      },
+      builder: (BuildContext context) => AddPlayersDialog(teamIndex: teamIndex),
     );
   }
 
@@ -163,8 +149,8 @@ class LeagueScreen extends StatelessWidget {
     Navigator.of(context).push(
       MaterialPageRoute<Null>(
         builder: (BuildContext context) => TeamsPageView(
-              startingIndex: i,
-            ),
+          startingIndex: i,
+        ),
       ),
     );
   }
@@ -180,8 +166,8 @@ class LeagueScreen extends StatelessWidget {
     Navigator.of(context).push(
       MaterialPageRoute<Null>(
         builder: (BuildContext context) => GameScreen(
-              gameStore: gameStore,
-            ),
+          gameStore: gameStore,
+        ),
       ),
     );
 //        .whenComplete(_retrieveLeagueData);
@@ -248,9 +234,9 @@ class AddChoiceDialogState extends State<AddChoiceDialog> {
               groupValue: choice,
               value: Choice.TEAM,
               onChanged: (value) => setState(() {
-                    choice = value;
-                    isPlayersChoice = false;
-                  }),
+                choice = value;
+                isPlayersChoice = false;
+              }),
             ),
           ),
           Flexible(
@@ -263,9 +249,9 @@ class AddChoiceDialogState extends State<AddChoiceDialog> {
                     groupValue: choice,
                     value: Choice.PLAYER,
                     onChanged: (value) => setState(() {
-                          choice = value;
-                          isPlayersChoice = true;
-                        }),
+                      choice = value;
+                      isPlayersChoice = true;
+                    }),
                   ),
                 ),
                 DropdownButton<Team>(

@@ -5,8 +5,9 @@ import 'package:sleekstats_flutter_statkeeper/store/statkeeper_store.dart';
 import 'package:sleekstats_flutter_statkeeper/utils/stat_formatter.dart';
 
 class PlayerStatControls extends StatefulWidget {
+  final int playerIndex;
 
-  PlayerStatControls();
+  PlayerStatControls({this.playerIndex = 0});
 
   @override
   State<StatefulWidget> createState() => _PlayerStatControlsState();
@@ -32,14 +33,16 @@ class _PlayerStatControlsState extends State<PlayerStatControls> {
     StatKeeperStore statKeeperStore = Provider.of<StatKeeperStore>(context);
 
     return Padding(
-      padding: EdgeInsets.only(bottom: 16.0, top: 16.0, right: 16.0),
+      padding: EdgeInsets.only(bottom: 16.0, top: 32.0, right: 16.0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
           Expanded(
+            flex: 2,
             child: createIconButton(Icons.remove_circle, decreaseAmount),
           ),
           Expanded(
+            flex: 1,
             child: Observer(
               builder: (_) => Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -62,14 +65,19 @@ class _PlayerStatControlsState extends State<PlayerStatControls> {
             ),
           ),
           Expanded(
+            flex: 2,
             child: createIconButton(Icons.add_circle_outline, increaseAmount),
           ),
           Expanded(
+            flex: 3,
             child: RaisedButton(
               //todo
-              onPressed: () => statKeeperStore
-                  .updatePlayerCountingStat(statKeeperStore.currentPlayerIndex, amount),
-              child: Text("Update"),
+              onPressed: () => statKeeperStore.updatePlayerCountingStat(
+                  widget.playerIndex, amount),
+              child: Text(
+                "Update",
+                style: TextStyle(color: Colors.white),
+              ),
             ),
           ),
         ],
@@ -83,9 +91,9 @@ class _PlayerStatControlsState extends State<PlayerStatControls> {
       icon: Icon(iconData),
       iconSize: 48.0,
       onPressed: onPress,
-      color: Colors.red,
-      highlightColor: Colors.lightBlue,
-      splashColor: Colors.yellow,
+      color: Theme.of(context).accentColor,
+//      highlightColor: primaryColor,
+//      splashColor: primaryColor,
     );
   }
 }

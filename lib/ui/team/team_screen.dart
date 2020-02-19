@@ -54,13 +54,14 @@ class TeamTabView extends StatelessWidget {
         padding: const EdgeInsets.all(8.0),
         child: TabBarView(
           children: <Widget>[
-            TeamStatsPage(
-              statKeeperStore: teamStore,
-            ),
+            TeamStatsPage(),
             Center(
-              child: FlatButton(
+              child: RaisedButton(
                 onPressed: () => _goToGame(context),
-                child: Text("Start Game"),
+                child: Text(
+                  "Start Game",
+                  style: TextStyle(color: Colors.white),
+                ),
               ),
             )
           ],

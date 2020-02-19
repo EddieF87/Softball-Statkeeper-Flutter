@@ -73,9 +73,10 @@ mixin _$StatKeeperStore on _StatKeeperStore, Store {
   final _$addPlayersAsyncAction = AsyncAction('addPlayers');
 
   @override
-  Future<dynamic> addPlayers(int index, Map<int, String> playerNames) {
+  Future<dynamic> addPlayers(
+      int index, Map<int, String> playerNames, Map<int, bool> playerGenders) {
     return _$addPlayersAsyncAction
-        .run(() => super.addPlayers(index, playerNames));
+        .run(() => super.addPlayers(index, playerNames, playerGenders));
   }
 
   final _$addTeamsAsyncAction = AsyncAction('addTeams');

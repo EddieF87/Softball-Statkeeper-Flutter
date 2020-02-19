@@ -1,19 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:sleekstats_flutter_statkeeper/model/player.dart';
 import 'package:sleekstats_flutter_statkeeper/store/statkeeper_store.dart';
 import 'package:sleekstats_flutter_statkeeper/ui/player/player_stats_page.dart';
 import 'package:sleekstats_flutter_statkeeper/utils/stat_formatter.dart';
 
 class PlayersPageView extends StatefulWidget {
-  final StatKeeperStore statKeeperStore;
   final int startingIndex;
 
   PlayersPageView({
     Key key,
-    this.statKeeperStore,
     this.startingIndex = 0,
-  })  : assert(statKeeperStore != null),
-        super(key: key);
+  }) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => PlayersPageViewState();
@@ -21,6 +19,7 @@ class PlayersPageView extends StatefulWidget {
 
 class PlayersPageViewState extends State<PlayersPageView> {
   PageController _pageController;
+  int currentIndex;
 
   @override
   void initState() {
@@ -36,6 +35,8 @@ class PlayersPageViewState extends State<PlayersPageView> {
 
   @override
   Widget build(BuildContext context) {
+    StatKeeperStore statKeeperStore = Provider.of<StatKeeperStore>(context);
+
     return Scaffold(
       appBar: AppBar(
         elevation: 1.0,
@@ -48,27 +49,23 @@ class PlayersPageViewState extends State<PlayersPageView> {
           IconButton(
             icon: Icon(Icons.search),
             onPressed: () => showSearch(
-                  context: context,
-                  delegate: PlayerSearch(
-                    players: widget.statKeeperStore.players,
-                    onPlayerSelected: (index) => _moveToPlayerPage(index),
-                  ),
-                ),
+              context: context,
+              delegate: PlayerSearch(
+                players: statKeeperStore.players,
+                onPlayerSelected: (index) => _pageController.jumpToPage(index),
+              ),
+            ),
           ),
         ],
       ),
       body: PageView.builder(
         itemBuilder: (BuildContext context, int index) => PlayerPage(
-              playerIndex: index,
-            ),
-        itemCount: widget.statKeeperStore.players.length,
+          playerIndex: index,
+        ),
+        itemCount: statKeeperStore.players.length,
         controller: _pageController,
       ),
     );
-  }
-
-  void _moveToPlayerPage(int index) {
-    _pageController.jumpToPage(index);
   }
 }
 
@@ -115,26 +112,25 @@ class PlayerSearch extends SearchDelegate<Player> {
         children: results
             .map<Widget>(
               (player) => Card(
-                    child: ListTile(
-                      contentPadding: EdgeInsets.fromLTRB(32.0, 8.0, 8.0, 8.0),
-                      title: Text(
-                        player.name,
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 18),
-                      ),
-                      subtitle: Text(
-                          "${StatFormatter.displayAmount(player.getAVG())} / "
+                child: ListTile(
+                  contentPadding: EdgeInsets.fromLTRB(32.0, 8.0, 8.0, 8.0),
+                  title: Text(
+                    player.name,
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                  ),
+                  subtitle:
+                      Text("${StatFormatter.displayAmount(player.getAVG())} / "
                           "${StatFormatter.displayAmount(player.getOBP())} / "
                           "${StatFormatter.displayAmount(player.getSLG())}\n"
                           "HR: ${player.hrs}  RBI: ${player.rbi}  "
                           "R: ${player.runs}"),
-                      leading: Icon(Icons.person),
-                      onTap: () {
-                        onPlayerSelected(players.indexOf(player));
-                        close(context, null);
-                      },
-                    ),
-                  ),
+                  leading: Icon(Icons.person),
+                  onTap: () {
+                    onPlayerSelected(players.indexOf(player));
+                    close(context, null);
+                  },
+                ),
+              ),
             )
             .toList(),
       ),

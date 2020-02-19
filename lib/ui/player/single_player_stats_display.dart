@@ -5,7 +5,9 @@ import 'package:sleekstats_flutter_statkeeper/store/statkeeper_store.dart';
 import 'package:sleekstats_flutter_statkeeper/ui/team/player_stat_label.dart';
 
 class SinglePlayerStatsDisplay extends StatelessWidget {
-  const SinglePlayerStatsDisplay({Key key}) : super(key: key);
+  final int playerIndex;
+
+  const SinglePlayerStatsDisplay({Key key, this.playerIndex = 0}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +18,7 @@ class SinglePlayerStatsDisplay extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: <Widget>[
           Text(
-            statKeeperStore.players[statKeeperStore.currentPlayerIndex].name,
+            statKeeperStore.players[this.playerIndex].name,
             style: TextStyle(fontSize: 48.0, fontWeight: FontWeight.bold),
             maxLines: 1,
           ),
@@ -27,9 +29,9 @@ class SinglePlayerStatsDisplay extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.end,
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: <Widget>[
-                PlayerStatLabel(stat: Player.LABEL_AVG, isBig: true),
-                PlayerStatLabel(stat: Player.LABEL_SLG, isBig: true),
-                PlayerStatLabel(stat: Player.LABEL_OPS, isBig: true),
+                PlayerStatLabel(playerIndex: this.playerIndex, stat: Player.LABEL_AVG, isBig: true),
+                PlayerStatLabel(playerIndex: this.playerIndex, stat: Player.LABEL_SLG, isBig: true),
+                PlayerStatLabel(playerIndex: this.playerIndex, stat: Player.LABEL_OPS, isBig: true),
               ],
             ),
           ),
@@ -39,9 +41,9 @@ class SinglePlayerStatsDisplay extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.end,
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: <Widget>[
-                PlayerStatLabel(stat: Player.LABEL_HR, isBig: true),
-                PlayerStatLabel(stat: Player.LABEL_R, isBig: true),
-                PlayerStatLabel(stat: Player.LABEL_RBI, isBig: true),
+                PlayerStatLabel(playerIndex: this.playerIndex, stat: Player.LABEL_HR, isBig: true),
+                PlayerStatLabel(playerIndex: this.playerIndex, stat: Player.LABEL_R, isBig: true),
+                PlayerStatLabel(playerIndex: this.playerIndex, stat: Player.LABEL_RBI, isBig: true),
               ],
             ),
           ),
@@ -50,11 +52,11 @@ class SinglePlayerStatsDisplay extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: <Widget>[
-                PlayerStatLabel(stat: Player.LABEL_AB),
-                PlayerStatLabel(stat: Player.LABEL_H),
-                PlayerStatLabel(stat: Player.LABEL_1B),
-                PlayerStatLabel(stat: Player.LABEL_2B),
-                PlayerStatLabel(stat: Player.LABEL_3B),
+                PlayerStatLabel(playerIndex: this.playerIndex, stat: Player.LABEL_1B),
+                PlayerStatLabel(playerIndex: this.playerIndex, stat: Player.LABEL_2B),
+                PlayerStatLabel(playerIndex: this.playerIndex, stat: Player.LABEL_3B),
+                PlayerStatLabel(playerIndex: this.playerIndex, stat: Player.LABEL_BB),
+                PlayerStatLabel(playerIndex: this.playerIndex, stat: Player.LABEL_HBP),
               ],
             ),
           ),
@@ -63,11 +65,11 @@ class SinglePlayerStatsDisplay extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: <Widget>[
-                PlayerStatLabel(stat: Player.LABEL_PA),
-                PlayerStatLabel(stat: Player.LABEL_BB),
-                PlayerStatLabel(stat: Player.LABEL_HBP),
-                PlayerStatLabel(stat: Player.LABEL_OBP),
-                PlayerStatLabel(stat: Player.LABEL_OBPROE),
+                PlayerStatLabel(playerIndex: this.playerIndex, stat: Player.LABEL_PA),
+                PlayerStatLabel(playerIndex: this.playerIndex, stat: Player.LABEL_AB),
+                PlayerStatLabel(playerIndex: this.playerIndex, stat: Player.LABEL_H),
+                PlayerStatLabel(playerIndex: this.playerIndex, stat: Player.LABEL_OBP),
+                PlayerStatLabel(playerIndex: this.playerIndex, stat: Player.LABEL_OBPROE),
               ],
             ),
           ),
@@ -76,11 +78,11 @@ class SinglePlayerStatsDisplay extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: <Widget>[
-                PlayerStatLabel(stat: Player.LABEL_ROE),
-                PlayerStatLabel(stat: Player.LABEL_OUT),
-                PlayerStatLabel(stat: Player.LABEL_SF),
-                PlayerStatLabel(stat: Player.LABEL_K),
-                PlayerStatLabel(stat: Player.LABEL_SB),
+                PlayerStatLabel(playerIndex: this.playerIndex, stat: Player.LABEL_ROE),
+                PlayerStatLabel(playerIndex: this.playerIndex, stat: Player.LABEL_OUT),
+                PlayerStatLabel(playerIndex: this.playerIndex, stat: Player.LABEL_SF),
+                PlayerStatLabel(playerIndex: this.playerIndex, stat: Player.LABEL_K),
+                PlayerStatLabel(playerIndex: this.playerIndex, stat: Player.LABEL_SB),
               ],
             ),
           ),
@@ -88,21 +90,4 @@ class SinglePlayerStatsDisplay extends StatelessWidget {
       ),
     );
   }
-
-//  Widget PlayerStatLabel(BuildContext context, String stat, {bool isBig = false}) {
-//    StatKeeperStore statKeeperStore = Provider.of<StatKeeperStore>(context);
-//
-//    return Expanded(
-//        flex: 1,
-//        child: Observer(
-//          builder: (_) => PlayerStatLabel(
-//            stat: stat,
-//            amount: statKeeperStore.players[playerIndex].getStat(stat),
-//            selected: statKeeperStore.playerStatToUpdate == stat,
-//            isBig: isBig,
-//            onTap: () => statKeeperStore.setPlayerStatToUpdate(stat),
-//          ),
-//        ),
-//      );
-//  }
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:provider/provider.dart';
 import 'package:sleekstats_flutter_statkeeper/store/statkeeper_store.dart';
 import 'package:sleekstats_flutter_statkeeper/ui/team/add_players_dialog.dart';
 import 'package:sleekstats_flutter_statkeeper/ui/team/players_stats_table.dart';
@@ -7,16 +8,14 @@ import 'package:sleekstats_flutter_statkeeper/ui/team/team_controls.dart';
 import 'package:sleekstats_flutter_statkeeper/ui/team/team_ledger.dart';
 
 class TeamStatsPage extends StatelessWidget {
-  final StatKeeperStore statKeeperStore;
   final int teamIndex;
 
-  const TeamStatsPage({
-    this.teamIndex = 0,
-    this.statKeeperStore,
-  }) : assert(statKeeperStore != null);
+  const TeamStatsPage({this.teamIndex = 0});
 
   @override
   Widget build(BuildContext context) {
+    StatKeeperStore statKeeperStore = Provider.of<StatKeeperStore>(context);
+
     return Padding(
       padding: EdgeInsets.all(8.0),
       child: Column(
@@ -31,7 +30,6 @@ class TeamStatsPage extends StatelessWidget {
               child: PlayersStatsTable(
                 teamFireID: statKeeperStore.teams[teamIndex].fireID,
                 isLeague: false,
-                statKeeperStore: statKeeperStore,
               ),
             ),
           ),
@@ -52,7 +50,6 @@ class TeamStatsPage extends StatelessWidget {
       showDialog<void>(
         context: context,
         builder: (BuildContext context) => AddPlayersDialog(
-              statKeeperStore: statKeeperStore,
               teamIndex: teamIndex,
             ),
       );

@@ -15,14 +15,12 @@ class PlayerPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     StatKeeperStore statKeeperStore = Provider.of<StatKeeperStore>(context);
-    statKeeperStore.currentPlayerIndex = playerIndex;
+    debugPrint("PLAYERPAGE   playerIndex $playerIndex   ${statKeeperStore.players[playerIndex].name}");
 
     return Column(
       children: <Widget>[
-        SinglePlayerStatsDisplay(),
-        PlayerStatControls(
-//          playerIndex: playerIndex,
-        ),
+        SinglePlayerStatsDisplay(playerIndex: playerIndex),
+        PlayerStatControls(playerIndex: playerIndex),
       ],
     );
   }

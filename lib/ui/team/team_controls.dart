@@ -18,14 +18,14 @@ class TeamControls extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: <Widget>[
-        FlatButton(
+        RaisedButton(
           onPressed: onScoresButtonTapped,
           child: Text(
             "Scores",
             style: TextStyle(color: Colors.white),
           ),
-          color: accentColor,
-          highlightColor: primaryColor,
+//          color: accentColor,
+//          highlightColor: primaryColor,
         ),
         Container(
           decoration: BoxDecoration(
@@ -38,7 +38,7 @@ class TeamControls extends StatelessWidget {
               color: Colors.white,
             ),
             onPressed: onAddButtonTapped,
-            highlightColor: accentColor,
+//            highlightColor: primaryColor,
             splashColor: primaryColor,
           ),
         ),

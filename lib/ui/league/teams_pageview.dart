@@ -44,12 +44,8 @@ class TeamsPageViewState extends State<TeamsPageView> {
         centerTitle: true,
       ),
       body: PageView.builder(
-        itemBuilder: (BuildContext context, int index) {
-          return TeamStatsPage(
-            teamIndex: index,
-            statKeeperStore: statKeeperStore,
-          );
-        },
+        itemBuilder: (BuildContext context, int index) =>
+            TeamStatsPage(teamIndex: index),
         itemCount: statKeeperStore.teams.length,
         controller: _pageController,
       ),

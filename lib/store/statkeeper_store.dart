@@ -20,8 +20,6 @@ abstract class _StatKeeperStore with Store {
   @observable
   ObservableList<Player> players = ObservableList();
 
-  num currentPlayerIndex;
-
   @observable
   String playerStatToUpdate;
 
@@ -41,9 +39,6 @@ abstract class _StatKeeperStore with Store {
 
     teams.addAll(await FirestoreService.getTeams(fireID));
     players.addAll(await FirestoreService.getPlayers(fireID));
-
-//    teams.addAll(await RepositoryServiceTeams.getAllTeams(fireID));
-//    players.addAll(await RepositoryServicePlayers.getAllPlayers(fireID));
 
     teams = teams;
     players = players;
@@ -77,16 +72,17 @@ abstract class _StatKeeperStore with Store {
   }
 
   @action
-  Future addPlayers(int index, Map<int, String> playerNames) async {
+  Future addPlayers(int index, Map<int, String> playerNames, Map<int, bool> playerGenders) async {
     Team team = teams[index];
 
     var uuid = new Uuid();
-    for (var name in playerNames.values) {
+    for (var key in playerNames.keys) {
       Player player = Player(
         fireID: uuid.v1(),
         teamFireID: team.fireID,
         statkeeperFireID: statkeeperFireID,
-        name: name,
+        name: playerNames[key],
+        gender: (playerGenders[key] ?? false) ? 1 : 0,
         team: team.name,
       );
       player.id = await RepositoryServicePlayers.insertPlayer(player);

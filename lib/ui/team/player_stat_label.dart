@@ -6,12 +6,13 @@ import 'package:sleekstats_flutter_statkeeper/store/statkeeper_store.dart';
 import 'package:sleekstats_flutter_statkeeper/utils/stat_formatter.dart';
 
 class PlayerStatLabel extends StatelessWidget {
-
+  final int playerIndex;
   final String stat;
   final bool isBig;
   static const Color accentColorFaded = Color(0x55eabd53);
 
   PlayerStatLabel({
+    this.playerIndex = 0,
     this.stat,
     this.isBig = false,
   });
@@ -56,7 +57,7 @@ class PlayerStatLabel extends StatelessWidget {
                 ),
                 Text(
                   StatFormatter.displayAmount(statKeeperStore
-                      .players[statKeeperStore.currentPlayerIndex]
+                      .players[this.playerIndex]
                       .getStat(stat)),
                   style: TextStyle(
                     fontWeight: FontWeight.bold,

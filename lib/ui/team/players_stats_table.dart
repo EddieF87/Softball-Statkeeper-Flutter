@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:provider/provider.dart';
 import 'package:sleekstats_flutter_statkeeper/model/player.dart';
 import 'package:sleekstats_flutter_statkeeper/store/statkeeper_store.dart';
 import 'package:sleekstats_flutter_statkeeper/ui/team/player_stat_row.dart';
@@ -7,7 +8,6 @@ import 'package:sleekstats_flutter_statkeeper/ui/team/players_pageview.dart';
 import 'package:sleekstats_flutter_statkeeper/ui/team/stats_header_row.dart';
 
 class PlayersStatsTable extends StatelessWidget {
-  final StatKeeperStore statKeeperStore;
   final ValueSetter<String> onTeamLinkClicked;
   final bool isLeague;
   final String teamFireID;
@@ -15,13 +15,14 @@ class PlayersStatsTable extends StatelessWidget {
   const PlayersStatsTable({
     Key key,
     this.teamFireID,
-    this.statKeeperStore,
     this.onTeamLinkClicked,
     this.isLeague = false,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    StatKeeperStore statKeeperStore = Provider.of<StatKeeperStore>(context);
+
     Color primaryColor = Theme.of(context).primaryColor;
     return Container(
       decoration: BoxDecoration(
@@ -37,6 +38,8 @@ class PlayersStatsTable extends StatelessWidget {
   }
 
   Widget _buildStatsTable(BuildContext context) {
+    StatKeeperStore statKeeperStore = Provider.of<StatKeeperStore>(context);
+
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       child: new Container(
@@ -81,15 +84,14 @@ class PlayersStatsTable extends StatelessWidget {
 
   /// Navigates to the PageView of players.
   void _navigateToPlayersPageView(BuildContext context, String playerFireID) {
+    StatKeeperStore statKeeperStore = Provider.of<StatKeeperStore>(context, listen: false);
+
     int playerIndex =
         statKeeperStore.players.indexWhere((p) => p.fireID == playerFireID);
     Navigator.of(context).push(
       MaterialPageRoute<Null>(
         builder: (BuildContext context) {
-          return PlayersPageView(
-            statKeeperStore: statKeeperStore,
-            startingIndex: playerIndex,
-          );
+          return PlayersPageView(startingIndex: playerIndex,);
         },
       ),
     );
