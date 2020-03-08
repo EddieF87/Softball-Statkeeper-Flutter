@@ -14,7 +14,7 @@ description: Lite Version of Softball Statkeeper
 version: 1.0.0+1
 
 environment:
-  sdk: ">=2.2.0-dev <3.0.0"
+  sdk: ">=2.3.0 <3.0.0"
 
 dependencies:
   flutter:
@@ -30,6 +30,7 @@ dependencies:
   google_sign_in: ^4.1.1
   firebase_auth:
   cloud_firestore: #0.12.1
+  shared_preferences: ^0.5.6+2
 
 dev_dependencies:
   flutter_test:

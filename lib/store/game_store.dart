@@ -75,7 +75,10 @@ abstract class _GameStore with Store {
   Future _retrieveTeamLineup({String teamID}) async {
     List<Player> playerList =
         await RepositoryServicePlayers.getAllPlayersFromTeam(sKFireID, teamID);
-    playerList.forEach((p) => awayLineup.add(p.fireID));
+    playerList.forEach((p) {
+      print("jjjjjk  ${p.name}  ${p.battingOrder}");
+      awayLineup.add(p.fireID);
+    });
     if (awayLineup == null || awayLineup.isEmpty) {
       return;
     }

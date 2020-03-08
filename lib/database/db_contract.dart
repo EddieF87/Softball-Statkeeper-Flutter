@@ -30,6 +30,7 @@ class DBContract{
   static const STRIKEOUTS = "strikeouts";
   static const STOLEN_BASES = "stolenBases";
   static const HBP = "hbp";
+  static const BATTING_ORDER = "battingOrder";
 
   //Team Table Columns
   static const WINS = "wins";

@@ -70,6 +70,7 @@ class Player {
   int hbp;
   int gender;
   int reachedOnErrors;
+  int battingOrder;
 
   Player({
     this.id,
@@ -93,32 +94,56 @@ class Player {
     this.hbp = 0,
     this.gender = 0,
     this.reachedOnErrors = 0,
+    this.battingOrder = 99
   })  : assert(fireID != null),
         assert(name != null);
 
   Map<String, dynamic> toJson() => {
-        DBContract.ID: this.id,
-        DBContract.FIRESTORE_ID: this.fireID,
-        DBContract.TEAM_FIRESTORE_ID: this.teamFireID,
-        DBContract.STATKEEPER_FIRESTORE_ID: this.statkeeperFireID,
-        DBContract.NAME: this.name,
-        DBContract.TEAM: this.team,
-        DBContract.GAMES: this.games,
-        DBContract.RBI: this.rbi,
-        DBContract.RUNS: this.runs,
-        DBContract.SINGLES: this.singles,
-        DBContract.DOUBLES: this.doubles,
-        DBContract.TRIPLES: this.triples,
-        DBContract.HRS: this.hrs,
-        DBContract.OUTS: this.outs,
-        DBContract.WALKS: this.walks,
-        DBContract.SAC_FLIES: this.sacFlies,
-        DBContract.STOLEN_BASES: this.stolenBases,
-        DBContract.STRIKEOUTS: this.strikeOuts,
-        DBContract.HBP: this.hbp,
-        DBContract.GENDER: this.gender,
-        DBContract.REACHED_ON_ERRORS: this.reachedOnErrors,
-      };
+    DBContract.ID: this.id,
+    DBContract.FIRESTORE_ID: this.fireID,
+    DBContract.TEAM_FIRESTORE_ID: this.teamFireID,
+    DBContract.STATKEEPER_FIRESTORE_ID: this.statkeeperFireID,
+    DBContract.NAME: this.name,
+    DBContract.TEAM: this.team,
+    DBContract.GAMES: this.games,
+    DBContract.RBI: this.rbi,
+    DBContract.RUNS: this.runs,
+    DBContract.SINGLES: this.singles,
+    DBContract.DOUBLES: this.doubles,
+    DBContract.TRIPLES: this.triples,
+    DBContract.HRS: this.hrs,
+    DBContract.OUTS: this.outs,
+    DBContract.WALKS: this.walks,
+    DBContract.SAC_FLIES: this.sacFlies,
+    DBContract.STOLEN_BASES: this.stolenBases,
+    DBContract.STRIKEOUTS: this.strikeOuts,
+    DBContract.HBP: this.hbp,
+    DBContract.GENDER: this.gender,
+    DBContract.REACHED_ON_ERRORS: this.reachedOnErrors,
+    DBContract.BATTING_ORDER: this.battingOrder
+  };
+
+  Map<String, dynamic> toFirestore() => {
+    DBContract.FIRESTORE_ID: this.fireID,
+    DBContract.TEAM_FIRESTORE_ID: this.teamFireID,
+    DBContract.NAME: this.name,
+    DBContract.TEAM: this.team,
+    DBContract.GAMES: this.games,
+    DBContract.RBI: this.rbi,
+    DBContract.RUNS: this.runs,
+    DBContract.SINGLES: this.singles,
+    DBContract.DOUBLES: this.doubles,
+    DBContract.TRIPLES: this.triples,
+    DBContract.HRS: this.hrs,
+    DBContract.OUTS: this.outs,
+    DBContract.WALKS: this.walks,
+    DBContract.SAC_FLIES: this.sacFlies,
+    DBContract.STOLEN_BASES: this.stolenBases,
+    DBContract.STRIKEOUTS: this.strikeOuts,
+    DBContract.HBP: this.hbp,
+    DBContract.GENDER: this.gender,
+    DBContract.REACHED_ON_ERRORS: this.reachedOnErrors,
+  };
 
   num getStat(String stat) {
     switch (stat) {
@@ -218,6 +243,7 @@ class Player {
     this.runs = json[DBContract.RUNS];
     this.rbi = json[DBContract.RBI];
     this.hbp = json[DBContract.HBP];
+    this.battingOrder =  json[DBContract.BATTING_ORDER] ?? 99;
   }
 
   Player.fromFirestore(Map<String, dynamic> data, String sKID, String fireID) {
@@ -241,6 +267,7 @@ class Player {
     this.runs = data[DBContract.RUNS] ?? 0;
     this.rbi = data[DBContract.RBI] ?? 0;
     this.hbp = data[DBContract.HBP] ?? 0;
+    this.battingOrder = this.battingOrder ?? 99;
   }
 
   int getHits() => singles + doubles + triples + hrs;
@@ -362,7 +389,10 @@ class Player {
       (a, b) => b.getOPS().compareTo(a.getOPS());
 
   static Comparator<Player> obproeComparator() =>
-      (a, b) => b.getOBPwithROE().compareTo(a.getOBPwithROE());
+          (a, b) => b.getOBPwithROE().compareTo(a.getOBPwithROE());
+
+  static Comparator<Player> lineupComparator() =>
+          (a, b) => a.battingOrder.compareTo(b.battingOrder);
 
   static Map<String, Comparator<Player>> toComparatorMap() => {
         LABEL_NAME: nameComparator(),

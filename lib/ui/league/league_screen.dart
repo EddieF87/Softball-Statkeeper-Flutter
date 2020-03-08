@@ -157,7 +157,7 @@ class LeagueScreen extends StatelessWidget {
 
   _goToGame(BuildContext context) {
     //TODO
-    StatKeeperStore statKeeperStore = Provider.of<StatKeeperStore>(context);
+    StatKeeperStore statKeeperStore = Provider.of<StatKeeperStore>(context, listen: false);
     GameStore gameStore = GameStore(
         sKFireID: leagueFireID,
         awayFireID: statKeeperStore.teams[0].fireID,

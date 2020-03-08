@@ -17,9 +17,18 @@ class FirestoreService {
 
     for (DocumentSnapshot documentSnapshot in documentSnapshots) {
       String id = documentSnapshot.documentID;
-      Player player = Player.fromFirestore(documentSnapshot.data, sKID, id);
-      player.id = await RepositoryServicePlayers.insertPlayer(player);
-      players.add(player);
+      Player cloudPlayer = Player.fromFirestore(documentSnapshot.data, sKID, id);
+      Player localPlayer = await RepositoryServicePlayers.getPlayer(sKID, id);
+
+      if(localPlayer != null) {
+        players.add(localPlayer);
+      } else {
+        cloudPlayer.id = await RepositoryServicePlayers.insertPlayer(cloudPlayer);
+        players.add(cloudPlayer);
+      }
+    }
+    for(final player in players) {
+      print("jj  " + player.name  + "  ${player.battingOrder}");
     }
     return players;
   }
@@ -42,5 +51,13 @@ class FirestoreService {
     }
     print("teams = ${teams.length}");
     return teams;
+  }
+
+  static Future<void> addPlayer(String sKID, Player player) async {
+    print("addplayer  ${player.name}");
+    return Firestore.instance
+        .collection("leagues/$sKID/players")
+        .document(player.fireID)
+        .setData(player.toFirestore());
   }
 }

@@ -65,7 +65,7 @@ class _StatsHeaderRowState extends State<StatsHeaderRow> {
           data: stat,
           fontWeight: FontWeight.bold,
           width: width,
-          isHeaderRow: true,
+          textColor: StatCellTextColor.HEADER,
         ),
       ),
     );

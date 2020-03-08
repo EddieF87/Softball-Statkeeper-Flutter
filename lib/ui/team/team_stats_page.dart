@@ -35,14 +35,16 @@ class TeamStatsPage extends StatelessWidget {
           ),
           TeamControls(
             onAddButtonTapped: () => _showAddPlayersDialog(context),
-            onScoresButtonTapped: () => _showScores(),
+            onScoresButtonTapped: () => _showScores(context),
           ),
         ],
       ),
     );
   }
 
-  _showScores() {
+  _showScores(BuildContext context) {
+    StatKeeperStore statKeeperStore = Provider.of<StatKeeperStore>(context, listen: false);
+    statKeeperStore.toggleShowGender();
     debugPrint("_showScores");
   }
 

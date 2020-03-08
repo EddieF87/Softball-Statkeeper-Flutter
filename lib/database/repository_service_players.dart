@@ -80,10 +80,11 @@ class RepositoryServicePlayers {
     ${DBContract.REACHED_ON_ERRORS},
     ${DBContract.STRIKEOUTS},
     ${DBContract.STOLEN_BASES},
-    ${DBContract.HBP}
+    ${DBContract.HBP},
+    ${DBContract.BATTING_ORDER}
     )
     VALUES
-    (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     ''';
     List<dynamic> params = [
       player.id,
@@ -106,7 +107,8 @@ class RepositoryServicePlayers {
       player.reachedOnErrors,
       player.strikeOuts,
       player.stolenBases,
-      player.hbp
+      player.hbp,
+      player.battingOrder
     ];
     return await db.rawInsert(sql, params);
 //    DBCreator.databaseLog("Add Player", sql, null, result);
@@ -135,7 +137,8 @@ class RepositoryServicePlayers {
     ${DBContract.REACHED_ON_ERRORS} = ${player.reachedOnErrors},
     ${DBContract.STRIKEOUTS} = ${player.strikeOuts},
     ${DBContract.STOLEN_BASES} = ${player.stolenBases},
-    ${DBContract.HBP} = ${player.hbp}
+    ${DBContract.HBP} = ${player.hbp},
+    ${DBContract.BATTING_ORDER} = ${player.battingOrder}
     WHERE ${DBContract.ID} =?
     ''';
 

@@ -12,7 +12,9 @@ class PlayerStatRow extends StatelessWidget {
   const PlayerStatRow({
     this.player,
     this.isColoredRow = false,
-    this.onPlayerSelected, this.onTeamSelected, this.isLeague = false,
+    this.onPlayerSelected,
+    this.onTeamSelected,
+    this.isLeague = false,
   }) : assert(player != null);
 
   @override
@@ -29,12 +31,17 @@ class PlayerStatRow extends StatelessWidget {
               data: player.name,
               width: 100.0,
               fontWeight: FontWeight.bold,
+              textColor: player.gender == 0
+                  ? StatCellTextColor.BOY
+                  : StatCellTextColor.GIRL,
             ),
           ),
-          isLeague ? InkWell(
-            onTap: () => onTeamSelected(player.teamFireID),
-            child: StatCell(data: player.team, width: 70.0),
-          ) : new Container(),
+          isLeague
+              ? InkWell(
+                  onTap: () => onTeamSelected(player.teamFireID),
+                  child: StatCell(data: player.team, width: 70.0),
+                )
+              : new Container(),
           StatCell(data: player.games),
           StatCell(data: player.getPA()),
           StatCell(data: player.getAB()),

@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sleekstats_flutter_statkeeper/database/repository_service_plays.dart';
+import 'package:sleekstats_flutter_statkeeper/model/player.dart';
 import 'package:sleekstats_flutter_statkeeper/store/game_store.dart';
 import 'package:sleekstats_flutter_statkeeper/store/statkeeper_store.dart';
 import 'package:sleekstats_flutter_statkeeper/ui/game/game_screen.dart';
+import 'package:sleekstats_flutter_statkeeper/ui/team/stat_cell.dart';
 import 'package:sleekstats_flutter_statkeeper/ui/team/team_stats_page.dart';
 
 class TeamScreen extends StatelessWidget {
@@ -55,25 +57,78 @@ class TeamTabView extends StatelessWidget {
         child: TabBarView(
           children: <Widget>[
             TeamStatsPage(),
-            Center(
-              child: RaisedButton(
-                onPressed: () => _goToGame(context),
-                child: Text(
-                  "Start Game",
-                  style: TextStyle(color: Colors.white),
-                ),
-              ),
-            )
+            LineUpScreen(players: teamStore.getPlayersBattingOrder(),),
           ],
         ),
       ),
     );
   }
+}
+
+class LineUpScreen extends StatefulWidget {
+  final List<Player> players;
+
+  const LineUpScreen({this.players});
+
+  @override
+  State<StatefulWidget> createState() => _LineUpState();
+}
+
+class _LineUpState extends State<LineUpScreen> {
+
+  @override
+  Widget build(BuildContext context) {
+    StatKeeperStore teamStore = Provider.of<StatKeeperStore>(context);
+    return Column(
+      mainAxisSize: MainAxisSize.max,
+      children: <Widget>[
+        Expanded(
+          child: ReorderableListView(
+            header: Text("ffvfscdc"),
+            children: [
+              for (final player in widget.players)
+                StatCell(
+                  key: ValueKey(player),
+                  data: player.name,
+                )
+            ],
+            onReorder: (oldIndex, newIndex) {
+              setState(() {
+                _sortBattingOrder(oldIndex, newIndex);
+                teamStore.updateLineUp();
+              });
+            },
+          ),
+        ),
+        RaisedButton(
+          onPressed: () => _goToGame(context),
+          child: Text(
+            "Start Game",
+            style: TextStyle(color: Colors.white),
+          ),
+        ),
+      ],
+    );
+  }
+
+  _sortBattingOrder(oldIndex, newIndex) {
+    if (newIndex > oldIndex) {
+      newIndex -= 1;
+    }
+
+    final Player item = widget.players.removeAt(oldIndex);
+    widget.players.insert(newIndex, item);
+  }
 
   _goToGame(BuildContext context) async {
-    StatKeeperStore statKeeperStore = Provider.of<StatKeeperStore>(context);
+    StatKeeperStore statKeeperStore =
+    Provider.of<StatKeeperStore>(context, listen: false);
 
     await RepositoryServicePlays.resetPlays(statKeeperStore.statkeeperFireID);
+
+    print(
+        "jjjj   ${statKeeperStore.statkeeperFireID}   ${statKeeperStore.teams[0]
+            .fireID}");
 
     GameStore gameStore = GameStore(
         sKFireID: statKeeperStore.statkeeperFireID,
@@ -82,9 +137,10 @@ class TeamTabView extends StatelessWidget {
 
     Navigator.of(context).push(
       MaterialPageRoute<Null>(
-        builder: (BuildContext context) => GameScreen(
-          gameStore: gameStore,
-        ),
+        builder: (BuildContext context) =>
+            GameScreen(
+              gameStore: gameStore,
+            ),
       ),
     );
 //        .whenComplete(_retrieveLeagueData);

@@ -32,7 +32,7 @@ class DBCreator {
   }
 
   Future<void> createTeamsTable(Database db) async {
-    final statkeeperSql = '''CREATE TABLE ${DBContract.TABLE_TEAMS}
+    final teamSql = '''CREATE TABLE ${DBContract.TABLE_TEAMS}
     (
    ${DBContract.ID} INTEGER PRIMARY KEY,
    ${DBContract.FIRESTORE_ID} TEXT NOT NULL UNIQUE,
@@ -44,7 +44,7 @@ class DBCreator {
    ${DBContract.RUNS_SCORED} INTEGER DEFAULT 0,
    ${DBContract.RUNS_ALLOWED} INTEGER DEFAULT 0
     )''';
-    await db.execute(statkeeperSql);
+    await db.execute(teamSql);
   }
 
   Future<void> createPlayerStatsTable(Database db) async {
@@ -70,7 +70,8 @@ class DBCreator {
    ${DBContract.REACHED_ON_ERRORS} INTEGER DEFAULT 0,
    ${DBContract.STRIKEOUTS} INTEGER DEFAULT 0,
    ${DBContract.STOLEN_BASES} INTEGER DEFAULT 0,
-   ${DBContract.HBP} INTEGER DEFAULT 0
+   ${DBContract.HBP} INTEGER DEFAULT 0,
+   ${DBContract.BATTING_ORDER} INTEGER DEFAULT 99
     )''';
     await db.execute(playerSql);
   }

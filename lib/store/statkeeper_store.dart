@@ -1,4 +1,5 @@
 import 'package:mobx/mobx.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sleekstats_flutter_statkeeper/database/repository_service_players.dart';
 import 'package:sleekstats_flutter_statkeeper/database/repository_service_teams.dart';
 import 'package:sleekstats_flutter_statkeeper/firestore/firestore_service.dart';
@@ -27,6 +28,9 @@ abstract class _StatKeeperStore with Store {
   String teamStatToSortBy;
   bool populated = false;
 
+  @observable
+  bool showGender = false;
+
   @action
   Future populateStatKeeper(String fireID) async {
     print("populateStatKeeper  $fireID");
@@ -46,7 +50,11 @@ abstract class _StatKeeperStore with Store {
 //    sortPlayers(playerStatToSortBy);
     populated = true;
     print(
-        "populateStatKeeper  $fireID  finisehd  ${players.length}  ${teams.length}");
+        "populateStatKeeper  $fireID  finisehd  ${players.length}  ${teams
+            .length}");
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    showGender = prefs.get("$statkeeperFireID-showGender") ?? false;
   }
 
   @action
@@ -58,6 +66,15 @@ abstract class _StatKeeperStore with Store {
     } else {
       players.sort(comparatorMap[Player.LABEL_G]);
     }
+  }
+
+  List<Player> getPlayersBattingOrder() {
+    players.sort(Player.lineupComparator());
+    return players;
+  }
+
+  sortPlayersBattingOrder() {
+    players.sort(Player.lineupComparator());
   }
 
   @action
@@ -72,7 +89,8 @@ abstract class _StatKeeperStore with Store {
   }
 
   @action
-  Future addPlayers(int index, Map<int, String> playerNames, Map<int, bool> playerGenders) async {
+  Future addPlayers(int index, Map<int, String> playerNames,
+      Map<int, bool> playerGenders) async {
     Team team = teams[index];
 
     var uuid = new Uuid();
@@ -85,6 +103,7 @@ abstract class _StatKeeperStore with Store {
         gender: (playerGenders[key] ?? false) ? 1 : 0,
         team: team.name,
       );
+      await FirestoreService.addPlayer(statkeeperFireID, player);
       player.id = await RepositoryServicePlayers.insertPlayer(player);
       if (player.id > 0) {
         players.add(player);
@@ -137,7 +156,8 @@ abstract class _StatKeeperStore with Store {
   @action
   Future updatePlayerCountingStat(int index, int amount) async {
     Player player = players[index];
-    print("updatePlayerCountingStat  ${player.name}  $index   $playerStatToUpdate   $amount");
+    print("updatePlayerCountingStat  ${player
+        .name}  $index   $playerStatToUpdate   $amount");
     if (playerStatToUpdate != null &&
         Player.CHANGEABLE_LABELS.contains(playerStatToUpdate)) {
       switch (playerStatToUpdate) {
@@ -203,11 +223,25 @@ abstract class _StatKeeperStore with Store {
       }
     } else {
       print("updatePlayerCountingStat  elseelseelseelseelseelse");
-
     }
     int result = await RepositoryServicePlayers.updatePlayer(player);
     if (result > 0) {
       players = players;
+    }
+  }
+
+  void toggleShowGender() async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    showGender =
+    !(sharedPreferences.getBool("$statkeeperFireID-showGender") ?? false);
+    sharedPreferences.setBool("$statkeeperFireID-showGender", showGender);
+  }
+
+  void updateLineUp() {
+    for (final player in players) {
+      player.battingOrder = players.indexOf(player);
+      print("jjmmmm  ${player.name}   ${player.battingOrder}");
+      RepositoryServicePlayers.updatePlayer(player);
     }
   }
 }

@@ -62,6 +62,23 @@ mixin _$StatKeeperStore on _StatKeeperStore, Store {
     }, _$playerStatToUpdateAtom, name: '${_$playerStatToUpdateAtom.name}_set');
   }
 
+  final _$showGenderAtom = Atom(name: '_StatKeeperStore.showGender');
+
+  @override
+  bool get showGender {
+    _$showGenderAtom.context.enforceReadPolicy(_$showGenderAtom);
+    _$showGenderAtom.reportObserved();
+    return super.showGender;
+  }
+
+  @override
+  set showGender(bool value) {
+    _$showGenderAtom.context.conditionallyRunInAction(() {
+      super.showGender = value;
+      _$showGenderAtom.reportChanged();
+    }, _$showGenderAtom, name: '${_$showGenderAtom.name}_set');
+  }
+
   final _$populateStatKeeperAsyncAction = AsyncAction('populateStatKeeper');
 
   @override
@@ -141,7 +158,7 @@ mixin _$StatKeeperStore on _StatKeeperStore, Store {
   @override
   String toString() {
     final string =
-        'teams: ${teams.toString()},players: ${players.toString()},playerStatToUpdate: ${playerStatToUpdate.toString()}';
+        'teams: ${teams.toString()},players: ${players.toString()},playerStatToUpdate: ${playerStatToUpdate.toString()},showGender: ${showGender.toString()}';
     return '{$string}';
   }
 }
