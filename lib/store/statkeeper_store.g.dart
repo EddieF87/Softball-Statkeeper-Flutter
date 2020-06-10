@@ -9,77 +9,39 @@ part of 'statkeeper_store.dart';
 // ignore_for_file: non_constant_identifier_names, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
 
 mixin _$StatKeeperStore on _StatKeeperStore, Store {
-  final _$teamsAtom = Atom(name: '_StatKeeperStore.teams');
-
-  @override
-  ObservableList<Team> get teams {
-    _$teamsAtom.context.enforceReadPolicy(_$teamsAtom);
-    _$teamsAtom.reportObserved();
-    return super.teams;
-  }
-
-  @override
-  set teams(ObservableList<Team> value) {
-    _$teamsAtom.context.conditionallyRunInAction(() {
-      super.teams = value;
-      _$teamsAtom.reportChanged();
-    }, _$teamsAtom, name: '${_$teamsAtom.name}_set');
-  }
-
-  final _$playersAtom = Atom(name: '_StatKeeperStore.players');
-
-  @override
-  ObservableList<Player> get players {
-    _$playersAtom.context.enforceReadPolicy(_$playersAtom);
-    _$playersAtom.reportObserved();
-    return super.players;
-  }
-
-  @override
-  set players(ObservableList<Player> value) {
-    _$playersAtom.context.conditionallyRunInAction(() {
-      super.players = value;
-      _$playersAtom.reportChanged();
-    }, _$playersAtom, name: '${_$playersAtom.name}_set');
-  }
-
   final _$playerStatToUpdateAtom =
       Atom(name: '_StatKeeperStore.playerStatToUpdate');
 
   @override
   String get playerStatToUpdate {
-    _$playerStatToUpdateAtom.context
-        .enforceReadPolicy(_$playerStatToUpdateAtom);
-    _$playerStatToUpdateAtom.reportObserved();
+    _$playerStatToUpdateAtom.reportRead();
     return super.playerStatToUpdate;
   }
 
   @override
   set playerStatToUpdate(String value) {
-    _$playerStatToUpdateAtom.context.conditionallyRunInAction(() {
+    _$playerStatToUpdateAtom.reportWrite(value, super.playerStatToUpdate, () {
       super.playerStatToUpdate = value;
-      _$playerStatToUpdateAtom.reportChanged();
-    }, _$playerStatToUpdateAtom, name: '${_$playerStatToUpdateAtom.name}_set');
+    });
   }
 
   final _$showGenderAtom = Atom(name: '_StatKeeperStore.showGender');
 
   @override
   bool get showGender {
-    _$showGenderAtom.context.enforceReadPolicy(_$showGenderAtom);
-    _$showGenderAtom.reportObserved();
+    _$showGenderAtom.reportRead();
     return super.showGender;
   }
 
   @override
   set showGender(bool value) {
-    _$showGenderAtom.context.conditionallyRunInAction(() {
+    _$showGenderAtom.reportWrite(value, super.showGender, () {
       super.showGender = value;
-      _$showGenderAtom.reportChanged();
-    }, _$showGenderAtom, name: '${_$showGenderAtom.name}_set');
+    });
   }
 
-  final _$populateStatKeeperAsyncAction = AsyncAction('populateStatKeeper');
+  final _$populateStatKeeperAsyncAction =
+      AsyncAction('_StatKeeperStore.populateStatKeeper');
 
   @override
   Future<dynamic> populateStatKeeper(String fireID) {
@@ -87,7 +49,7 @@ mixin _$StatKeeperStore on _StatKeeperStore, Store {
         .run(() => super.populateStatKeeper(fireID));
   }
 
-  final _$addPlayersAsyncAction = AsyncAction('addPlayers');
+  final _$addPlayersAsyncAction = AsyncAction('_StatKeeperStore.addPlayers');
 
   @override
   Future<dynamic> addPlayers(
@@ -96,7 +58,7 @@ mixin _$StatKeeperStore on _StatKeeperStore, Store {
         .run(() => super.addPlayers(index, playerNames, playerGenders));
   }
 
-  final _$addTeamsAsyncAction = AsyncAction('addTeams');
+  final _$addTeamsAsyncAction = AsyncAction('_StatKeeperStore.addTeams');
 
   @override
   Future<dynamic> addTeams(Map<int, String> teamNames) {
@@ -104,7 +66,7 @@ mixin _$StatKeeperStore on _StatKeeperStore, Store {
   }
 
   final _$updatePlayerCountingStatAsyncAction =
-      AsyncAction('updatePlayerCountingStat');
+      AsyncAction('_StatKeeperStore.updatePlayerCountingStat');
 
   @override
   Future<dynamic> updatePlayerCountingStat(int index, int amount) {
@@ -117,7 +79,8 @@ mixin _$StatKeeperStore on _StatKeeperStore, Store {
 
   @override
   dynamic sortPlayers(String statToSortBy) {
-    final _$actionInfo = _$_StatKeeperStoreActionController.startAction();
+    final _$actionInfo = _$_StatKeeperStoreActionController.startAction(
+        name: '_StatKeeperStore.sortPlayers');
     try {
       return super.sortPlayers(statToSortBy);
     } finally {
@@ -127,7 +90,8 @@ mixin _$StatKeeperStore on _StatKeeperStore, Store {
 
   @override
   dynamic sortTeams(String statToSortBy) {
-    final _$actionInfo = _$_StatKeeperStoreActionController.startAction();
+    final _$actionInfo = _$_StatKeeperStoreActionController.startAction(
+        name: '_StatKeeperStore.sortTeams');
     try {
       return super.sortTeams(statToSortBy);
     } finally {
@@ -137,7 +101,8 @@ mixin _$StatKeeperStore on _StatKeeperStore, Store {
 
   @override
   void clearStatKeeper() {
-    final _$actionInfo = _$_StatKeeperStoreActionController.startAction();
+    final _$actionInfo = _$_StatKeeperStoreActionController.startAction(
+        name: '_StatKeeperStore.clearStatKeeper');
     try {
       return super.clearStatKeeper();
     } finally {
@@ -147,7 +112,8 @@ mixin _$StatKeeperStore on _StatKeeperStore, Store {
 
   @override
   dynamic setPlayerStatToUpdate(String stat) {
-    final _$actionInfo = _$_StatKeeperStoreActionController.startAction();
+    final _$actionInfo = _$_StatKeeperStoreActionController.startAction(
+        name: '_StatKeeperStore.setPlayerStatToUpdate');
     try {
       return super.setPlayerStatToUpdate(stat);
     } finally {
@@ -157,8 +123,9 @@ mixin _$StatKeeperStore on _StatKeeperStore, Store {
 
   @override
   String toString() {
-    final string =
-        'teams: ${teams.toString()},players: ${players.toString()},playerStatToUpdate: ${playerStatToUpdate.toString()},showGender: ${showGender.toString()}';
-    return '{$string}';
+    return '''
+playerStatToUpdate: ${playerStatToUpdate},
+showGender: ${showGender}
+    ''';
   }
 }

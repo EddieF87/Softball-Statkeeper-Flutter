@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:sleekstats_flutter_statkeeper/model/player.dart';
+import 'package:sleekstats_flutter_statkeeper/model/player_utils.dart';
 import 'package:sleekstats_flutter_statkeeper/store/statkeeper_store.dart';
 import 'package:sleekstats_flutter_statkeeper/ui/team/player_stat_label.dart';
 
@@ -29,9 +29,9 @@ class SinglePlayerStatsDisplay extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.end,
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: <Widget>[
-                PlayerStatLabel(playerIndex: this.playerIndex, stat: Player.LABEL_AVG, isBig: true),
-                PlayerStatLabel(playerIndex: this.playerIndex, stat: Player.LABEL_SLG, isBig: true),
-                PlayerStatLabel(playerIndex: this.playerIndex, stat: Player.LABEL_OPS, isBig: true),
+                PlayerStatLabel(playerIndex: this.playerIndex, stat: PlayerUtils.LABEL_AVG, isBig: true),
+                PlayerStatLabel(playerIndex: this.playerIndex, stat: PlayerUtils.LABEL_SLG, isBig: true),
+                PlayerStatLabel(playerIndex: this.playerIndex, stat: PlayerUtils.LABEL_OPS, isBig: true),
               ],
             ),
           ),
@@ -41,9 +41,9 @@ class SinglePlayerStatsDisplay extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.end,
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: <Widget>[
-                PlayerStatLabel(playerIndex: this.playerIndex, stat: Player.LABEL_HR, isBig: true),
-                PlayerStatLabel(playerIndex: this.playerIndex, stat: Player.LABEL_R, isBig: true),
-                PlayerStatLabel(playerIndex: this.playerIndex, stat: Player.LABEL_RBI, isBig: true),
+                PlayerStatLabel(playerIndex: this.playerIndex, stat: PlayerUtils.LABEL_HR, isBig: true),
+                PlayerStatLabel(playerIndex: this.playerIndex, stat: PlayerUtils.LABEL_R, isBig: true),
+                PlayerStatLabel(playerIndex: this.playerIndex, stat: PlayerUtils.LABEL_RBI, isBig: true),
               ],
             ),
           ),
@@ -52,11 +52,11 @@ class SinglePlayerStatsDisplay extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: <Widget>[
-                PlayerStatLabel(playerIndex: this.playerIndex, stat: Player.LABEL_1B),
-                PlayerStatLabel(playerIndex: this.playerIndex, stat: Player.LABEL_2B),
-                PlayerStatLabel(playerIndex: this.playerIndex, stat: Player.LABEL_3B),
-                PlayerStatLabel(playerIndex: this.playerIndex, stat: Player.LABEL_BB),
-                PlayerStatLabel(playerIndex: this.playerIndex, stat: Player.LABEL_HBP),
+                PlayerStatLabel(playerIndex: this.playerIndex, stat: PlayerUtils.LABEL_1B),
+                PlayerStatLabel(playerIndex: this.playerIndex, stat: PlayerUtils.LABEL_2B),
+                PlayerStatLabel(playerIndex: this.playerIndex, stat: PlayerUtils.LABEL_3B),
+                PlayerStatLabel(playerIndex: this.playerIndex, stat: PlayerUtils.LABEL_BB),
+                PlayerStatLabel(playerIndex: this.playerIndex, stat: PlayerUtils.LABEL_HBP),
               ],
             ),
           ),
@@ -65,11 +65,11 @@ class SinglePlayerStatsDisplay extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: <Widget>[
-                PlayerStatLabel(playerIndex: this.playerIndex, stat: Player.LABEL_PA),
-                PlayerStatLabel(playerIndex: this.playerIndex, stat: Player.LABEL_AB),
-                PlayerStatLabel(playerIndex: this.playerIndex, stat: Player.LABEL_H),
-                PlayerStatLabel(playerIndex: this.playerIndex, stat: Player.LABEL_OBP),
-                PlayerStatLabel(playerIndex: this.playerIndex, stat: Player.LABEL_OBPROE),
+                PlayerStatLabel(playerIndex: this.playerIndex, stat: PlayerUtils.LABEL_PA),
+                PlayerStatLabel(playerIndex: this.playerIndex, stat: PlayerUtils.LABEL_AB),
+                PlayerStatLabel(playerIndex: this.playerIndex, stat: PlayerUtils.LABEL_H),
+                PlayerStatLabel(playerIndex: this.playerIndex, stat: PlayerUtils.LABEL_OBP),
+                PlayerStatLabel(playerIndex: this.playerIndex, stat: PlayerUtils.LABEL_OBPROE),
               ],
             ),
           ),
@@ -78,11 +78,11 @@ class SinglePlayerStatsDisplay extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: <Widget>[
-                PlayerStatLabel(playerIndex: this.playerIndex, stat: Player.LABEL_ROE),
-                PlayerStatLabel(playerIndex: this.playerIndex, stat: Player.LABEL_OUT),
-                PlayerStatLabel(playerIndex: this.playerIndex, stat: Player.LABEL_SF),
-                PlayerStatLabel(playerIndex: this.playerIndex, stat: Player.LABEL_K),
-                PlayerStatLabel(playerIndex: this.playerIndex, stat: Player.LABEL_SB),
+                PlayerStatLabel(playerIndex: this.playerIndex, stat: PlayerUtils.LABEL_ROE),
+                PlayerStatLabel(playerIndex: this.playerIndex, stat: PlayerUtils.LABEL_OUT),
+                PlayerStatLabel(playerIndex: this.playerIndex, stat: PlayerUtils.LABEL_SF),
+                PlayerStatLabel(playerIndex: this.playerIndex, stat: PlayerUtils.LABEL_K),
+                PlayerStatLabel(playerIndex: this.playerIndex, stat: PlayerUtils.LABEL_SB),
               ],
             ),
           ),

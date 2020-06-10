@@ -28,7 +28,7 @@ class TeamStatsPage extends StatelessWidget {
             child: Padding(
               padding: EdgeInsets.all(16.0),
               child: PlayersStatsTable(
-                teamFireID: statKeeperStore.teams[teamIndex].fireID,
+                teamFireID: statKeeperStore.teams[teamIndex].firestoreID,
                 isLeague: false,
               ),
             ),

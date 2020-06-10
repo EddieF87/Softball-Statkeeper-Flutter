@@ -1,10 +1,10 @@
 import 'package:mobx/mobx.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:sleekstats_flutter_statkeeper/database/repository_service_players.dart';
-import 'package:sleekstats_flutter_statkeeper/database/repository_service_teams.dart';
+import 'package:sleekstats_flutter_statkeeper/database/moor_tables.dart';
 import 'package:sleekstats_flutter_statkeeper/firestore/firestore_service.dart';
-import 'package:sleekstats_flutter_statkeeper/model/player.dart';
-import 'package:sleekstats_flutter_statkeeper/model/team.dart';
+import 'package:sleekstats_flutter_statkeeper/main.dart';
+import 'package:sleekstats_flutter_statkeeper/model/player_utils.dart';
+import 'package:sleekstats_flutter_statkeeper/model/team_utils.dart';
 import 'package:uuid/uuid.dart';
 
 part 'statkeeper_store.g.dart';
@@ -15,11 +15,11 @@ class StatKeeperStore = _StatKeeperStore with _$StatKeeperStore;
 abstract class _StatKeeperStore with Store {
   String statkeeperFireID;
 
-  @observable
-  ObservableList<Team> teams = ObservableList();
+  Stream<List<Team>> teamsStream = database.teamDao.watchAllTeams();
+  Stream<List<Player>> playersStream = database.playerDao.watchAllPlayers();
 
-  @observable
-  ObservableList<Player> players = ObservableList();
+  List<Player> players;
+  List<Team> teams;
 
   @observable
   String playerStatToUpdate;
@@ -38,53 +38,58 @@ abstract class _StatKeeperStore with Store {
     if (populated) {
       return;
     }
-    teams.clear();
-    players.clear();
+    database.teamDao.clear();
+    database.playerDao.clear();
 
-    teams.addAll(await FirestoreService.getTeams(fireID));
-    players.addAll(await FirestoreService.getPlayers(fireID));
+    await FirestoreService.loadTeams(fireID);
+    await FirestoreService.loadPlayers(fireID);
+    print("loadPlayers FINISHED");
 
-    teams = teams;
-    players = players;
+    players = await database.playerDao.getAllPlayersFromStatKeeper(fireID);
+    print("getAllPlayersFromStatKeeper FINISHED");
+    teams = await database.teamDao.getAllTeams(fireID);
+    print("getAllTeams FINISHED");
 
 //    sortPlayers(playerStatToSortBy);
+
     populated = true;
-    print(
-        "populateStatKeeper  $fireID  finisehd  ${players.length}  ${teams
-            .length}");
+    print("populated FINISHED");
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
+    print("SharedPreferences FINISHED");
     showGender = prefs.get("$statkeeperFireID-showGender") ?? false;
   }
 
   @action
   sortPlayers(String statToSortBy) {
     playerStatToSortBy = statToSortBy;
-    Map<String, Comparator<Player>> comparatorMap = Player.toComparatorMap();
+    Map<String, Comparator<Player>> comparatorMap =
+        PlayerUtils.toComparatorMap();
     if (comparatorMap.containsKey(statToSortBy)) {
       players.sort(comparatorMap[statToSortBy]);
     } else {
-      players.sort(comparatorMap[Player.LABEL_G]);
+      players.sort(comparatorMap[PlayerUtils.LABEL_G]);
     }
   }
 
   List<Player> getPlayersBattingOrder() {
-    players.sort(Player.lineupComparator());
+//    database.playerDao.outComparator()  //TODO how should I compare?
+    players.sort(PlayerUtils.lineupComparator());
     return players;
   }
 
   sortPlayersBattingOrder() {
-    players.sort(Player.lineupComparator());
+    players.sort(PlayerUtils.lineupComparator());
   }
 
   @action
   sortTeams(String statToSortBy) {
     teamStatToSortBy = statToSortBy;
-    Map<String, Comparator<Team>> comparatorMap = Team.toComparatorMap();
+    Map<String, Comparator<Team>> comparatorMap = TeamUtils.toComparatorMap();
     if (comparatorMap.containsKey(statToSortBy)) {
       teams.sort(comparatorMap[statToSortBy]);
     } else {
-      teams.sort(comparatorMap[Team.LABEL_WINPCT]);
+      teams.sort(comparatorMap[TeamUtils.LABEL_WINPCT]);
     }
   }
 
@@ -96,20 +101,21 @@ abstract class _StatKeeperStore with Store {
     var uuid = new Uuid();
     for (var key in playerNames.keys) {
       Player player = Player(
-        fireID: uuid.v1(),
-        teamFireID: team.fireID,
-        statkeeperFireID: statkeeperFireID,
+        firestoreID: uuid.v1(),
+        teamfirestoreid: team.firestoreID,
+        statkeeperFirestoreID: statkeeperFireID,
         name: playerNames[key],
         gender: (playerGenders[key] ?? false) ? 1 : 0,
         team: team.name,
       );
       await FirestoreService.addPlayer(statkeeperFireID, player);
-      player.id = await RepositoryServicePlayers.insertPlayer(player);
-      if (player.id > 0) {
-        players.add(player);
-      }
+      await database.playerDao.insertPlayer(player);
+//      player.id = await RepositoryServicePlayers.insertPlayer(player);
+//      if (player.id > 0) {
+//        players.add(player);
+//      }
     }
-    players = players;
+//    players = players;
   }
 
   @action
@@ -117,16 +123,17 @@ abstract class _StatKeeperStore with Store {
     var uuid = new Uuid();
     for (var name in teamNames.values) {
       Team team = Team(
-        fireID: uuid.v1(),
-        statkeeperFireID: statkeeperFireID,
+        firestoreID: uuid.v1(),
+        statkeeperFirestoreID: statkeeperFireID,
         name: name,
       );
-      team.id = await RepositoryServiceTeams.insertTeam(team);
-      if (team.id > 0) {
-        teams.add(team);
-      }
+      database.teamDao.insertTeam(team);
+//      team.id = await RepositoryServiceTeams.insertTeam(team);
+//      if (team.id > 0) {
+//        teams.add(team);
+//      }
     }
-    teams = teams;
+//    teams = teams;
   }
 
   @action
@@ -135,8 +142,9 @@ abstract class _StatKeeperStore with Store {
     playerStatToUpdate = null;
     playerStatToSortBy = null;
     teamStatToSortBy = null;
-    teams.clear();
-    players.clear();
+    database.teamDao.clear();
+    database.playerDao.clear();
+    database.playDao.clear();
     populated = false;
   }
 
@@ -153,69 +161,72 @@ abstract class _StatKeeperStore with Store {
     playerStatToUpdate = stat;
   }
 
+  int getPlayerAmount(int amount) {
+    if (amount < 0) {
+      return 0;
+    } else {
+      return amount;
+    }
+  }
+
   @action
   Future updatePlayerCountingStat(int index, int amount) async {
     Player player = players[index];
-    print("updatePlayerCountingStat  ${player
-        .name}  $index   $playerStatToUpdate   $amount");
+    print(
+        "updatePlayerCountingStat  ${player.name}  $index   $playerStatToUpdate   $amount");
     if (playerStatToUpdate != null &&
-        Player.CHANGEABLE_LABELS.contains(playerStatToUpdate)) {
+        PlayerUtils.CHANGEABLE_LABELS.contains(playerStatToUpdate)) {
       switch (playerStatToUpdate) {
-        case Player.LABEL_R:
-          player.runs += amount;
-          if (player.runs < 0) player.runs = 0;
+        case PlayerUtils.LABEL_R:
+          player = player.copyWith(runs: getPlayerAmount(player.runs + amount));
           break;
-        case Player.LABEL_RBI:
-          player.rbi += amount;
-          if (player.rbi < 0) player.rbi = 0;
+        case PlayerUtils.LABEL_RBI:
+          player = player.copyWith(runs: getPlayerAmount(player.rbis + amount));
           break;
-        case Player.LABEL_1B:
-          player.singles += amount;
-          if (player.singles < 0) player.singles = 0;
+        case PlayerUtils.LABEL_1B:
+          player =
+              player.copyWith(runs: getPlayerAmount(player.singles + amount));
           break;
-        case Player.LABEL_2B:
-          player.doubles += amount;
-          if (player.doubles < 0) player.doubles = 0;
+        case PlayerUtils.LABEL_2B:
+          player =
+              player.copyWith(runs: getPlayerAmount(player.doubles + amount));
           break;
-        case Player.LABEL_3B:
-          player.triples += amount;
-          if (player.triples < 0) player.triples = 0;
+        case PlayerUtils.LABEL_3B:
+          player =
+              player.copyWith(runs: getPlayerAmount(player.triples + amount));
           break;
-        case Player.LABEL_HR:
-          player.hrs += amount;
-          if (player.hrs < 0) player.hrs = 0;
+        case PlayerUtils.LABEL_HR:
+          player = player.copyWith(runs: getPlayerAmount(player.hrs + amount));
           break;
-        case Player.LABEL_OUT:
-          player.outs += amount;
-          if (player.outs < 0) player.outs = 0;
+        case PlayerUtils.LABEL_OUT:
+          player = player.copyWith(runs: getPlayerAmount(player.outs + amount));
           break;
-        case Player.LABEL_ROE:
-          player.reachedOnErrors += amount;
-          if (player.reachedOnErrors < 0) player.reachedOnErrors = 0;
+        case PlayerUtils.LABEL_ROE:
+          player = player.copyWith(
+              runs: getPlayerAmount(player.reachedOnErrors + amount));
           break;
-        case Player.LABEL_SF:
-          player.sacFlies += amount;
-          if (player.sacFlies < 0) player.sacFlies = 0;
+        case PlayerUtils.LABEL_SF:
+          player =
+              player.copyWith(runs: getPlayerAmount(player.sacFlies + amount));
           break;
-        case Player.LABEL_BB:
-          player.walks += amount;
-          if (player.walks < 0) player.walks = 0;
+        case PlayerUtils.LABEL_BB:
+          player =
+              player.copyWith(runs: getPlayerAmount(player.walks + amount));
           break;
-        case Player.LABEL_SB:
-          player.stolenBases += amount;
-          if (player.stolenBases < 0) player.stolenBases = 0;
+        case PlayerUtils.LABEL_SB:
+          player = player.copyWith(
+              runs: getPlayerAmount(player.stolenBases + amount));
           break;
-        case Player.LABEL_G:
-          player.games += amount;
-          if (player.games < 0) player.games = 0;
+        case PlayerUtils.LABEL_G:
+          player =
+              player.copyWith(runs: getPlayerAmount(player.games + amount));
           break;
-        case Player.LABEL_HBP:
-          player.hbp += amount;
-          if (player.hbp < 0) player.hbp = 0;
+        case PlayerUtils.LABEL_HBP:
+          player = player.copyWith(runs: getPlayerAmount(player.hbp + amount));
           break;
-        case Player.LABEL_K:
-          player.strikeOuts += amount;
-          if (player.strikeOuts < 0) player.strikeOuts = 0;
+        case PlayerUtils.LABEL_K:
+          player = player.copyWith(
+              runs: getPlayerAmount(player.strikeouts + amount));
           break;
         default:
           print("updatePlayerCountingStat  defaultdefaultdefaultdefault");
@@ -224,24 +235,24 @@ abstract class _StatKeeperStore with Store {
     } else {
       print("updatePlayerCountingStat  elseelseelseelseelseelse");
     }
-    int result = await RepositoryServicePlayers.updatePlayer(player);
-    if (result > 0) {
-      players = players;
-    }
+    database.playerDao.updatePlayer(player);
+//    int result = await RepositoryServicePlayers.updatePlayer(player);
+//    if (result > 0) {
+//      players = players;
+//    }
   }
 
   void toggleShowGender() async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     showGender =
-    !(sharedPreferences.getBool("$statkeeperFireID-showGender") ?? false);
+        !(sharedPreferences.getBool("$statkeeperFireID-showGender") ?? false);
     sharedPreferences.setBool("$statkeeperFireID-showGender", showGender);
   }
 
   void updateLineUp() {
     for (final player in players) {
-      player.battingOrder = players.indexOf(player);
-      print("jjmmmm  ${player.name}   ${player.battingOrder}");
-      RepositoryServicePlayers.updatePlayer(player);
+      database.playerDao
+          .updatePlayer(player.copyWith(battingOrder: players.indexOf(player)));
     }
   }
 }

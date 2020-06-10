@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:sleekstats_flutter_statkeeper/database/moor_tables.dart';
 import 'package:sleekstats_flutter_statkeeper/database/repository_service_plays.dart';
-import 'package:sleekstats_flutter_statkeeper/model/player.dart';
 import 'package:sleekstats_flutter_statkeeper/store/game_store.dart';
 import 'package:sleekstats_flutter_statkeeper/store/statkeeper_store.dart';
 import 'package:sleekstats_flutter_statkeeper/ui/game/game_screen.dart';
@@ -128,12 +128,12 @@ class _LineUpState extends State<LineUpScreen> {
 
     print(
         "jjjj   ${statKeeperStore.statkeeperFireID}   ${statKeeperStore.teams[0]
-            .fireID}");
+            .firestoreID}");
 
     GameStore gameStore = GameStore(
         sKFireID: statKeeperStore.statkeeperFireID,
-        awayFireID: statKeeperStore.teams[0].fireID,
-        homeFireID: statKeeperStore.teams[0].fireID);
+        awayFireID: statKeeperStore.teams[0].firestoreID,
+        homeFireID: statKeeperStore.teams[0].firestoreID);
 
     Navigator.of(context).push(
       MaterialPageRoute<Null>(

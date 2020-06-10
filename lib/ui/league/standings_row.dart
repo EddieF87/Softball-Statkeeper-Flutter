@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:sleekstats_flutter_statkeeper/model/team.dart';
+import 'package:sleekstats_flutter_statkeeper/database/moor_tables.dart';
+import 'package:sleekstats_flutter_statkeeper/model/team_utils.dart';
 import 'package:sleekstats_flutter_statkeeper/ui/league/standings_cell.dart';
 
 class StandingsRow extends StatelessWidget {
@@ -39,8 +40,8 @@ class StandingsRow extends StatelessWidget {
             data: team.getWinPct(),
             flexAmount: 2,
           ),
-          _buildStandingsCell(data: team.runsScored),
-          _buildStandingsCell(data: team.runsAllowed),
+          _buildStandingsCell(data: team.totalRunsScored),
+          _buildStandingsCell(data: team.totalRunsAllowed),
           _buildStandingsCell(data: team.getRunDiff()),
         ],
       ),

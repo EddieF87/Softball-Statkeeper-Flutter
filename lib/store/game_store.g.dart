@@ -12,154 +12,139 @@ mixin _$GameStore on _GameStore, Store {
   final _$batterAtom = Atom(name: '_GameStore.batter');
 
   @override
-  Player get batter {
-    _$batterAtom.context.enforceReadPolicy(_$batterAtom);
-    _$batterAtom.reportObserved();
+  dynamic get batter {
+    _$batterAtom.reportRead();
     return super.batter;
   }
 
   @override
-  set batter(Player value) {
-    _$batterAtom.context.conditionallyRunInAction(() {
+  set batter(dynamic value) {
+    _$batterAtom.reportWrite(value, super.batter, () {
       super.batter = value;
-      _$batterAtom.reportChanged();
-    }, _$batterAtom, name: '${_$batterAtom.name}_set');
+    });
   }
 
   final _$batterIDAtom = Atom(name: '_GameStore.batterID');
 
   @override
   String get batterID {
-    _$batterIDAtom.context.enforceReadPolicy(_$batterIDAtom);
-    _$batterIDAtom.reportObserved();
+    _$batterIDAtom.reportRead();
     return super.batterID;
   }
 
   @override
   set batterID(String value) {
-    _$batterIDAtom.context.conditionallyRunInAction(() {
+    _$batterIDAtom.reportWrite(value, super.batterID, () {
       super.batterID = value;
-      _$batterIDAtom.reportChanged();
-    }, _$batterIDAtom, name: '${_$batterIDAtom.name}_set');
+    });
   }
 
   final _$playResetAtom = Atom(name: '_GameStore.playReset');
 
   @override
   bool get playReset {
-    _$playResetAtom.context.enforceReadPolicy(_$playResetAtom);
-    _$playResetAtom.reportObserved();
+    _$playResetAtom.reportRead();
     return super.playReset;
   }
 
   @override
   set playReset(bool value) {
-    _$playResetAtom.context.conditionallyRunInAction(() {
+    _$playResetAtom.reportWrite(value, super.playReset, () {
       super.playReset = value;
-      _$playResetAtom.reportChanged();
-    }, _$playResetAtom, name: '${_$playResetAtom.name}_set');
+    });
   }
 
   final _$playResultAtom = Atom(name: '_GameStore.playResult');
 
   @override
   String get playResult {
-    _$playResultAtom.context.enforceReadPolicy(_$playResultAtom);
-    _$playResultAtom.reportObserved();
+    _$playResultAtom.reportRead();
     return super.playResult;
   }
 
   @override
   set playResult(String value) {
-    _$playResultAtom.context.conditionallyRunInAction(() {
+    _$playResultAtom.reportWrite(value, super.playResult, () {
       super.playResult = value;
-      _$playResultAtom.reportChanged();
-    }, _$playResultAtom, name: '${_$playResultAtom.name}_set');
+    });
   }
 
   final _$awayTeamRunsAtom = Atom(name: '_GameStore.awayTeamRuns');
 
   @override
   int get awayTeamRuns {
-    _$awayTeamRunsAtom.context.enforceReadPolicy(_$awayTeamRunsAtom);
-    _$awayTeamRunsAtom.reportObserved();
+    _$awayTeamRunsAtom.reportRead();
     return super.awayTeamRuns;
   }
 
   @override
   set awayTeamRuns(int value) {
-    _$awayTeamRunsAtom.context.conditionallyRunInAction(() {
+    _$awayTeamRunsAtom.reportWrite(value, super.awayTeamRuns, () {
       super.awayTeamRuns = value;
-      _$awayTeamRunsAtom.reportChanged();
-    }, _$awayTeamRunsAtom, name: '${_$awayTeamRunsAtom.name}_set');
+    });
   }
 
   final _$homeTeamRunsAtom = Atom(name: '_GameStore.homeTeamRuns');
 
   @override
   int get homeTeamRuns {
-    _$homeTeamRunsAtom.context.enforceReadPolicy(_$homeTeamRunsAtom);
-    _$homeTeamRunsAtom.reportObserved();
+    _$homeTeamRunsAtom.reportRead();
     return super.homeTeamRuns;
   }
 
   @override
   set homeTeamRuns(int value) {
-    _$homeTeamRunsAtom.context.conditionallyRunInAction(() {
+    _$homeTeamRunsAtom.reportWrite(value, super.homeTeamRuns, () {
       super.homeTeamRuns = value;
-      _$homeTeamRunsAtom.reportChanged();
-    }, _$homeTeamRunsAtom, name: '${_$homeTeamRunsAtom.name}_set');
+    });
   }
 
   final _$inningsAtom = Atom(name: '_GameStore.innings');
 
   @override
   int get innings {
-    _$inningsAtom.context.enforceReadPolicy(_$inningsAtom);
-    _$inningsAtom.reportObserved();
+    _$inningsAtom.reportRead();
     return super.innings;
   }
 
   @override
   set innings(int value) {
-    _$inningsAtom.context.conditionallyRunInAction(() {
+    _$inningsAtom.reportWrite(value, super.innings, () {
       super.innings = value;
-      _$inningsAtom.reportChanged();
-    }, _$inningsAtom, name: '${_$inningsAtom.name}_set');
+    });
   }
 
   final _$outsAtom = Atom(name: '_GameStore.outs');
 
   @override
   int get outs {
-    _$outsAtom.context.enforceReadPolicy(_$outsAtom);
-    _$outsAtom.reportObserved();
+    _$outsAtom.reportRead();
     return super.outs;
   }
 
   @override
   set outs(int value) {
-    _$outsAtom.context.conditionallyRunInAction(() {
+    _$outsAtom.reportWrite(value, super.outs, () {
       super.outs = value;
-      _$outsAtom.reportChanged();
-    }, _$outsAtom, name: '${_$outsAtom.name}_set');
+    });
   }
 
-  final _$_retrieveBatterAsyncAction = AsyncAction('_retrieveBatter');
+  final _$_retrieveBatterAsyncAction =
+      AsyncAction('_GameStore._retrieveBatter');
 
   @override
   Future<dynamic> _retrieveBatter() {
     return _$_retrieveBatterAsyncAction.run(() => super._retrieveBatter());
   }
 
-  final _$onSubmitPlayAsyncAction = AsyncAction('onSubmitPlay');
+  final _$onSubmitPlayAsyncAction = AsyncAction('_GameStore.onSubmitPlay');
 
   @override
   Future<dynamic> onSubmitPlay() {
     return _$onSubmitPlayAsyncAction.run(() => super.onSubmitPlay());
   }
 
-  final _$retrievePlayAsyncAction = AsyncAction('retrievePlay');
+  final _$retrievePlayAsyncAction = AsyncAction('_GameStore.retrievePlay');
 
   @override
   Future<dynamic> retrievePlay() {
@@ -170,7 +155,8 @@ mixin _$GameStore on _GameStore, Store {
 
   @override
   void onReset() {
-    final _$actionInfo = _$_GameStoreActionController.startAction();
+    final _$actionInfo =
+        _$_GameStoreActionController.startAction(name: '_GameStore.onReset');
     try {
       return super.onReset();
     } finally {
@@ -180,7 +166,8 @@ mixin _$GameStore on _GameStore, Store {
 
   @override
   void nextBatter() {
-    final _$actionInfo = _$_GameStoreActionController.startAction();
+    final _$actionInfo =
+        _$_GameStoreActionController.startAction(name: '_GameStore.nextBatter');
     try {
       return super.nextBatter();
     } finally {
@@ -190,7 +177,8 @@ mixin _$GameStore on _GameStore, Store {
 
   @override
   void _onResultEntered(String result) {
-    final _$actionInfo = _$_GameStoreActionController.startAction();
+    final _$actionInfo = _$_GameStoreActionController.startAction(
+        name: '_GameStore._onResultEntered');
     try {
       return super._onResultEntered(result);
     } finally {
@@ -199,8 +187,9 @@ mixin _$GameStore on _GameStore, Store {
   }
 
   @override
-  dynamic addRunAndRBI(Player p) {
-    final _$actionInfo = _$_GameStoreActionController.startAction();
+  dynamic addRunAndRBI(dynamic p) {
+    final _$actionInfo = _$_GameStoreActionController.startAction(
+        name: '_GameStore.addRunAndRBI');
     try {
       return super.addRunAndRBI(p);
     } finally {
@@ -210,7 +199,8 @@ mixin _$GameStore on _GameStore, Store {
 
   @override
   void setPlayResult(String result) {
-    final _$actionInfo = _$_GameStoreActionController.startAction();
+    final _$actionInfo = _$_GameStoreActionController.startAction(
+        name: '_GameStore.setPlayResult');
     try {
       return super.setPlayResult(result);
     } finally {
@@ -220,8 +210,15 @@ mixin _$GameStore on _GameStore, Store {
 
   @override
   String toString() {
-    final string =
-        'batter: ${batter.toString()},batterID: ${batterID.toString()},playReset: ${playReset.toString()},playResult: ${playResult.toString()},awayTeamRuns: ${awayTeamRuns.toString()},homeTeamRuns: ${homeTeamRuns.toString()},innings: ${innings.toString()},outs: ${outs.toString()}';
-    return '{$string}';
+    return '''
+batter: ${batter},
+batterID: ${batterID},
+playReset: ${playReset},
+playResult: ${playResult},
+awayTeamRuns: ${awayTeamRuns},
+homeTeamRuns: ${homeTeamRuns},
+innings: ${innings},
+outs: ${outs}
+    ''';
   }
 }

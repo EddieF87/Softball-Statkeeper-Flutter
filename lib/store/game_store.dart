@@ -1,8 +1,10 @@
 import 'package:mobx/mobx.dart';
-import 'package:sleekstats_flutter_statkeeper/database/repository_service_players.dart';
+import 'package:sleekstats_flutter_statkeeper/database/moor_tables.dart';
 import 'package:sleekstats_flutter_statkeeper/database/repository_service_plays.dart';
-import 'package:sleekstats_flutter_statkeeper/model/play.dart';
-import 'package:sleekstats_flutter_statkeeper/model/player.dart';
+import 'package:sleekstats_flutter_statkeeper/main.dart';
+import 'package:sleekstats_flutter_statkeeper/model/play_test.dart';
+import 'package:sleekstats_flutter_statkeeper/model/player_utils.dart';
+import 'package:sleekstats_flutter_statkeeper/utils/extensions.dart';
 
 import 'base_store.dart';
 
@@ -22,7 +24,7 @@ abstract class _GameStore with Store {
   }
 
   @observable
-  Player batter;
+  dynamic batter;
 
   @observable
   String batterID;
@@ -58,7 +60,7 @@ abstract class _GameStore with Store {
 //  @observable
   List<String> homeLineup = List();
 
-  List<Play> plays = List<Play>();
+  List<PlayTest> plays = List<PlayTest>();
 
   int inningRuns = 0;
   int playNumber = 0;
@@ -74,10 +76,10 @@ abstract class _GameStore with Store {
 
   Future _retrieveTeamLineup({String teamID}) async {
     List<Player> playerList =
-        await RepositoryServicePlayers.getAllPlayersFromTeam(sKFireID, teamID);
+        await database.playerDao.getAllPlayersFromTeam(sKFireID, teamID);
     playerList.forEach((p) {
       print("jjjjjk  ${p.name}  ${p.battingOrder}");
-      awayLineup.add(p.fireID);
+      awayLineup.add(p.firestoreID);
     });
     if (awayLineup == null || awayLineup.isEmpty) {
       return;
@@ -88,7 +90,8 @@ abstract class _GameStore with Store {
 
   @action
   Future _retrieveBatter() async {
-    batter = await RepositoryServicePlayers.getPlayer(sKFireID, batterID);
+    batter =
+        (await database.playerDao.getPlayer(sKFireID, batterID)).firstOrNull;
     baseStore.setBatter(batter);
     baseStore.updatePrevBases();
   }
@@ -98,7 +101,8 @@ abstract class _GameStore with Store {
     for (var baseID in baseIDs) {
       Player player;
       if (baseID != null) {
-        player = await RepositoryServicePlayers.getPlayer(sKFireID, baseID);
+        player =
+            (await database.playerDao.getPlayer(sKFireID, baseID)).firstOrNull;
       }
       players.add(player);
     }
@@ -171,46 +175,47 @@ abstract class _GameStore with Store {
   @action
   void _onResultEntered(String result) {
     switch (result) {
-      case Player.LABEL_1B:
-        batter.singles++;
+      case PlayerUtils.LABEL_1B:
+        batter = batter.copyWith(singles: batter.singles + 1);
         break;
-      case Player.LABEL_2B:
-        batter.doubles++;
+      case PlayerUtils.LABEL_2B:
+        batter = batter.copyWith(doubles: batter.doubles + 1);
         break;
-      case Player.LABEL_3B:
-        batter.triples++;
+      case PlayerUtils.LABEL_3B:
+        batter = batter.copyWith(triples: batter.triples + 1);
         break;
-      case Player.LABEL_HR:
-        batter.hrs++;
+      case PlayerUtils.LABEL_HR:
+        batter = batter.copyWith(hrs: batter.hrs + 1);
         break;
-      case Player.LABEL_ROE:
-        batter.reachedOnErrors++;
+      case PlayerUtils.LABEL_ROE:
+        batter = batter.copyWith(reachedOnErrors: batter.reachedOnErrors + 1);
         break;
-      case Player.LABEL_BB:
-        batter.walks++;
+      case PlayerUtils.LABEL_BB:
+        batter = batter.copyWith(walks: batter.walks + 1);
         break;
-      case Player.LABEL_K:
-        batter.strikeOuts++;
+      case PlayerUtils.LABEL_K:
+        batter = batter.copyWith(strikeouts: batter.strikeouts + 1);
         break;
-      case Player.LABEL_OUT:
-        batter.outs++;
+      case PlayerUtils.LABEL_OUT:
+        batter = batter.copyWith(outs: batter.outs + 1);
         break;
-      case Player.LABEL_HBP:
-        batter.hbp++;
+      case PlayerUtils.LABEL_HBP:
+        batter = batter.copyWith(hbp: batter.hbp + 1);
         break;
-      case Player.LABEL_SF:
-        batter.sacFlies++;
+      case PlayerUtils.LABEL_SF:
+        batter = batter.copyWith(sacFlies: batter.sacFlies + 1);
         break;
-      case Player.LABEL_SB:
+      case PlayerUtils.LABEL_SB:
         updateStolenBases();
         break;
     }
+    database.playerDao.updatePlayer(batter);
   }
 
   void _updatePlayerStats() async {
     baseStore.prevBases.forEach((player) {
       if (player != null) {
-        RepositoryServicePlayers.updatePlayer(player);
+        database.playerDao.updatePlayer(player);
       }
     });
   }
@@ -219,13 +224,13 @@ abstract class _GameStore with Store {
   addRunAndRBI(Player p) {
     tempRuns++;
     awayTeamRuns++;
-    p.runs++;
     runsScored.add(p);
-    batter.rbi++;
+    database.playerDao.updatePlayer(p.copyWith(runs: p.runs + 1));
+    database.playerDao.updatePlayer(batter.copyWith(rbis: batter.rbis + 1));
   }
 
   Future _addPlay({String playBatterID, String playOnDeckID}) async {
-    Play play = Play(
+    PlayTest play = PlayTest(
       play: playResult,
       number: playNumber,
       statkeeperFireID: sKFireID,
@@ -234,11 +239,11 @@ abstract class _GameStore with Store {
       awayTeamRuns: awayTeamRuns,
       homeTeamRuns: homeTeamRuns,
       batterID: playBatterID,
-      bases: baseStore.bases.map((player) => player?.fireID).toList(),
+      bases: baseStore.bases.map((player) => player?.firestoreID).toList(),
       innings: innings,
       onDeckID: playOnDeckID,
       outs: outs,
-      runsScored: runsScored.map((player) => player?.fireID).toList(),
+      runsScored: runsScored.map((player) => player?.firestoreID).toList(),
     );
     play.id = await RepositoryServicePlays.insertPlay(play);
     plays.add(play);
@@ -250,7 +255,7 @@ abstract class _GameStore with Store {
 
   @action
   Future retrievePlay() async {
-    Play play = await RepositoryServicePlays.getPlay(sKFireID, playNumber);
+    PlayTest play = await RepositoryServicePlays.getPlay(sKFireID, playNumber);
 
     playNumber = play.number;
     batterID = play.onDeckID;

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:sleekstats_flutter_statkeeper/model/player.dart';
+import 'package:sleekstats_flutter_statkeeper/model/player_utils.dart';
 import 'package:sleekstats_flutter_statkeeper/ui/team/stat_cell.dart';
 
 class StatsHeaderRow extends StatefulWidget {
@@ -24,31 +24,31 @@ class _StatsHeaderRowState extends State<StatsHeaderRow> {
   Widget build(BuildContext context) {
     return Row(
       children: <Widget>[
-        _createHeaderCell(Player.LABEL_NAME, width: 100.0),
+        _createHeaderCell(PlayerUtils.LABEL_NAME, width: 100.0),
         widget.isLeague
-            ? _createHeaderCell(Player.LABEL_TEAM, width: 70.0)
+            ? _createHeaderCell(PlayerUtils.LABEL_TEAM, width: 70.0)
             : Container(),
-        _createHeaderCell(Player.LABEL_G),
-        _createHeaderCell(Player.LABEL_PA),
-        _createHeaderCell(Player.LABEL_AB),
-        _createHeaderCell(Player.LABEL_H),
-        _createHeaderCell(Player.LABEL_1B),
-        _createHeaderCell(Player.LABEL_2B),
-        _createHeaderCell(Player.LABEL_3B),
-        _createHeaderCell(Player.LABEL_HR),
-        _createHeaderCell(Player.LABEL_R),
-        _createHeaderCell(Player.LABEL_RBI),
-        _createHeaderCell(Player.LABEL_AVG, width: 70.0),
-        _createHeaderCell(Player.LABEL_OBP, width: 70.0),
-        _createHeaderCell(Player.LABEL_SLG, width: 70.0),
-        _createHeaderCell(Player.LABEL_OPS, width: 70.0),
-        _createHeaderCell(Player.LABEL_OBPROE, width: 70.0),
-        _createHeaderCell(Player.LABEL_BB),
-        _createHeaderCell(Player.LABEL_SB),
-        _createHeaderCell(Player.LABEL_OUT),
-        _createHeaderCell(Player.LABEL_SF),
-        _createHeaderCell(Player.LABEL_ROE),
-        _createHeaderCell(Player.LABEL_K),
+        _createHeaderCell(PlayerUtils.LABEL_G),
+        _createHeaderCell(PlayerUtils.LABEL_PA),
+        _createHeaderCell(PlayerUtils.LABEL_AB),
+        _createHeaderCell(PlayerUtils.LABEL_H),
+        _createHeaderCell(PlayerUtils.LABEL_1B),
+        _createHeaderCell(PlayerUtils.LABEL_2B),
+        _createHeaderCell(PlayerUtils.LABEL_3B),
+        _createHeaderCell(PlayerUtils.LABEL_HR),
+        _createHeaderCell(PlayerUtils.LABEL_R),
+        _createHeaderCell(PlayerUtils.LABEL_RBI),
+        _createHeaderCell(PlayerUtils.LABEL_AVG, width: 70.0),
+        _createHeaderCell(PlayerUtils.LABEL_OBP, width: 70.0),
+        _createHeaderCell(PlayerUtils.LABEL_SLG, width: 70.0),
+        _createHeaderCell(PlayerUtils.LABEL_OPS, width: 70.0),
+        _createHeaderCell(PlayerUtils.LABEL_OBPROE, width: 70.0),
+        _createHeaderCell(PlayerUtils.LABEL_BB),
+        _createHeaderCell(PlayerUtils.LABEL_SB),
+        _createHeaderCell(PlayerUtils.LABEL_OUT),
+        _createHeaderCell(PlayerUtils.LABEL_SF),
+        _createHeaderCell(PlayerUtils.LABEL_ROE),
+        _createHeaderCell(PlayerUtils.LABEL_K),
       ],
     );
   }

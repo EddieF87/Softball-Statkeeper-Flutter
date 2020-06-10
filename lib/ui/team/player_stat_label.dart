@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:provider/provider.dart';
-import 'package:sleekstats_flutter_statkeeper/model/player.dart';
+import 'package:sleekstats_flutter_statkeeper/model/player_utils.dart';
 import 'package:sleekstats_flutter_statkeeper/store/statkeeper_store.dart';
 import 'package:sleekstats_flutter_statkeeper/utils/stat_formatter.dart';
 
@@ -28,7 +28,7 @@ class PlayerStatLabel extends StatelessWidget {
         builder: (_) => Container(
           decoration: BoxDecoration(
             shape: BoxShape.circle,
-            border: Player.CHANGEABLE_LABELS.contains(stat)
+            border: PlayerUtils.CHANGEABLE_LABELS.contains(stat)
                 ? Border.all(
                     width:
                         stat == statKeeperStore.playerStatToUpdate ? 4.0 : 1.0,
@@ -41,7 +41,7 @@ class PlayerStatLabel extends StatelessWidget {
           child: InkWell(
             borderRadius: BorderRadius.circular(4.0),
             onTap: () => {
-              Player.CHANGEABLE_LABELS.contains(stat)
+              PlayerUtils.CHANGEABLE_LABELS.contains(stat)
                   ? statKeeperStore.setPlayerStatToUpdate(stat)
                   : null
             },
@@ -56,9 +56,12 @@ class PlayerStatLabel extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  StatFormatter.displayAmount(statKeeperStore
-                      .players[this.playerIndex]
-                      .getStat(stat)),
+                  StatFormatter.displayAmount(
+                    PlayerUtils.getStat(
+                      statKeeperStore.players[this.playerIndex],
+                      stat,
+                    ),
+                  ),
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: isBig ? 24 : 16,

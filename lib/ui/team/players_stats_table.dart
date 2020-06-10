@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:provider/provider.dart';
-import 'package:sleekstats_flutter_statkeeper/model/player.dart';
+import 'package:sleekstats_flutter_statkeeper/database/moor_tables.dart';
 import 'package:sleekstats_flutter_statkeeper/store/statkeeper_store.dart';
 import 'package:sleekstats_flutter_statkeeper/ui/team/player_stat_row.dart';
 import 'package:sleekstats_flutter_statkeeper/ui/team/players_pageview.dart';
@@ -57,20 +57,20 @@ class PlayersStatsTable extends StatelessWidget {
                   List<Player> players = isLeague
                       ? statKeeperStore.players
                       : statKeeperStore.players
-                          .where((p) => p.teamFireID == teamFireID)
+                          .where((p) => p.teamfirestoreid == teamFireID)
                           .toList();
                   return ListView.builder(
                     shrinkWrap: true,
                     itemBuilder: (BuildContext context, int index) =>
                         PlayerStatRow(
-                          isLeague: isLeague,
-                          player: players[index],
-                          isColoredRow: index.isOdd,
-                          onPlayerSelected: () => _navigateToPlayersPageView(
-                              context, players[index].fireID),
-                          onTeamSelected: (String teamFireID) =>
-                              onTeamLinkClicked(teamFireID),
-                        ),
+                      isLeague: isLeague,
+                      player: players[index],
+                      isColoredRow: index.isOdd,
+                      onPlayerSelected: () => _navigateToPlayersPageView(
+                          context, players[index].firestoreID),
+                      onTeamSelected: (String teamFireID) =>
+                          onTeamLinkClicked(teamFireID),
+                    ),
                     itemCount: players.length,
                   );
                 },
@@ -84,14 +84,17 @@ class PlayersStatsTable extends StatelessWidget {
 
   /// Navigates to the PageView of players.
   void _navigateToPlayersPageView(BuildContext context, String playerFireID) {
-    StatKeeperStore statKeeperStore = Provider.of<StatKeeperStore>(context, listen: false);
+    StatKeeperStore statKeeperStore =
+        Provider.of<StatKeeperStore>(context, listen: false);
 
-    int playerIndex =
-        statKeeperStore.players.indexWhere((p) => p.fireID == playerFireID);
+    int playerIndex = statKeeperStore.players
+        .indexWhere((p) => p.firestoreID == playerFireID);
     Navigator.of(context).push(
       MaterialPageRoute<Null>(
         builder: (BuildContext context) {
-          return PlayersPageView(startingIndex: playerIndex,);
+          return PlayersPageView(
+            startingIndex: playerIndex,
+          );
         },
       ),
     );

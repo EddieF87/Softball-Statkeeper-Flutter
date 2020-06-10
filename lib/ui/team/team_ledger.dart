@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:sleekstats_flutter_statkeeper/model/team.dart';
+import 'package:sleekstats_flutter_statkeeper/database/moor_tables.dart';
+import 'package:sleekstats_flutter_statkeeper/model/team_utils.dart';
 import 'package:sleekstats_flutter_statkeeper/utils/stat_formatter.dart';
 
 class TeamLedger extends StatelessWidget {
@@ -33,7 +34,7 @@ class TeamLedger extends StatelessWidget {
             children: <Widget>[
               Text(
                   "${team.wins}-${team.losses}-${team.ties}  (${StatFormatter.displayAmount(team.getWinPct())})"),
-              Text("RS: ${team.runsScored} RA: ${team.runsScored}"),
+              Text("RS: ${team.totalRunsScored} RA: ${team.totalRunsAllowed}"),
             ],
           ),
         )

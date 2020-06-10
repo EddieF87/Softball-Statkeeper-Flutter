@@ -1,30 +1,30 @@
 import 'package:sleekstats_flutter_statkeeper/database/db_contract.dart';
 import 'package:sleekstats_flutter_statkeeper/database/db_creator.dart';
-import 'package:sleekstats_flutter_statkeeper/model/play.dart';
+import 'package:sleekstats_flutter_statkeeper/model/play_test.dart';
 
 class RepositoryServicePlays {
-  static Future<List<Play>> getAllPlays(String statkeeperFireID) async {
+  static Future<List<PlayTest>> getAllPlays(String statkeeperFireID) async {
     final sql = '''SELECT * FROM ${DBContract.TABLE_PLAYS} 
     WHERE ${DBContract.STATKEEPER_FIRESTORE_ID}=?''';
     List<String> params = [statkeeperFireID];
     final data = await db.rawQuery(sql, params);
-    List<Play> playsList = [];
+    List<PlayTest> playsList = [];
     for (final node in data) {
-      final play = Play.fromJson(node);
+      final play = PlayTest.fromJson(node);
       playsList.add(play);
     }
     return playsList;
   }
 
-  static Future<Play> getPlay(String statkeeperFireID, int playNumber) async {
+  static Future<PlayTest> getPlay(String statkeeperFireID, int playNumber) async {
     final sql = '''SELECT * FROM ${DBContract.TABLE_PLAYS} 
     WHERE ${DBContract.STATKEEPER_FIRESTORE_ID}=? AND ${DBContract.PLAY_NUMBER}=?''';
     List<String> params = [statkeeperFireID, playNumber.toString()];
     final data = await db.rawQuery(sql, params);
-    return Play.fromJson(data[0]);
+    return PlayTest.fromJson(data[0]);
   }
 
-  static Future<int> insertPlay(Play play) async {
+  static Future<int> insertPlay(PlayTest play) async {
     final sql = '''INSERT INTO ${DBContract.TABLE_PLAYS}
     ( 
     ${DBContract.ID},
@@ -78,7 +78,7 @@ class RepositoryServicePlays {
     return result;
   }
 
-  static Future<void> deletePlay(Play play) async {
+  static Future<void> deletePlay(PlayTest play) async {
     final sql = '''DELETE FROM ${DBContract.TABLE_PLAYS} WHERE ${DBContract.ID}=?''';
     List<String> params = [play.id.toString()];
     final result = await db.rawDelete(sql, params);

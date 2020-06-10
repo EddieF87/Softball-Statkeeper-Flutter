@@ -1,9 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:sleekstats_flutter_statkeeper/model/statkeeper.dart';
+import 'package:sleekstats_flutter_statkeeper/database/moor_tables.dart';
+import 'package:sleekstats_flutter_statkeeper/model/statkeeper_utils.dart';
 import 'package:sleekstats_flutter_statkeeper/store/user_store.dart';
-import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:sleekstats_flutter_statkeeper/ui/home/statkeeper_creator_dialog.dart';
 
 import '../../loading_screen.dart';
@@ -158,7 +158,8 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> _showCreateSKDialog(BuildContext context) async {
-    UserStore userStore = Provider.of<UserStore>(context);
+    print("ooooooooo  _showCreateSKDialog");
+    UserStore userStore = Provider.of<UserStore>(context, listen: false);
 
     return showDialog<void>(
       context: context,
@@ -200,12 +201,36 @@ class StatKeeperList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Observer(
-      builder: (_) => ListView.builder(
-          itemBuilder: (BuildContext context, int index) => StatKeeperLabel(
-                statKeeper: _userStore.statKeepers[index],
-              ),
-          itemCount: _userStore.statKeepers.length),
+//    return Observer(
+//      builder: (_) => ListView.builder(
+//          itemBuilder: (BuildContext context, int index) => StatKeeperLabel(
+//                statKeeper: _userStore.statKeepers[index],
+//              ),
+//          itemCount: _userStore.statKeepers.length),
+//    );
+    return StreamBuilder(
+      stream: _userStore.getStatKeepers(),
+      builder: (BuildContext context, AsyncSnapshot<List<dynamic>> snapshot) {
+        print("oooooooo   ${snapshot.data}");
+//        return Container();
+        if (snapshot.hasError) {
+          return Text('Error: ${snapshot.error}');
+        }
+        switch (snapshot.connectionState) {
+          case ConnectionState.waiting:
+            return const Center(child: const Text('Loading...'));
+          default:
+            if (snapshot.data.isEmpty) {
+              return const Center(child: const Text("EMPTY"));
+            }
+            return ListView.builder(
+                itemBuilder: (BuildContext context, int index) =>
+                    StatKeeperLabel(
+                      statKeeper: snapshot.data[index],
+                    ),
+                itemCount: snapshot.data.length);
+        }
+      },
     );
   }
 }
@@ -219,11 +244,11 @@ class StatKeeperLabel extends StatelessWidget {
 
   IconData _chooseIcon() {
     switch (statKeeper.type) {
-      case StatKeeper.TYPE_PLAYER:
+      case StatKeeperUtils.TYPE_PLAYER:
         return Icons.person;
-      case StatKeeper.TYPE_TEAM:
+      case StatKeeperUtils.TYPE_TEAM:
         return Icons.people;
-      case StatKeeper.TYPE_LEAGUE:
+      case StatKeeperUtils.TYPE_LEAGUE:
         return Icons.public;
       default:
         return Icons.error;
@@ -284,7 +309,7 @@ class StatKeeperLabel extends StatelessWidget {
         builder: (BuildContext context) {
           return Scaffold(
             backgroundColor:
-                sK.type == StatKeeper.TYPE_PLAYER ? Colors.white : null,
+                sK.type == StatKeeperUtils.TYPE_PLAYER ? Colors.white : null,
             appBar: AppBar(
               elevation: 1.0,
               title: Text(

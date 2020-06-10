@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:sleekstats_flutter_statkeeper/model/player.dart';
+import 'package:sleekstats_flutter_statkeeper/database/moor_tables.dart';
+import 'package:sleekstats_flutter_statkeeper/model/player_utils.dart';
 import 'package:sleekstats_flutter_statkeeper/ui/team/stat_cell.dart';
 
 class PlayerStatRow extends StatelessWidget {
@@ -38,7 +39,7 @@ class PlayerStatRow extends StatelessWidget {
           ),
           isLeague
               ? InkWell(
-                  onTap: () => onTeamSelected(player.teamFireID),
+                  onTap: () => onTeamSelected(player.teamfirestoreid),
                   child: StatCell(data: player.team, width: 70.0),
                 )
               : new Container(),
@@ -51,7 +52,7 @@ class PlayerStatRow extends StatelessWidget {
           StatCell(data: player.triples),
           StatCell(data: player.hrs),
           StatCell(data: player.runs),
-          StatCell(data: player.rbi),
+          StatCell(data: player.rbis),
           StatCell(data: player.getAVG(), width: 70.0),
           StatCell(data: player.getOBP(), width: 70.0),
           StatCell(data: player.getSLG(), width: 70.0),
@@ -62,7 +63,7 @@ class PlayerStatRow extends StatelessWidget {
           StatCell(data: player.outs),
           StatCell(data: player.sacFlies),
           StatCell(data: player.reachedOnErrors),
-          StatCell(data: player.strikeOuts),
+          StatCell(data: player.strikeouts),
         ],
       ),
     );

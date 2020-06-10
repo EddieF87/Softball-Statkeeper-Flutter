@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:sleekstats_flutter_statkeeper/model/player.dart';
+import 'package:sleekstats_flutter_statkeeper/database/moor_tables.dart';
+import 'package:sleekstats_flutter_statkeeper/model/player_utils.dart';
 import 'package:sleekstats_flutter_statkeeper/store/statkeeper_store.dart';
 import 'package:sleekstats_flutter_statkeeper/ui/player/player_stats_page.dart';
 import 'package:sleekstats_flutter_statkeeper/utils/stat_formatter.dart';
@@ -122,7 +123,7 @@ class PlayerSearch extends SearchDelegate<Player> {
                       Text("${StatFormatter.displayAmount(player.getAVG())} / "
                           "${StatFormatter.displayAmount(player.getOBP())} / "
                           "${StatFormatter.displayAmount(player.getSLG())}\n"
-                          "HR: ${player.hrs}  RBI: ${player.rbi}  "
+                          "HR: ${player.hrs}  RBI: ${player.rbis}  "
                           "R: ${player.runs}"),
                   leading: Icon(Icons.person),
                   onTap: () {

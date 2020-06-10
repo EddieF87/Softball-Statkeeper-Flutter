@@ -12,25 +12,24 @@ mixin _$BaseStore on _BaseStore, Store {
   final _$basesAtom = Atom(name: '_BaseStore.bases');
 
   @override
-  ObservableList<Player> get bases {
-    _$basesAtom.context.enforceReadPolicy(_$basesAtom);
-    _$basesAtom.reportObserved();
+  ObservableList<dynamic> get bases {
+    _$basesAtom.reportRead();
     return super.bases;
   }
 
   @override
-  set bases(ObservableList<Player> value) {
-    _$basesAtom.context.conditionallyRunInAction(() {
+  set bases(ObservableList<dynamic> value) {
+    _$basesAtom.reportWrite(value, super.bases, () {
       super.bases = value;
-      _$basesAtom.reportChanged();
-    }, _$basesAtom, name: '${_$basesAtom.name}_set');
+    });
   }
 
   final _$_BaseStoreActionController = ActionController(name: '_BaseStore');
 
   @override
   void resetBases() {
-    final _$actionInfo = _$_BaseStoreActionController.startAction();
+    final _$actionInfo =
+        _$_BaseStoreActionController.startAction(name: '_BaseStore.resetBases');
     try {
       return super.resetBases();
     } finally {
@@ -39,8 +38,9 @@ mixin _$BaseStore on _BaseStore, Store {
   }
 
   @override
-  void setBases(List<Player> newBases) {
-    final _$actionInfo = _$_BaseStoreActionController.startAction();
+  void setBases(List<dynamic> newBases) {
+    final _$actionInfo =
+        _$_BaseStoreActionController.startAction(name: '_BaseStore.setBases');
     try {
       return super.setBases(newBases);
     } finally {
@@ -50,7 +50,8 @@ mixin _$BaseStore on _BaseStore, Store {
 
   @override
   void updateBase(int newBaseIndex, int currentBaseIndex) {
-    final _$actionInfo = _$_BaseStoreActionController.startAction();
+    final _$actionInfo =
+        _$_BaseStoreActionController.startAction(name: '_BaseStore.updateBase');
     try {
       return super.updateBase(newBaseIndex, currentBaseIndex);
     } finally {
@@ -59,8 +60,9 @@ mixin _$BaseStore on _BaseStore, Store {
   }
 
   @override
-  void setBatter(Player batter) {
-    final _$actionInfo = _$_BaseStoreActionController.startAction();
+  void setBatter(dynamic batter) {
+    final _$actionInfo =
+        _$_BaseStoreActionController.startAction(name: '_BaseStore.setBatter');
     try {
       return super.setBatter(batter);
     } finally {
@@ -70,7 +72,8 @@ mixin _$BaseStore on _BaseStore, Store {
 
   @override
   void onBatterMoved() {
-    final _$actionInfo = _$_BaseStoreActionController.startAction();
+    final _$actionInfo = _$_BaseStoreActionController.startAction(
+        name: '_BaseStore.onBatterMoved');
     try {
       return super.onBatterMoved();
     } finally {
@@ -80,7 +83,8 @@ mixin _$BaseStore on _BaseStore, Store {
 
   @override
   void onRunnerMoved(int baseIndex) {
-    final _$actionInfo = _$_BaseStoreActionController.startAction();
+    final _$actionInfo = _$_BaseStoreActionController.startAction(
+        name: '_BaseStore.onRunnerMoved');
     try {
       return super.onRunnerMoved(baseIndex);
     } finally {
@@ -90,7 +94,8 @@ mixin _$BaseStore on _BaseStore, Store {
 
   @override
   String toString() {
-    final string = 'bases: ${bases.toString()}';
-    return '{$string}';
+    return '''
+bases: ${bases}
+    ''';
   }
 }

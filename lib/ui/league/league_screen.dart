@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:sleekstats_flutter_statkeeper/model/team.dart';
+import 'package:sleekstats_flutter_statkeeper/database/moor_tables.dart';
 import 'package:sleekstats_flutter_statkeeper/store/game_store.dart';
 import 'package:sleekstats_flutter_statkeeper/store/statkeeper_store.dart';
 import 'package:sleekstats_flutter_statkeeper/ui/game/game_screen.dart';
@@ -91,7 +91,6 @@ class LeagueScreen extends StatelessWidget {
       builder: (BuildContext context) {
         return AddChoiceDialog(
           teams: statKeeperStore.teams,
-
           onAddPlayersChoice: (Team team) {
             int teamIndex = statKeeperStore.teams.indexOf(team);
 
@@ -100,7 +99,6 @@ class LeagueScreen extends StatelessWidget {
               teamIndex: teamIndex,
             );
           },
-
           onAddTeamsChoice: () => _showAddTeamsDialog(
             context: context,
             statkeeperFireID: leagueFireID,
@@ -140,8 +138,8 @@ class LeagueScreen extends StatelessWidget {
   void _navigateToTeamsPageViewByID(BuildContext context, String teamFireID) {
     StatKeeperStore statKeeperStore = Provider.of<StatKeeperStore>(context);
 
-    int i =
-        statKeeperStore.teams.indexWhere((team) => team.fireID == teamFireID);
+    int i = statKeeperStore.teams
+        .indexWhere((team) => team.firestoreID == teamFireID);
     if (i < 0) {
       return;
     }
@@ -157,11 +155,13 @@ class LeagueScreen extends StatelessWidget {
 
   _goToGame(BuildContext context) {
     //TODO
-    StatKeeperStore statKeeperStore = Provider.of<StatKeeperStore>(context, listen: false);
+    StatKeeperStore statKeeperStore =
+        Provider.of<StatKeeperStore>(context, listen: false);
     GameStore gameStore = GameStore(
-        sKFireID: leagueFireID,
-        awayFireID: statKeeperStore.teams[0].fireID,
-        homeFireID: statKeeperStore.teams[0].fireID);
+      sKFireID: leagueFireID,
+      awayFireID: statKeeperStore.teams[0].firestoreID,
+      homeFireID: statKeeperStore.teams[0].firestoreID,
+    );
 
     Navigator.of(context).push(
       MaterialPageRoute<Null>(

@@ -6,6 +6,8 @@ import 'package:sqflite/sqflite.dart';
 
 Database db;
 
+
+
 class DBCreator {
   static void databaseLog(String functionName, String sql,
       [List<Map<String, dynamic>> selectQueryResult,
@@ -19,17 +21,17 @@ class DBCreator {
     }
   }
 
-  Future<void> createStatKeepersTable(Database db) async {
-    final statkeeperSql = '''CREATE TABLE ${DBContract.TABLE_STATKEEPERS}
-    (
-   ${DBContract.ID} INTEGER PRIMARY KEY,
-   ${DBContract.FIRESTORE_ID} TEXT NOT NULL UNIQUE,
-   ${DBContract.NAME} TEXT NOT NULL,
-   ${DBContract.TYPE} INTEGER NOT NULL,
-   ${DBContract.LEVEL} INTEGER NOT NULL DEFAULT 1
-    )''';
-    await db.execute(statkeeperSql);
-  }
+//  Future<void> createStatKeepersTable(Database db) async {
+//    final statkeeperSql = '''CREATE TABLE ${DBContract.TABLE_STATKEEPERS}
+//    (
+//   ${DBContract.ID} INTEGER PRIMARY KEY,
+//   ${DBContract.FIRESTORE_ID} TEXT NOT NULL UNIQUE,
+//   ${DBContract.NAME} TEXT NOT NULL,
+//   ${DBContract.TYPE} INTEGER NOT NULL,
+//   ${DBContract.LEVEL} INTEGER NOT NULL DEFAULT 1
+//    )''';
+//    await db.execute(statkeeperSql);
+//  }
 
   Future<void> createTeamsTable(Database db) async {
     final teamSql = '''CREATE TABLE ${DBContract.TABLE_TEAMS}
@@ -118,13 +120,13 @@ class DBCreator {
   }
 
   Future<void> initDatabase() async {
-    final path = await getDatabasePath("sleekstats_db");
+    final path = await getDatabasePath("test_db");
     db = await openDatabase(path, version: 1, onCreate: onCreate);
     print(db);
   }
 
   Future<void> onCreate(Database db, int version) async {
-    await createStatKeepersTable(db);
+//    await createStatKeepersTable(db);
     await createTeamsTable(db);
     await createPlayerStatsTable(db);
     await createGameStatsTable(db);

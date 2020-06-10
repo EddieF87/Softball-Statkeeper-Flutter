@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:sleekstats_flutter_statkeeper/model/player.dart';
+import 'package:sleekstats_flutter_statkeeper/model/player_utils.dart';
 import 'package:sleekstats_flutter_statkeeper/store/game_store.dart';
 import 'package:sleekstats_flutter_statkeeper/ui/game/diamond.dart';
 import 'package:sleekstats_flutter_statkeeper/ui/game/scoreboard.dart';
@@ -61,7 +61,7 @@ class GameScreen extends StatelessWidget {
                       ),
                       Expanded(
                         child: Observer(builder: (_) {
-                          return (gameStore.playResult == Player.LABEL_SB ||
+                          return (gameStore.playResult == PlayerUtils.LABEL_SB ||
                                   (gameStore.playResult != null &&
                                       gameStore.baseStore.bases[0] == null))
                               ? FlatButton(
@@ -86,20 +86,20 @@ class GameScreen extends StatelessWidget {
   }
 
   static const List<String> row1 = [
-    Player.LABEL_1B,
-    Player.LABEL_2B,
-    Player.LABEL_3B,
-    Player.LABEL_HR,
-    Player.LABEL_BB,
-    Player.LABEL_K,
+    PlayerUtils.LABEL_1B,
+    PlayerUtils.LABEL_2B,
+    PlayerUtils.LABEL_3B,
+    PlayerUtils.LABEL_HR,
+    PlayerUtils.LABEL_BB,
+    PlayerUtils.LABEL_K,
   ];
   static const List<String> row2 = [
-    Player.LABEL_OUT,
-    Player.LABEL_SF,
+    PlayerUtils.LABEL_OUT,
+    PlayerUtils.LABEL_SF,
     "Sac Bunt",
-    Player.LABEL_ROE,
-    Player.LABEL_SB,
-    Player.LABEL_HBP,
+    PlayerUtils.LABEL_ROE,
+    PlayerUtils.LABEL_SB,
+    PlayerUtils.LABEL_HBP,
   ];
 
   Row _resultButtons(List<String> row, Color accentColor) {

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:sleekstats_flutter_statkeeper/model/player.dart';
+import 'package:sleekstats_flutter_statkeeper/model/player_utils.dart';
 import 'package:sleekstats_flutter_statkeeper/store/base_store.dart';
 import 'package:sleekstats_flutter_statkeeper/store/game_store.dart';
 
@@ -65,7 +65,7 @@ class Diamond extends StatelessWidget {
                               size: 90,
                               color: accentColor,
                             ),
-                            _nameBox(name: Player.LABEL_OUT),
+                            _nameBox(name: PlayerUtils.LABEL_OUT),
                           ],
                         ),
                       );

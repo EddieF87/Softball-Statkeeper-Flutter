@@ -1,6 +1,6 @@
 import 'package:sleekstats_flutter_statkeeper/database/db_contract.dart';
 
-class Play {
+class PlayTest {
   int id;
   String statkeeperFireID;
   int number;
@@ -18,7 +18,7 @@ class Play {
   List<String> bases;
   List<String> runsScored;
 
-  Play(
+  PlayTest(
       {this.id,
       this.statkeeperFireID,
       this.number,
@@ -58,7 +58,7 @@ class Play {
         DBContract.INNING_RUNS: this.inningRuns,
       };
 
-  Play.fromJson(Map<String, dynamic> json) {
+  PlayTest.fromJson(Map<String, dynamic> json) {
     this.id = json[DBContract.ID];
     this.statkeeperFireID = json[DBContract.STATKEEPER_FIRESTORE_ID];
     this.number = json[DBContract.PLAY_NUMBER];

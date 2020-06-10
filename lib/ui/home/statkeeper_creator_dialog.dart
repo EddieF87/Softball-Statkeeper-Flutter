@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:sleekstats_flutter_statkeeper/model/statkeeper.dart';
+import 'package:sleekstats_flutter_statkeeper/database/moor_tables.dart';
+import 'package:sleekstats_flutter_statkeeper/model/statkeeper_utils.dart';
 import 'package:uuid/uuid.dart';
 
 class StatKeeperCreatorDialog extends StatefulWidget {
@@ -14,9 +15,9 @@ class StatKeeperCreatorDialog extends StatefulWidget {
 
 class _StatKeeperCreatorDialogState extends State<StatKeeperCreatorDialog> {
   List<RadioModel> statKeeperChoices = [
-    RadioModel(true, "Player", StatKeeper.TYPE_PLAYER, Icons.person),
-    RadioModel(false, "Team", StatKeeper.TYPE_TEAM, Icons.people),
-    RadioModel(false, "League", StatKeeper.TYPE_LEAGUE, Icons.public),
+    RadioModel(true, "Player", StatKeeperUtils.TYPE_PLAYER, Icons.person),
+    RadioModel(false, "Team", StatKeeperUtils.TYPE_TEAM, Icons.people),
+    RadioModel(false, "League", StatKeeperUtils.TYPE_LEAGUE, Icons.public),
   ];
 
   final myController = TextEditingController();
@@ -54,7 +55,7 @@ class _StatKeeperCreatorDialogState extends State<StatKeeperCreatorDialog> {
             ),
             Padding(padding: EdgeInsets.all(8.0)),
             TextField(
-              textCapitalization: TextCapitalization.words,
+//              textCapitalization: TextCapitalization.words,
               controller: myController,
               maxLength: 20,
               decoration: InputDecoration(
@@ -62,7 +63,7 @@ class _StatKeeperCreatorDialogState extends State<StatKeeperCreatorDialog> {
                 labelText: 'Name',
                 errorText: _namePrompt ? "Name can't be blank!" : null,
                 border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(0.0),
+                  borderRadius: BorderRadius.circular(8.0),
                 ),
               ),
             ),
@@ -80,7 +81,7 @@ class _StatKeeperCreatorDialogState extends State<StatKeeperCreatorDialog> {
           child: Text('Create'),
           onPressed: () {
             if (_nameEntered()) {
-              _createNewStatKeeper(myController.text, _radioIndex);
+              _createNewStatKeeper(myController.text, statKeeperChoices[_radioIndex].type);
               Navigator.of(context).pop();
             }
           },
@@ -132,8 +133,9 @@ class _StatKeeperCreatorDialogState extends State<StatKeeperCreatorDialog> {
   }
 
   _createNewStatKeeper(String name, int type) {
+    print("ooooooooooo $name   type=$type");
     var uuid = new Uuid();
-    widget.onSKCreated(new StatKeeper(fireID: uuid.v1(), name: name, type: type, level: StatKeeper.LEVEL_CREATOR));
+    widget.onSKCreated(new StatKeeper(firestoreID: uuid.v1(), name: name, type: type, level: StatKeeperUtils.LEVEL_CREATOR));
   }
 }
 

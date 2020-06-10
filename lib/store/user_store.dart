@@ -1,8 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:mobx/mobx.dart';
-import 'package:sleekstats_flutter_statkeeper/database/repository_service_statkeepers.dart';
-import 'package:sleekstats_flutter_statkeeper/model/statkeeper.dart';
+import 'package:sleekstats_flutter_statkeeper/database/db_contract.dart';
+import 'package:sleekstats_flutter_statkeeper/database/moor_tables.dart';
+import 'package:sleekstats_flutter_statkeeper/main.dart';
+import 'package:sleekstats_flutter_statkeeper/model/statkeeper_utils.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 // Include generated file
@@ -13,12 +15,13 @@ class UserStore = _UserStore with _$UserStore;
 
 // The store-class
 abstract class _UserStore with Store {
+  final StatKeeperDao statKeeperDao = database.statKeeperDao;
+  final TeamDao teamDao = database.teamDao;
+  final PlayerDao playerDao = database.playerDao;
+
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final GoogleSignIn _googleSignIn = GoogleSignIn();
   String userID;
-
-  @observable
-  ObservableList<StatKeeper> statKeepers = ObservableList();
 
   Future _authenticateWithGoogle() async {
     final GoogleSignInAccount googleUser = await _googleSignIn.signIn();
@@ -28,7 +31,8 @@ abstract class _UserStore with Store {
       accessToken: googleAuth.accessToken,
       idToken: googleAuth.idToken,
     );
-    final FirebaseUser user = (await _auth.signInWithCredential(credential)).user;
+    final FirebaseUser user =
+        (await _auth.signInWithCredential(credential)).user;
     assert(user.email != null);
     assert(user.displayName != null);
     assert(!user.isAnonymous);
@@ -43,18 +47,50 @@ abstract class _UserStore with Store {
 
     QuerySnapshot s = await query.getDocuments();
 
-    statKeepers.clear();
+    statKeeperDao.clear();
+
     s.documents.forEach((DocumentSnapshot documentSnapshot) {
       Map<String, dynamic> userData = documentSnapshot.data;
-      StatKeeper statKeeper = StatKeeper.fromJson(userData, documentSnapshot.documentID, user.uid);
-      statKeepers.add(statKeeper);
+
+      var type = userData[DBContract.TYPE];
+      var name = userData[DBContract.NAME];
+      var firestoreID = documentSnapshot.documentID;
+
+      StatKeeper statKeeper = StatKeeper(
+        firestoreID: firestoreID,
+        name: name,
+        type: type,
+        level: userData[user.uid],
+      );
+
+      statKeeperDao.insertStatKeeper(statKeeper);
+      switch (type) {
+        case StatKeeperUtils.TYPE_PLAYER:
+          playerDao.insertPlayer(
+            Player(
+              name: name,
+              firestoreID: firestoreID,
+              teamfirestoreid: firestoreID,
+              statkeeperFirestoreID: firestoreID,
+            ),
+          );
+          return;
+        case StatKeeperUtils.TYPE_TEAM:
+          teamDao.insertTeam(
+            Team(
+              name: name,
+              firestoreID: firestoreID,
+              statkeeperFirestoreID: firestoreID,
+            ),
+          );
+          return;
+      }
     });
-    statKeepers = statKeepers;
   }
 
   Future<FirebaseUser> retrieveCurrentUser() async {
     FirebaseUser user = await _auth.currentUser();
-    if(user != null && user.uid != userID) {
+    if (user != null && user.uid != userID) {
       userID = user.uid;
       await updateStatKeepers(user);
     }
@@ -64,7 +100,7 @@ abstract class _UserStore with Store {
   Future<bool> signIn() async {
     await _authenticateWithGoogle();
     FirebaseUser user = await _auth.currentUser();
-    if(user != null && user.uid != userID) {
+    if (user != null && user.uid != userID) {
       userID = user.uid;
       await updateStatKeepers(user);
     }
@@ -76,37 +112,28 @@ abstract class _UserStore with Store {
     await _auth.signOut();
     FirebaseUser user = await _auth.currentUser();
     bool signedOut = user == null;
-    if(signedOut) {
+    if (signedOut) {
       userID = null;
-      statKeepers.clear();
-      statKeepers = statKeepers;
+      statKeeperDao.clear();
     }
     return signedOut;
   }
 
   @action
-  void updateEmail(String email) {
-    statKeepers.clear();
+  Future updateEmail(String email) async {
+    await statKeeperDao.clear();
     email = email;
   }
-  
-  @action
-  Future<ObservableList<StatKeeper>> getStatKeepers() async {
-    statKeepers.clear();
-    statKeepers.addAll(ObservableList.of(
-        await RepositoryServiceStatKeepers.getAllStatKeepers()));
-    return statKeepers;
-  }
 
   @action
-  Future addStatKeeper(StatKeeper statKeeper) async {
-    await RepositoryServiceStatKeepers.insertStatKeeper(statKeeper);
-    statKeepers.add(statKeeper);
-  }
+  Stream<List<dynamic>> getStatKeepers() =>
+      statKeeperDao.watchAllStatKeepers();
 
   @action
-  Future removeStatKeeper(StatKeeper statKeeper) async {
-    await RepositoryServiceStatKeepers.deleteStatKeeper(statKeeper);
-    statKeepers.remove(statKeeper);
-  }
+  Future addStatKeeper(StatKeeper statKeeper) async =>
+      await statKeeperDao.insertStatKeeper(statKeeper);
+
+  @action
+  Future removeStatKeeper(StatKeeper statKeeper) async =>
+      await statKeeperDao.deleteStatKeeper(statKeeper);
 }

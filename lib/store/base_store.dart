@@ -1,5 +1,5 @@
 import 'package:mobx/mobx.dart';
-import 'package:sleekstats_flutter_statkeeper/model/player.dart';
+import 'package:sleekstats_flutter_statkeeper/database/moor_tables.dart';
 
 part 'base_store.g.dart';
 
@@ -9,8 +9,7 @@ class BaseStore = _BaseStore with _$BaseStore;
 abstract class _BaseStore with Store {
 
   @observable
-  ObservableList<Player> bases =
-  ObservableList<Player>.of([null, null, null, null, null]);
+  ObservableList<dynamic> bases = ObservableList<Player>.of([null, null, null, null, null]);
 
   List<Player> prevBases = [null, null, null, null, null];
 

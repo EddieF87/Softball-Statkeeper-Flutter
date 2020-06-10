@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:sleekstats_flutter_statkeeper/database/db_creator.dart';
 import 'package:sleekstats_flutter_statkeeper/store/statkeeper_store.dart';
 import 'package:sleekstats_flutter_statkeeper/store/user_store.dart';
 import 'package:sleekstats_flutter_statkeeper/ui/home/home_screen.dart';
 
+import 'database/moor_tables.dart';
+
+MyDatabase database;
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await DBCreator().initDatabase();
+//  await DBCreator().initDatabase();
+  database = MyDatabase();
   runApp(MyApp());
 }
 
@@ -67,33 +71,33 @@ class MyApp extends StatelessWidget {
 //          title: TextStyle(
 //            color: Colors.white,
 //          ),
-              body1: TextStyle(
+              bodyText2: TextStyle(
                 color: primaryColorDark,
               ),
-              body2: TextStyle(
+              bodyText1: TextStyle(
                 color: primaryColorDark,
               ),
-              display1: TextStyle(
+              headline4: TextStyle(
                 color: primaryColorDark,
               ),
-              display2: TextStyle(
+              headline3: TextStyle(
                 color: primaryColorDark,
               ),
             ),
             primaryTextTheme: TextTheme(
-              title: TextStyle(
+              headline6: TextStyle(
                 color: Colors.white,
               ),
-              body1: TextStyle(
+              bodyText2: TextStyle(
                 color: primaryColorDark,
               ),
-              body2: TextStyle(
+              bodyText1: TextStyle(
                 color: primaryColorDark,
               ),
-              display1: TextStyle(
+              headline4: TextStyle(
                 color: primaryColorDark,
               ),
-              display2: TextStyle(
+              headline3: TextStyle(
                 color: primaryColorDark,
               ),
             ),

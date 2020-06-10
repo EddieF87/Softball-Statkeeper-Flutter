@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:provider/provider.dart';
-import 'package:sleekstats_flutter_statkeeper/model/team.dart';
+import 'package:sleekstats_flutter_statkeeper/model/team_utils.dart';
 import 'package:sleekstats_flutter_statkeeper/store/statkeeper_store.dart';
 import 'package:sleekstats_flutter_statkeeper/ui/league/teams_pageview.dart';
 import 'package:sleekstats_flutter_statkeeper/utils/stat_formatter.dart';
@@ -71,14 +71,14 @@ class _StandingsHeaderRowState extends State<StandingsHeaderRow> {
   Widget build(BuildContext context) {
     return Row(
       children: <Widget>[
-        _createHeaderCell(Team.LABEL_TEAM, flexAmount: 3),
-        _createHeaderCell(Team.LABEL_W),
-        _createHeaderCell(Team.LABEL_L),
-        _createHeaderCell(Team.LABEL_T),
-        _createHeaderCell(Team.LABEL_WINPCT, flexAmount: 2),
-        _createHeaderCell(Team.LABEL_RS),
-        _createHeaderCell(Team.LABEL_RA),
-        _createHeaderCell(Team.LABEL_RUNDIFF),
+        _createHeaderCell(TeamUtils.LABEL_TEAM, flexAmount: 3),
+        _createHeaderCell(TeamUtils.LABEL_W),
+        _createHeaderCell(TeamUtils.LABEL_L),
+        _createHeaderCell(TeamUtils.LABEL_T),
+        _createHeaderCell(TeamUtils.LABEL_WINPCT, flexAmount: 2),
+        _createHeaderCell(TeamUtils.LABEL_RS),
+        _createHeaderCell(TeamUtils.LABEL_RA),
+        _createHeaderCell(TeamUtils.LABEL_RUNDIFF),
       ],
     );
   }
