@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sleekstats_flutter_statkeeper/database/moor_tables.dart';
@@ -20,11 +21,10 @@ class TeamScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-//    debugPrint("buildTEAMSCREEN");
     StatKeeperStore teamStore = Provider.of<StatKeeperStore>(context);
 
     return DefaultTabController(
-      length: 2,
+      length: kIsWeb ? 1 : 2,
       child: Column(
         children: <Widget>[
           TabBar(
@@ -32,9 +32,10 @@ class TeamScreen extends StatelessWidget {
               Tab(
                 text: "Stats",
               ),
-              Tab(
-                text: "Game",
-              )
+              if (!kIsWeb)
+                Tab(
+                  text: "Game",
+                )
             ],
           ),
           TeamTabView(teamStore),
@@ -57,7 +58,10 @@ class TeamTabView extends StatelessWidget {
         child: TabBarView(
           children: <Widget>[
             TeamStatsPage(),
-            LineUpScreen(players: teamStore.getPlayersBattingOrder(),),
+            if (!kIsWeb)
+              LineUpScreen(
+                players: teamStore.getPlayersBattingOrder(),
+              ),
           ],
         ),
       ),
@@ -75,7 +79,6 @@ class LineUpScreen extends StatefulWidget {
 }
 
 class _LineUpState extends State<LineUpScreen> {
-
   @override
   Widget build(BuildContext context) {
     StatKeeperStore teamStore = Provider.of<StatKeeperStore>(context);
@@ -122,13 +125,9 @@ class _LineUpState extends State<LineUpScreen> {
 
   _goToGame(BuildContext context) async {
     StatKeeperStore statKeeperStore =
-    Provider.of<StatKeeperStore>(context, listen: false);
+        Provider.of<StatKeeperStore>(context, listen: false);
 
     await RepositoryServicePlays.resetPlays(statKeeperStore.statkeeperFireID);
-
-    print(
-        "jjjj   ${statKeeperStore.statkeeperFireID}   ${statKeeperStore.teams[0]
-            .firestoreID}");
 
     GameStore gameStore = GameStore(
         sKFireID: statKeeperStore.statkeeperFireID,
@@ -137,10 +136,9 @@ class _LineUpState extends State<LineUpScreen> {
 
     Navigator.of(context).push(
       MaterialPageRoute<Null>(
-        builder: (BuildContext context) =>
-            GameScreen(
-              gameStore: gameStore,
-            ),
+        builder: (BuildContext context) => GameScreen(
+          gameStore: gameStore,
+        ),
       ),
     );
 //        .whenComplete(_retrieveLeagueData);

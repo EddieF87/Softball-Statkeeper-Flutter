@@ -62,6 +62,7 @@ class PlayersPageViewState extends State<PlayersPageView> {
       body: PageView.builder(
         itemBuilder: (BuildContext context, int index) => PlayerPage(
           playerIndex: index,
+            firestoreID: statKeeperStore.players[index].firestoreID
         ),
         itemCount: statKeeperStore.players.length,
         controller: _pageController,
@@ -120,9 +121,9 @@ class PlayerSearch extends SearchDelegate<Player> {
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
                   ),
                   subtitle:
-                      Text("${StatFormatter.displayAmount(player.getAVG())} / "
-                          "${StatFormatter.displayAmount(player.getOBP())} / "
-                          "${StatFormatter.displayAmount(player.getSLG())}\n"
+                      Text("${StatFormatter.displayAmount(statName: PlayerUtils.LABEL_AVG, amount: player.getAVG())} / "
+                          "${StatFormatter.displayAmount(statName: PlayerUtils.LABEL_OBP, amount: player.getOBP())} / "
+                          "${StatFormatter.displayAmount(statName: PlayerUtils.LABEL_SLG, amount: player.getSLG())}\n"
                           "HR: ${player.hrs}  RBI: ${player.rbis}  "
                           "R: ${player.runs}"),
                   leading: Icon(Icons.person),

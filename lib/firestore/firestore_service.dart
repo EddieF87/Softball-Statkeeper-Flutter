@@ -7,7 +7,6 @@ import 'package:sleekstats_flutter_statkeeper/utils/extensions.dart';
 
 class FirestoreService {
   static loadPlayers(String sKID) async {
-    print("getPlayers  $sKID");
     QuerySnapshot querySnapshot = await Firestore.instance
         .collection("leagues/$sKID/players")
         .getDocuments();
@@ -30,12 +29,10 @@ class FirestoreService {
       }
     }
     for(final player in players) {
-      print("jj  " + player.name  + "  ${player.battingOrder}");
     }
   }
 
   static loadTeams(String sKID) async {
-    print("getTeams  $sKID");
     QuerySnapshot querySnapshot = await Firestore.instance
         .collection("leagues/$sKID/teams")
         .getDocuments();
@@ -49,7 +46,6 @@ class FirestoreService {
   }
 
   static Future<void> addPlayer(String sKID, Player player) async {
-    print("addplayer  ${player.name}");
     return Firestore.instance
         .collection("leagues/$sKID/players")
         .document(player.firestoreID)

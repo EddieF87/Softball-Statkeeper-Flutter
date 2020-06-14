@@ -96,7 +96,7 @@ class _StandingsHeaderRowState extends State<StandingsHeaderRow> {
             widget.onStatSelected(data);
           },
           child: Text(
-            StatFormatter.displayAmount(data),
+            StatFormatter.displayAmount(amount: data),
             style: TextStyle(
               fontSize: 12.0,
               color: isSorted ? accentColor : Colors.white,

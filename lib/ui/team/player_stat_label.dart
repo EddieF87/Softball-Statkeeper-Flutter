@@ -6,14 +6,14 @@ import 'package:sleekstats_flutter_statkeeper/store/statkeeper_store.dart';
 import 'package:sleekstats_flutter_statkeeper/utils/stat_formatter.dart';
 
 class PlayerStatLabel extends StatelessWidget {
-  final int playerIndex;
-  final String stat;
+  final dynamic statValue;
+  final String statName;
   final bool isBig;
   static const Color accentColorFaded = Color(0x55eabd53);
 
   PlayerStatLabel({
-    this.playerIndex = 0,
-    this.stat,
+    this.statValue = 0,
+    this.statName,
     this.isBig = false,
   });
 
@@ -28,11 +28,11 @@ class PlayerStatLabel extends StatelessWidget {
         builder: (_) => Container(
           decoration: BoxDecoration(
             shape: BoxShape.circle,
-            border: PlayerUtils.CHANGEABLE_LABELS.contains(stat)
+            border: PlayerUtils.CHANGEABLE_LABELS.contains(statName)
                 ? Border.all(
                     width:
-                        stat == statKeeperStore.playerStatToUpdate ? 4.0 : 1.0,
-                    color: stat == statKeeperStore.playerStatToUpdate
+                        statName == statKeeperStore.playerStatToUpdate ? 4.0 : 1.0,
+                    color: statName == statKeeperStore.playerStatToUpdate
                         ? primaryColor
                         : accentColorFaded,
                   )
@@ -41,8 +41,8 @@ class PlayerStatLabel extends StatelessWidget {
           child: InkWell(
             borderRadius: BorderRadius.circular(4.0),
             onTap: () => {
-              PlayerUtils.CHANGEABLE_LABELS.contains(stat)
-                  ? statKeeperStore.setPlayerStatToUpdate(stat)
+              PlayerUtils.CHANGEABLE_LABELS.contains(statName)
+                  ? statKeeperStore.setPlayerStatToUpdate(statName)
                   : null
             },
             customBorder: CircleBorder(),
@@ -50,17 +50,19 @@ class PlayerStatLabel extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 Text(
-                  stat ?? "- - -",
+                  statName ?? "- - -",
                   style: TextStyle(
                     fontSize: isBig ? 18 : 12,
                   ),
                 ),
                 Text(
                   StatFormatter.displayAmount(
-                    PlayerUtils.getStat(
-                      statKeeperStore.players[this.playerIndex],
-                      stat,
-                    ),
+                      amount: statValue,
+                      statName: statName,
+//                    PlayerUtils.getStat(
+//                      statKeeperStore.players[this.statValue],
+//                      statName,
+//                    ),
                   ),
                   style: TextStyle(
                     fontWeight: FontWeight.bold,

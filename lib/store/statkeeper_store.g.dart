@@ -69,9 +69,9 @@ mixin _$StatKeeperStore on _StatKeeperStore, Store {
       AsyncAction('_StatKeeperStore.updatePlayerCountingStat');
 
   @override
-  Future<dynamic> updatePlayerCountingStat(int index, int amount) {
+  Future<dynamic> updatePlayerCountingStat(String firestoreID, int amount) {
     return _$updatePlayerCountingStatAsyncAction
-        .run(() => super.updatePlayerCountingStat(index, amount));
+        .run(() => super.updatePlayerCountingStat(firestoreID, amount));
   }
 
   final _$_StatKeeperStoreActionController =

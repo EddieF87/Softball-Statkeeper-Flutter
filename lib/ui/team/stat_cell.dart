@@ -6,6 +6,7 @@ import 'package:sleekstats_flutter_statkeeper/utils/stat_formatter.dart';
 
 class StatCell extends StatelessWidget {
   final dynamic data;
+  final String statName;
   final double width;
   final FontWeight fontWeight;
   final int maxLines;
@@ -14,6 +15,7 @@ class StatCell extends StatelessWidget {
   const StatCell({
     Key key,
     this.data,
+    this.statName = "",
     this.width = 50.0,
     this.fontWeight = FontWeight.normal,
     this.maxLines = 1,
@@ -30,7 +32,7 @@ class StatCell extends StatelessWidget {
           BoxDecoration(border: Border.all(color: primaryColor, width: 0.3)),
       child: Observer(
         builder: (_) => Text(
-          StatFormatter.displayAmount(data),
+          StatFormatter.displayAmount(statName: statName, amount: data),
           style: TextStyle(
             fontSize: 12.0,
             fontWeight: fontWeight,

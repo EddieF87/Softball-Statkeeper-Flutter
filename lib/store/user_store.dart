@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:mobx/mobx.dart';
 import 'package:sleekstats_flutter_statkeeper/database/db_contract.dart';
@@ -47,12 +48,15 @@ abstract class _UserStore with Store {
 
     QuerySnapshot s = await query.getDocuments();
 
-    statKeeperDao.clear();
+    database.clear();
 
     s.documents.forEach((DocumentSnapshot documentSnapshot) {
       Map<String, dynamic> userData = documentSnapshot.data;
 
       var type = userData[DBContract.TYPE];
+      if(kIsWeb && type == StatKeeperUtils.TYPE_PLAYER) {
+        return;
+      }
       var name = userData[DBContract.NAME];
       var firestoreID = documentSnapshot.documentID;
 
@@ -74,7 +78,7 @@ abstract class _UserStore with Store {
               statkeeperFirestoreID: firestoreID,
             ),
           );
-          return;
+          break;
         case StatKeeperUtils.TYPE_TEAM:
           teamDao.insertTeam(
             Team(
@@ -83,7 +87,7 @@ abstract class _UserStore with Store {
               statkeeperFirestoreID: firestoreID,
             ),
           );
-          return;
+          break;
       }
     });
   }
@@ -126,8 +130,7 @@ abstract class _UserStore with Store {
   }
 
   @action
-  Stream<List<dynamic>> getStatKeepers() =>
-      statKeeperDao.watchAllStatKeepers();
+  Stream<List<dynamic>> getStatKeepers() => statKeeperDao.watchAllStatKeepers();
 
   @action
   Future addStatKeeper(StatKeeper statKeeper) async =>

@@ -6,10 +6,12 @@ import 'package:sleekstats_flutter_statkeeper/ui/player/single_player_stats_disp
 
 class PlayerPage extends StatelessWidget {
   final int playerIndex;
+  final String firestoreID;
 
   const PlayerPage({
     Key key,
     this.playerIndex = 0,
+    this.firestoreID
   }) : super(key: key);
 
   @override
@@ -19,8 +21,8 @@ class PlayerPage extends StatelessWidget {
 
     return Column(
       children: <Widget>[
-        SinglePlayerStatsDisplay(playerIndex: playerIndex),
-        PlayerStatControls(playerIndex: playerIndex),
+        SinglePlayerStatsDisplay(firestoreID: firestoreID),
+        PlayerStatControls(firestoreID: firestoreID),
       ],
     );
   }

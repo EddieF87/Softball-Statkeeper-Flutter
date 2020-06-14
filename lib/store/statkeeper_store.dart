@@ -20,6 +20,7 @@ abstract class _StatKeeperStore with Store {
 
   List<Player> players;
   List<Team> teams;
+  Stream<Player> selectedPlayerStream;
 
   @observable
   String playerStatToUpdate;
@@ -33,7 +34,6 @@ abstract class _StatKeeperStore with Store {
 
   @action
   Future populateStatKeeper(String fireID) async {
-    print("populateStatKeeper  $fireID");
 
     if (populated) {
       return;
@@ -43,21 +43,20 @@ abstract class _StatKeeperStore with Store {
 
     await FirestoreService.loadTeams(fireID);
     await FirestoreService.loadPlayers(fireID);
-    print("loadPlayers FINISHED");
 
     players = await database.playerDao.getAllPlayersFromStatKeeper(fireID);
-    print("getAllPlayersFromStatKeeper FINISHED");
     teams = await database.teamDao.getAllTeams(fireID);
-    print("getAllTeams FINISHED");
 
 //    sortPlayers(playerStatToSortBy);
 
     populated = true;
-    print("populated FINISHED");
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    print("SharedPreferences FINISHED");
     showGender = prefs.get("$statkeeperFireID-showGender") ?? false;
+  }
+
+  Stream<Player> watchPlayer(String firestoreID) {
+    return selectedPlayerStream = database.playerDao.watchPlayer(firestoreID);
   }
 
   @action
@@ -110,12 +109,7 @@ abstract class _StatKeeperStore with Store {
       );
       await FirestoreService.addPlayer(statkeeperFireID, player);
       await database.playerDao.insertPlayer(player);
-//      player.id = await RepositoryServicePlayers.insertPlayer(player);
-//      if (player.id > 0) {
-//        players.add(player);
-//      }
     }
-//    players = players;
   }
 
   @action
@@ -128,12 +122,7 @@ abstract class _StatKeeperStore with Store {
         name: name,
       );
       database.teamDao.insertTeam(team);
-//      team.id = await RepositoryServiceTeams.insertTeam(team);
-//      if (team.id > 0) {
-//        teams.add(team);
-//      }
     }
-//    teams = teams;
   }
 
   @action
@@ -170,63 +159,64 @@ abstract class _StatKeeperStore with Store {
   }
 
   @action
-  Future updatePlayerCountingStat(int index, int amount) async {
-    Player player = players[index];
-    print(
-        "updatePlayerCountingStat  ${player.name}  $index   $playerStatToUpdate   $amount");
+  Future updatePlayerCountingStat(String firestoreID, int amount) async {
+    watchPlayer(firestoreID);
+    Player player = await selectedPlayerStream.first;
+
     if (playerStatToUpdate != null &&
         PlayerUtils.CHANGEABLE_LABELS.contains(playerStatToUpdate)) {
       switch (playerStatToUpdate) {
         case PlayerUtils.LABEL_R:
+          print("whyyyyyyyyy is happenng?");
           player = player.copyWith(runs: getPlayerAmount(player.runs + amount));
           break;
         case PlayerUtils.LABEL_RBI:
-          player = player.copyWith(runs: getPlayerAmount(player.rbis + amount));
+          player = player.copyWith(rbis: getPlayerAmount(player.rbis + amount));
           break;
         case PlayerUtils.LABEL_1B:
           player =
-              player.copyWith(runs: getPlayerAmount(player.singles + amount));
+              player.copyWith(singles: getPlayerAmount(player.singles + amount));
           break;
         case PlayerUtils.LABEL_2B:
           player =
-              player.copyWith(runs: getPlayerAmount(player.doubles + amount));
+              player.copyWith(doubles: getPlayerAmount(player.doubles + amount));
           break;
         case PlayerUtils.LABEL_3B:
           player =
-              player.copyWith(runs: getPlayerAmount(player.triples + amount));
+              player.copyWith(triples: getPlayerAmount(player.triples + amount));
           break;
         case PlayerUtils.LABEL_HR:
-          player = player.copyWith(runs: getPlayerAmount(player.hrs + amount));
+          player = player.copyWith(hrs: getPlayerAmount(player.hrs + amount));
           break;
         case PlayerUtils.LABEL_OUT:
-          player = player.copyWith(runs: getPlayerAmount(player.outs + amount));
+          player = player.copyWith(outs: getPlayerAmount(player.outs + amount));
           break;
         case PlayerUtils.LABEL_ROE:
           player = player.copyWith(
-              runs: getPlayerAmount(player.reachedOnErrors + amount));
+              reachedOnErrors: getPlayerAmount(player.reachedOnErrors + amount));
           break;
         case PlayerUtils.LABEL_SF:
           player =
-              player.copyWith(runs: getPlayerAmount(player.sacFlies + amount));
+              player.copyWith(sacFlies: getPlayerAmount(player.sacFlies + amount));
           break;
         case PlayerUtils.LABEL_BB:
           player =
-              player.copyWith(runs: getPlayerAmount(player.walks + amount));
+              player.copyWith(walks: getPlayerAmount(player.walks + amount));
           break;
         case PlayerUtils.LABEL_SB:
           player = player.copyWith(
-              runs: getPlayerAmount(player.stolenBases + amount));
+              stolenBases: getPlayerAmount(player.stolenBases + amount));
           break;
         case PlayerUtils.LABEL_G:
           player =
-              player.copyWith(runs: getPlayerAmount(player.games + amount));
+              player.copyWith(games: getPlayerAmount(player.games + amount));
           break;
         case PlayerUtils.LABEL_HBP:
-          player = player.copyWith(runs: getPlayerAmount(player.hbp + amount));
+          player = player.copyWith(hbp: getPlayerAmount(player.hbp + amount));
           break;
         case PlayerUtils.LABEL_K:
           player = player.copyWith(
-              runs: getPlayerAmount(player.strikeouts + amount));
+              strikeouts: getPlayerAmount(player.strikeouts + amount));
           break;
         default:
           print("updatePlayerCountingStat  defaultdefaultdefaultdefault");
@@ -235,11 +225,8 @@ abstract class _StatKeeperStore with Store {
     } else {
       print("updatePlayerCountingStat  elseelseelseelseelseelse");
     }
+
     database.playerDao.updatePlayer(player);
-//    int result = await RepositoryServicePlayers.updatePlayer(player);
-//    if (result > 0) {
-//      players = players;
-//    }
   }
 
   void toggleShowGender() async {

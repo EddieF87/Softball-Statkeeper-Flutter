@@ -1,9 +1,8 @@
+import 'package:flutter/foundation.dart';
 import 'package:moor/moor.dart';
-import 'package:moor/moor_web.dart';
-
-// These imports are only needed to open the database
-//import 'package:moor_ffi/moor_ffi.dart';
-//import 'package:path_provider/path_provider.dart';
+import 'package:sleekstats_flutter_statkeeper/database/native_db_creator.dart'
+    if (dart.library.html) 'package:sleekstats_flutter_statkeeper/database/web_db_creator.dart'
+    as db_creator;
 
 part 'moor_tables.g.dart';
 
@@ -22,7 +21,6 @@ class StatKeepers extends Table {
 }
 
 class Teams extends Table {
-
   IntColumn get id => integer().nullable().autoIncrement()();
 
   TextColumn get firestoreID => text()();
@@ -53,7 +51,8 @@ class Players extends Table {
 
   TextColumn get name => text()();
 
-  TextColumn get team => text().nullable().withDefault(const Constant("Free Agent"))();
+  TextColumn get team =>
+      text().nullable().withDefault(const Constant("Free Agent"))();
 
   IntColumn get gender => integer().nullable().withDefault(zero)();
 
@@ -85,7 +84,8 @@ class Players extends Table {
 
   IntColumn get hbp => integer().nullable().withDefault(zero)();
 
-  IntColumn get battingOrder => integer().nullable().withDefault(const Constant(99))();
+  IntColumn get battingOrder =>
+      integer().nullable().withDefault(const Constant(99))();
 }
 
 class Plays extends Table {
@@ -130,29 +130,27 @@ class Plays extends Table {
   IntColumn get inn_runs => integer().withDefault(zero)();
 }
 
-//LazyDatabase _openConnection() {
-//  // the LazyDatabase util lets us find the right location for the file async.
-//  return LazyDatabase(() async {
-//    // put the database file, called db.sqlite here, into the documents folder
-//    // for your app.
-//    final dbFolder = await getApplicationDocumentsDirectory();
-//    final file = File(p.join(dbFolder.path, 'sleekstats.db'));
-//    return VmDatabase(file);
-//  });
-//}
-
 @UseMoor(
     tables: [StatKeepers, Teams, Players, Plays],
     daos: [StatKeeperDao, TeamDao, PlayerDao, PlayDao])
 class MyDatabase extends _$MyDatabase {
   // we tell the database where to store the data with this constructor
-  MyDatabase() : super(WebDatabase('sleekstats'));
+  MyDatabase(QueryExecutor e) : super(e);
 
   // you should bump this number whenever you change or add a table definition. Migrations
   // are covered later in this readme.
   @override
   int get schemaVersion => 1;
+
+  void clear() {
+    statKeeperDao.clear();
+    playerDao.clear();
+    teamDao.clear();
+    playDao.clear();
+  }
 }
+
+MyDatabase constructDb() => db_creator.constructDb();
 
 @UseDao(tables: [StatKeepers])
 class StatKeeperDao extends DatabaseAccessor<MyDatabase>
@@ -167,8 +165,7 @@ class StatKeeperDao extends DatabaseAccessor<MyDatabase>
 
   Future<List<StatKeeper>> getStatKeeper(String firestoreID) =>
       (select(statKeepers)
-        ..where((statKeeper) =>
-            statKeeper.firestoreID.equals(firestoreID)))
+            ..where((statKeeper) => statKeeper.firestoreID.equals(firestoreID)))
           .get();
 
   Future insertStatKeeper(StatKeeper statKeeper) =>
@@ -193,14 +190,14 @@ class TeamDao extends DatabaseAccessor<MyDatabase> with _$TeamDaoMixin {
   TeamDao(this.db) : super(db);
 
   Future<List<Team>> getAllTeams(String statkeeperFireID) => (select(teams)
-    ..where((tbl) => tbl.statkeeperFirestoreID.equals(statkeeperFireID)))
+        ..where((tbl) => tbl.statkeeperFirestoreID.equals(statkeeperFireID)))
       .get();
 
   Stream<List<Team>> watchAllTeams() => select(teams).watch();
 
   Future<List<Team>> getTeam(String statkeeperFireID, String firestoreID) =>
       (select(teams)
-        ..where(
+            ..where(
                 (team) => team.statkeeperFirestoreID.equals(statkeeperFireID)))
           .get();
 
@@ -225,12 +222,11 @@ class PlayerDao extends DatabaseAccessor<MyDatabase> with _$PlayerDaoMixin {
   Future<List<Player>> getAllPlayers() =>
       select(players).get(); //TODO remove this one?
 
-  Future<List<Player>> getPlayer(
-      String statKeeperID, String firestoreID) =>
+  Future<List<Player>> getPlayer(String statKeeperID, String firestoreID) =>
       (select(players)
-        ..where((player) =>
-        player.statkeeperFirestoreID.equals(statKeeperID) &
-        player.firestoreID.equals(firestoreID)))
+            ..where((player) =>
+                player.statkeeperFirestoreID.equals(statKeeperID) &
+                player.firestoreID.equals(firestoreID)))
           .get();
 
   Future<List<Player>> getAllPlayersFromTeam(
@@ -247,6 +243,17 @@ class PlayerDao extends DatabaseAccessor<MyDatabase> with _$PlayerDaoMixin {
                 (player) => player.statkeeperFirestoreID.equals(statKeeperID)))
           .get();
 
+  Stream<Player> watchPlayer(String firestoreID) => (select(players)
+        ..limit(1)
+        ..where((player) => player.firestoreID.equals(firestoreID)))
+      .watchSingle();
+
+  Future<Player> tttttttt() => (select(players)
+        ..limit(1)
+        ..where((player) =>
+            player.statkeeperFirestoreID.equals("8vaF9y1lR4CPga4K9krt")))
+      .getSingle();
+
   Stream<List<Player>> watchAllPlayers() => select(players).watch();
 
   Future insertPlayer(Player player) => into(players).insert(player);
@@ -257,22 +264,49 @@ class PlayerDao extends DatabaseAccessor<MyDatabase> with _$PlayerDaoMixin {
 
   Future clear() => delete(players).go();
 
+  Future<List<Player>> nameComparator() =>
+      (select(players)..orderBy([(t) => OrderingTerm(expression: t.name)]))
+          .get();
 
-  Future<List<Player>> nameComparator() => (select(players)..orderBy([(t) => OrderingTerm(expression: t.name)])).get();
-  Future<List<Player>> teamComparator() => (select(players)..orderBy([(t) => OrderingTerm(expression: t.team)])).get();
-  Future<List<Player>> gameComparator() => (select(players)..orderBy([(t) => OrderingTerm(expression: t.games)])).get();
-  Future<List<Player>> rbiComparator() => (select(players)..orderBy([(t) => OrderingTerm(expression: t.rbis)])).get();
-  Future<List<Player>> runComparator() => (select(players)..orderBy([(t) => OrderingTerm(expression: t.runs)])).get();
-  Future<List<Player>> singleComparator() => (select(players)..orderBy([(t) => OrderingTerm(expression: t.singles)])).get();
-  Future<List<Player>> doubleComparator() => (select(players)..orderBy([(t) => OrderingTerm(expression: t.doubles)])).get();
-  Future<List<Player>> tripleComparator() => (select(players)..orderBy([(t) => OrderingTerm(expression: t.triples)])).get();
-  Future<List<Player>> hrComparator() => (select(players)..orderBy([(t) {
+  Future<List<Player>> teamComparator() =>
+      (select(players)..orderBy([(t) => OrderingTerm(expression: t.team)]))
+          .get();
 
-    return OrderingTerm(expression: t.hrs);
-  }])).get();
+  Future<List<Player>> gameComparator() =>
+      (select(players)..orderBy([(t) => OrderingTerm(expression: t.games)]))
+          .get();
+
+  Future<List<Player>> rbiComparator() =>
+      (select(players)..orderBy([(t) => OrderingTerm(expression: t.rbis)]))
+          .get();
+
+  Future<List<Player>> runComparator() =>
+      (select(players)..orderBy([(t) => OrderingTerm(expression: t.runs)]))
+          .get();
+
+  Future<List<Player>> singleComparator() =>
+      (select(players)..orderBy([(t) => OrderingTerm(expression: t.singles)]))
+          .get();
+
+  Future<List<Player>> doubleComparator() =>
+      (select(players)..orderBy([(t) => OrderingTerm(expression: t.doubles)]))
+          .get();
+
+  Future<List<Player>> tripleComparator() =>
+      (select(players)..orderBy([(t) => OrderingTerm(expression: t.triples)]))
+          .get();
+
+  Future<List<Player>> hrComparator() => (select(players)
+        ..orderBy([
+          (t) {
+            return OrderingTerm(expression: t.hrs);
+          }
+        ]))
+      .get();
 
   Future<List<Player>> outComparator(Expression sortBy) {
-    return (select(players)..orderBy([(t) => OrderingTerm(expression: sortBy)])).get();
+    return (select(players)..orderBy([(t) => OrderingTerm(expression: sortBy)]))
+        .get();
   }
 }
 

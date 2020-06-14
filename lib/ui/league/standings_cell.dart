@@ -23,7 +23,7 @@ class StandingsCell extends StatelessWidget {
         decoration:
             BoxDecoration(border: Border.all(color: primaryColor, width: 0.3)),
         child: Text(
-          StatFormatter.displayAmount(data),
+          StatFormatter.displayAmount(amount: data),
           style: TextStyle(
               fontSize: 12.0,
               fontWeight: fontWeight,

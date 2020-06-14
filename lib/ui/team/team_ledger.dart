@@ -33,7 +33,7 @@ class TeamLedger extends StatelessWidget {
           child: Column(
             children: <Widget>[
               Text(
-                  "${team.wins}-${team.losses}-${team.ties}  (${StatFormatter.displayAmount(team.getWinPct())})"),
+                  "${team.wins}-${team.losses}-${team.ties}  (${StatFormatter.displayAmount(statName: TeamUtils.LABEL_WINPCT, amount: team.getWinPct())})"),
               Text("RS: ${team.totalRunsScored} RA: ${team.totalRunsAllowed}"),
             ],
           ),

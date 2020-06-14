@@ -10,8 +10,7 @@ MyDatabase database;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-//  await DBCreator().initDatabase();
-  database = MyDatabase();
+  database = constructDb();
   runApp(MyApp());
 }
 

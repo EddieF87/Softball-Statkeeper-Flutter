@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sleekstats_flutter_statkeeper/database/moor_tables.dart';
@@ -21,7 +22,7 @@ class LeagueScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length: 3,
+      length: kIsWeb ? 2 : 3,
       child: Column(
         children: <Widget>[
           TabBar(
@@ -34,9 +35,10 @@ class LeagueScreen extends StatelessWidget {
               Tab(
                 text: "Stats",
               ),
-              Tab(
-                text: "Game",
-              )
+              if (!kIsWeb)
+                Tab(
+                  text: "Game",
+                )
             ],
           ),
           Expanded(
@@ -56,15 +58,16 @@ class LeagueScreen extends StatelessWidget {
                       ),
                     ),
                   ),
-                  Padding(
-                    padding: EdgeInsets.only(left: 32.0),
-                    child: Center(
-                      child: RaisedButton(
-                        onPressed: () => _goToGame(context),
-                        child: Text("Start Game"),
+                  if (!kIsWeb)
+                    Padding(
+                      padding: EdgeInsets.only(left: 32.0),
+                      child: Center(
+                        child: RaisedButton(
+                          onPressed: () => _goToGame(context),
+                          child: Text("Start Game"),
+                        ),
                       ),
                     ),
-                  ),
                 ],
               ),
             ),

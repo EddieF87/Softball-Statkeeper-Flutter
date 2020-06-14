@@ -145,7 +145,6 @@ class Diamond extends StatelessWidget {
         return baseStore.bases[newBase] == null;
       },
       onAccept: (currentBase) {
-        print("onAccept");
         if (newBase == HOME) {
           gameStore.addRunAndRBI((baseStore.bases[currentBase]));
         }

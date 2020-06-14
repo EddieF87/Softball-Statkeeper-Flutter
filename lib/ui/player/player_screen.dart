@@ -12,6 +12,6 @@ class PlayerScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return PlayerPage();
+    return PlayerPage(firestoreID: fireID);
   }
 }

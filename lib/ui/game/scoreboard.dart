@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:sleekstats_flutter_statkeeper/model/player_utils.dart';
 import 'package:sleekstats_flutter_statkeeper/store/game_store.dart';
 import 'package:sleekstats_flutter_statkeeper/utils/stat_formatter.dart';
 
@@ -64,15 +65,15 @@ class ScoreBoard extends StatelessWidget {
                 ),
                 Observer(
                   builder: (_) => Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: <Widget>[
-                          Text(
-                              " AVG: ${StatFormatter.displayAmount(gameStore.batter?.getAVG() ?? 0.0)} "),
-                          Text(" HR: ${gameStore.batter?.hrs ?? 0} "),
-                          Text(" RBI: ${gameStore.batter?.rbi ?? 0} "),
-                          Text(" R: ${gameStore.batter?.runs ?? 0} "),
-                        ],
-                      ),
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: <Widget>[
+                      Text(
+                          " AVG: ${StatFormatter.displayAmount(statName: PlayerUtils.LABEL_AVG, amount: gameStore.batter?.getAVG() ?? 0.0)} "),
+                      Text(" HR: ${gameStore.batter?.hrs ?? 0} "),
+                      Text(" RBI: ${gameStore.batter?.rbi ?? 0} "),
+                      Text(" R: ${gameStore.batter?.runs ?? 0} "),
+                    ],
+                  ),
                 ),
               ],
             ),

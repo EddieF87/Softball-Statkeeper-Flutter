@@ -5,9 +5,9 @@ import 'package:sleekstats_flutter_statkeeper/store/statkeeper_store.dart';
 import 'package:sleekstats_flutter_statkeeper/utils/stat_formatter.dart';
 
 class PlayerStatControls extends StatefulWidget {
-  final int playerIndex;
+  final String firestoreID;
 
-  PlayerStatControls({this.playerIndex = 0});
+  PlayerStatControls({this.firestoreID});
 
   @override
   State<StatefulWidget> createState() => _PlayerStatControlsState();
@@ -54,7 +54,7 @@ class _PlayerStatControlsState extends State<PlayerStatControls> {
                     ),
                   ),
                   Text(
-                    StatFormatter.displayAmount(amount),
+                    StatFormatter.displayAmount(amount: amount),
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 24,
@@ -73,7 +73,7 @@ class _PlayerStatControlsState extends State<PlayerStatControls> {
             child: RaisedButton(
               //todo
               onPressed: () => statKeeperStore.updatePlayerCountingStat(
-                  widget.playerIndex, amount),
+                  widget.firestoreID, amount),
               child: Text(
                 "Update",
                 style: TextStyle(color: Colors.white),

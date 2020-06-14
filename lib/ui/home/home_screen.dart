@@ -158,7 +158,6 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> _showCreateSKDialog(BuildContext context) async {
-    print("ooooooooo  _showCreateSKDialog");
     UserStore userStore = Provider.of<UserStore>(context, listen: false);
 
     return showDialog<void>(
@@ -211,8 +210,6 @@ class StatKeeperList extends StatelessWidget {
     return StreamBuilder(
       stream: _userStore.getStatKeepers(),
       builder: (BuildContext context, AsyncSnapshot<List<dynamic>> snapshot) {
-        print("oooooooo   ${snapshot.data}");
-//        return Container();
         if (snapshot.hasError) {
           return Text('Error: ${snapshot.error}');
         }
@@ -303,7 +300,6 @@ class StatKeeperLabel extends StatelessWidget {
 
   /// Navigates to the [LoadingScreen].
   _navigateToLoadingScreen(BuildContext context, StatKeeper sK) {
-    debugPrint("STATKEEPR INFO:  $sK");
     Navigator.of(context).push(
       MaterialPageRoute<Null>(
         builder: (BuildContext context) {

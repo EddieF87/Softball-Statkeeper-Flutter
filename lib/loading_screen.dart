@@ -35,29 +35,8 @@ class _LoadingScreenState extends State<LoadingScreen> {
     Widget statKeeperScreen = await _updateStatKeeper(context, sK);
     if (statKeeperScreen == null) {
       print("statKeeperScreen == null   $sK");
-      print("statKeeperScreen == null   $sK");
-      print("statKeeperScreen == null   $sK");
-      print("statKeeperScreen == null   $sK");
-      print("statKeeperScreen == null   $sK");
-      print("statKeeperScreen == null   $sK");
-      print("statKeeperScreen == null   $sK");
-      print("statKeeperScreen == null   $sK");
-      print("statKeeperScreen == null   $sK");
-      print("statKeeperScreen == null   $sK");
-      print("statKeeperScreen == null   $sK");
-      print("statKeeperScreen == null   $sK");
       return;
     }
-    print("navvvvv   $sK");
-    print("navvvvv   $sK");
-    print("navvvvv   $sK");
-    print("navvvvv   $sK");
-    print("navvvvv   $sK");
-    print("navvvvv   $sK");
-    print("navvvvv   $sK");
-    print("navvvvv   $sK");
-    print("navvvvv   $sK");
-    print("navvvvv   $sK");
     print("navvvvv   $sK");
 
     Navigator.of(context).pushReplacement(
@@ -96,14 +75,6 @@ class _LoadingScreenState extends State<LoadingScreen> {
     statKeeperStore.statkeeperFireID = fireID;
     print("START POPULATIN");
     await statKeeperStore.populateStatKeeper(fireID);
-    print("ALL POPULATED");
-    print("ALL POPULATED");
-    print("ALL POPULATED");
-    print("ALL POPULATED");
-    print("ALL POPULATED");
-    print("ALL POPULATED");
-    print("ALL POPULATED");
-    print("ALL POPULATED");
     print("ALL POPULATED");
 
     switch (sK.type) {
