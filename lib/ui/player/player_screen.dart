@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:sleekstats_flutter_statkeeper/store/statkeeper_store.dart';
 import 'package:sleekstats_flutter_statkeeper/ui/player/player_stats_page.dart';
 
 class PlayerScreen extends StatelessWidget {
@@ -12,6 +14,7 @@ class PlayerScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return PlayerPage(firestoreID: fireID);
+    StatKeeperStore statKeeperStore = Provider.of<StatKeeperStore>(context);
+    return PlayerPage(firestoreID: statKeeperStore.players[0].firestoreID);
   }
 }

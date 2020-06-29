@@ -19,9 +19,12 @@ class FirestoreService {
       String firestoreID = documentSnapshot.documentID;
       Player cloudPlayer = PlayerUtils.fromFirestore(documentSnapshot.data, sKID, firestoreID);
       Player localPlayer = (await database.playerDao.getPlayer(sKID, firestoreID)).firstOrNull;
+      print("cloud $cloudPlayer");
+      print("localPlayer $localPlayer");
 
       if(localPlayer != null) {
-        players.add(localPlayer);
+        //TODO UPDATE PLAYER
+//        players.add(localPlayer);
       } else {
         database.playerDao.insertPlayer(cloudPlayer);
 //        cloudPlayer.id = await RepositoryServicePlayers.insertPlayer(cloudPlayer);

@@ -167,7 +167,6 @@ abstract class _StatKeeperStore with Store {
         PlayerUtils.CHANGEABLE_LABELS.contains(playerStatToUpdate)) {
       switch (playerStatToUpdate) {
         case PlayerUtils.LABEL_R:
-          print("whyyyyyyyyy is happenng?");
           player = player.copyWith(runs: getPlayerAmount(player.runs + amount));
           break;
         case PlayerUtils.LABEL_RBI:
